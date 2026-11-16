@@ -41,8 +41,9 @@ def parse_kv(cell):
 
 
 def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=None):
-    rows = [r for r in (get_by_id("direction", i, data_dir)
-                        for i in split_list(problem.get("direction_ids", ""))) if r]
+    ids = list(dict.fromkeys(split_list(problem.get("direction_ids", ""))))
+    rows = [r for r in (get_by_id("direction", i, data_dir) for i in ids) if r]
+    forced = None
     if direction_id:
         forced = get_by_id("direction", direction_id, data_dir)
         if not forced:
@@ -56,28 +57,45 @@ def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=Non
         if intensity not in INTENSITY_ORDER:
             intensity = "balanced"
     idx = INTENSITY_ORDER.index
-    chosen = [r for r in rows if intensity in split_list(r["intensity_range"])][:2]
-    note = None
+
+    def supports(r):
+        return intensity in split_list(r["intensity_range"])
+
+    def used(r):  # intensity in r's range nearest to the requested one
+        rng = [x for x in split_list(r["intensity_range"]) if x in INTENSITY_ORDER]
+        return min(rng, key=lambda x: abs(idx(x) - idx(intensity)), default=None)
+
+    def dist(r):
+        u = used(r)
+        return abs(idx(u) - idx(intensity)) if u else 9
+    notes = []
+    chosen = [r for r in rows if supports(r)]
+    if forced and not supports(forced):
+        chosen = [forced] + chosen
+        notes.append(f"{forced['id']} is forced; its range ({forced['intensity_range']}) "
+                     f"does not include {intensity}")
+    chosen = chosen[:2]
     if len(chosen) < 2:
         rest = [r for r in rows if r not in chosen]  # stable sort keeps linked order on ties
-
-        def dist(r):
-            rng = [idx(x) for x in split_list(r["intensity_range"]) if x in INTENSITY_ORDER]
-            return min((abs(x - idx(intensity)) for x in rng), default=9)
         added = sorted(rest, key=dist)[:2 - len(chosen)]
         chosen += added
         if added:
-            note = (f"Fewer than 2 directions support {intensity}; added nearest: "
-                    + ", ".join(f"{r['id']} ({r['intensity_range']})" for r in added))
-    base = next((r for r in rows if "subtle" in split_list(r["intensity_range"])), None) \
-        or get_by_id("direction", BASELINE_FALLBACK, data_dir)
+            notes.append(f"Fewer than 2 directions support {intensity}; added nearest: "
+                         + ", ".join(f"{r['id']} (at {used(r)})" for r in added))
+    note = "; ".join(notes) or None
     top = chosen[0]
+    base = next((r for r in rows if r is not top and "subtle" in split_list(r["intensity_range"])), None)
+    if not base:
+        cp = get_by_id("direction", BASELINE_FALLBACK, data_dir)
+        base = cp if cp and cp["id"] != top["id"] else top
+    same = base is top or base["id"] == top["id"]
     tokens = [[f"{c.split('_')[0]}.{k}" if k else c.split("_")[0], v]
               for c in _TOKEN_COLS for k, v in parse_kv(top[c])]
     tokens += [["type_pair", top["type_pair"]], ["accent_strategy", top["accent_strategy"]]]
     return {"intensity": intensity, "intensity_source": source, "directions": chosen,
             "fallback_note": note,
-            "baseline": {"id": base["id"], "name": base["name"], "intensity": "subtle"} if base else None,
+            "baseline": {"id": base["id"], "name": base["name"], "intensity": "subtle",
+                         "same_as_primary": same},
             "locked": LOCKED_BASE + split_list(top["locked"]), "tokens": tokens,
             "hero_element": top["hero_element"],
             "variations": [[k, v] for k, v in parse_kv(top["variation_axes"])],
@@ -115,6 +133,14 @@ def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id
             "rules": rules, "checklist": checklist, "signature": signature}
 
 
+def _group_tokens(tokens):
+    groups = {}
+    for k, v in tokens:
+        g, _, sub = k.partition(".")
+        groups.setdefault(g, []).append(f"{sub}: {v}" if sub else v)
+    return [(g, "; ".join(vs)) for g, vs in groups.items()]
+
+
 def _render_signature(sig):
     if not sig:
         return ["- (no directions linked)"]
@@ -124,13 +150,15 @@ def _render_signature(sig):
     if sig["fallback_note"]:
         out.append(f"- Note: {sig['fallback_note']}")
     if sig["baseline"]:
-        out.append(f"- Safe baseline: {sig['baseline']['name']} [{sig['baseline']['id']}] (subtle)")
+        out.append(f"- Safe baseline: {sig['baseline']['name']} [{sig['baseline']['id']}] (subtle)"
+                   + (" (same as primary)" if sig["baseline"].get("same_as_primary") else ""))
     out += ["", "### Locked conventions", *[f"- {x}" for x in sig["locked"]],
             "", "### Tokens (top direction)", "| Token | Value |", "|---|---|",
-            *[f"| {k} | {v.replace('|', '/')} |" for k, v in sig["tokens"]],
+            *[f"| {g} | {v.replace('|', '/')} |" for g, v in _group_tokens(sig["tokens"])],
             "", "### Hero element", sig["hero_element"] or "n/a"]
-    out += [f"- {k}: {v}" for k, v in sig["variations"]]
-    out += ["", "### Test with users", *[f"{i}. {t}" for i, t in enumerate(sig["tests"], 1)]]
+    if sig["variations"]:
+        out.append("Variations: " + "; ".join(f"{k}: {v}" for k, v in sig["variations"]))
+    out += ["", "Test with users: 5-second \u00b7 preference (baseline vs primary) \u00b7 first-click \u00b7 squint"]
     return out
 
 

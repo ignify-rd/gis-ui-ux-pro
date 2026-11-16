@@ -116,7 +116,8 @@ class TestBlueprint(unittest.TestCase):
     def test_signature_override_subtle_falls_back(self):
         sig = self._sig(intensity="subtle")
         self.assertEqual(self._ids(sig), ["night-ops", "story-bold"])
-        self.assertIn("balanced", sig["fallback_note"])
+        self.assertIn("at balanced", sig["fallback_note"])
+        self.assertNotEqual(sig["baseline"]["id"], sig["directions"][0]["id"])
 
     def test_signature_override_bold(self):
         sig = self._sig(intensity="bold")
@@ -129,6 +130,20 @@ class TestBlueprint(unittest.TestCase):
     def test_signature_unknown_direction_raises(self):
         with self.assertRaises(ValueError):
             self._sig(direction_id="nope")
+
+    def test_forced_direction_is_primary_even_out_of_range(self):
+        sig = self._sig(direction_id="civic-paper", intensity="bold")
+        self.assertEqual(self._ids(sig)[0], "civic-paper")
+        self.assertIn("civic-paper", sig["fallback_note"])
+
+    def test_baseline_same_as_primary_when_no_alternative(self):
+        sig = self._sig(direction_id="civic-paper", intensity="subtle")
+        self.assertEqual(sig["baseline"]["id"], "civic-paper")
+        self.assertTrue(sig["baseline"]["same_as_primary"])
+
+    def test_duplicate_direction_ids_deduped(self):
+        sig = blueprint.build_signature({"direction_ids": "night-ops;night-ops;story-bold"}, FIX)
+        self.assertEqual(self._ids(sig), ["night-ops", "story-bold"])
 
     def test_signature_no_directions(self):
         self.assertIsNone(blueprint.build_signature({"direction_ids": ""}, FIX))
