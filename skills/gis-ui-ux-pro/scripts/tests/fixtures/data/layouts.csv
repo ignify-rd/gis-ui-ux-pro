@@ -1,4 +1,4 @@
-id,name,use_when,avoid_when,regions,ascii_sketch,mobile_variant,rule_ids,keywords
-LY-01,Map with left sidebar,Analyst desktop tools,,map;sidebar,[side|map],bottom sheet,L-01,sidebar desktop
-LY-02,Full-bleed map,Public viewers,,map,[map],same,L-01,fullbleed public
-LY-03,Control room wall,Operations wall display,,map;kpis,[kpi|map],,L-01,wall operations
+id,name,use_when,avoid_when,regions,ascii_sketch,mobile_variant,rule_ids,keywords,slots,mobile_slots
+LY-01,Map with left sidebar,Analyst desktop tools,,map;sidebar,[side|map],bottom sheet,L-01,sidebar desktop,"panel: left, 320px; map: fill","map: top, 70vh; sheet: bottom, 30vh"
+LY-02,Full-bleed map,Public viewers,,map,[map],same,L-01,fullbleed public,map: fill,map: fill
+LY-03,Control room wall,Operations wall display,,map;kpis,[kpi|map],,L-01,wall operations,"kpi-strip: top, 120px; map: fill",

@@ -20,6 +20,8 @@ Apply when the work touches the **map surface or what sits around it**:
 
 **Hand off** generic styling (fonts outside the map, brand system, buttons, forms, general page accessibility) to `ui-ux-pro-max` or `impeccable` if installed. Use both when a screen needs both.
 
+**With ui-ux-pro-max:** it owns the app shell (type scale, buttons, forms, brand colours); this skill owns the map region and the panels that explain it, and wins on conflict there: no glass or blur over the map (A14), brand colours never encode data (S19), map motion follows the direction's motion recipe and reduced motion (A13). Map its dials to intensity: subtle ≈ `--variance 1-3 --motion 1-3`, balanced ≈ `4-7`, bold ≈ `8-10`; use `--density 8+` for ops screens.
+
 **Do not apply** to operating a GIS/EO platform through its API, backend processing, tiling pipelines, or logo/brand identity work.
 
 ## Rule priority
@@ -109,6 +111,7 @@ If the user wants speed, skip the questions and state your assumptions in the su
 
 **2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). For 3D, pre-sales or story pitches pass `--intensity bold` and a fitting `--direction` (e.g. `urban-twin`, `newsroom-story`), since no playbook defaults to bold. The blueprint gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
 
+- **Screen spec:** a region table (region, position, size, which widgets it holds) for desktop and phone, the map-control corners and legend placement, and five whole-screen states (first load, no results, layer error, stale/offline, feature selected). Widgets marked "(fallback)" had no preferred region in this layout: decide where they go. Hand this table to developers as the screen description.
 - **Signature:** intensity with its reason, primary and alternative directions, a safe `subtle` baseline that differs from both directions (a third linked direction, else Civic Paper, else "<Primary> with signature removed (locked conventions, default markers, no hero)"), locked conventions plus the primary direction's must-keeps, a token table for the primary (basemap, surface, motion, marker, type pair, accent), the hero element with one variation per axis, and a test plan (5-second, preference baseline vs primary, first-click, squint). A note appears when fewer than two directions fit the intensity or a forced direction is outside its range.
 - **Pre-delivery checklist** with rule ids.
 
@@ -155,7 +158,7 @@ Hero:      sentence legend "Each dot = one report, last 30 days"
 Risks:     PII in popups (I11) - status by colour only (A07) - stale data without timestamp (D02)
 ```
 
-Then: directions with sketches, layers table (default on/off, symbology, palette hex), widgets with loading/empty/error/stale states, temporal UI, interactions, alert encoding, tokens, pitfalls, checklist. Cite rule ids (`S09`, `A07`). No repeated boilerplate: say each thing once, skip sections the blueprint already makes obvious.
+Then: directions with sketches, the screen spec (regions, sizes, states), layers table (default on/off, symbology, palette hex), widgets with loading/empty/error/stale states, temporal UI, interactions, alert encoding, tokens, pitfalls, checklist. Cite rule ids (`S09`, `A07`). No repeated boilerplate: say each thing once, skip sections the blueprint already makes obvious.
 
 ## Workflow: reviewing an existing screen
 

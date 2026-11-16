@@ -40,6 +40,17 @@ def split_list(cell):
     return [p.strip() for p in cell.split(";") if p.strip()]
 
 
+def parse_kv(cell):
+    """'k: v; k2: v2' -> [(k, v), ...]; items without ':' get key ''."""
+    out = []
+    for item in (cell or "").split(";"):
+        item = item.strip()
+        if item:
+            k, sep, v = item.partition(":")
+            out.append((k.strip(), v.strip()) if sep else ("", item))
+    return out
+
+
 def _path(domain, data_dir, stack):
     if domain == "stack":
         if not stack:

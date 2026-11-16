@@ -120,5 +120,14 @@ class TestValidate(unittest.TestCase):
         self.one_error(d, "does not link 'civic-paper'")
 
 
+    def test_unknown_widget_slot(self):
+        d = self.mutated("widgets.csv", "timeline;panel", "timeline;nowhere")
+        self.one_error(d, "unknown slot 'nowhere'")
+
+    def test_unknown_layout_slot(self):
+        d = self.mutated("layouts.csv", "panel: left, 320px", "pannel: left, 320px")
+        self.one_error(d, "unknown slot 'pannel'")
+
+
 if __name__ == "__main__":
     unittest.main()

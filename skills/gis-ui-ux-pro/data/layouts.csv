@@ -1,4 +1,4 @@
-id,name,use_when,avoid_when,regions,ascii_sketch,mobile_variant,rule_ids,keywords
+id,name,use_when,avoid_when,regions,ascii_sketch,mobile_variant,rule_ids,keywords,slots,mobile_slots
 full-map-floating-panels,Full map with floating panels,Exploration where the map is the product and controls are sparse.,Dense numeric dashboards or data-first tasks.,map (full bleed); floating search top-left; floating layer panel left; legend bottom-left; detail card right,"+---------------------------------+
 | [search]                [zoom]  |
 | +-------+                       |
@@ -8,7 +8,7 @@ full-map-floating-panels,Full map with floating panels,Exploration where the map
 | [legend]              |detail|  |
 |                       +------+  |
 | attribution                     |
-+---------------------------------+",Panels collapse to a bottom sheet; map keeps full height.,L01;L11;C01;C04;S10;A04,full map floating panels immersive explorer map first overlay cards viewer
++---------------------------------+",Panels collapse to a bottom sheet; map keeps full height.,L01;L11;C01;C04;S10;A04,full map floating panels immersive explorer map first overlay cards viewer,"map: fill; panel: floating left, 320-360px; drawer: floating right, 360-400px","map: fill; sheet: bottom, peek 96px / half / full"
 shell-action-bar,Shell with action bar,"Analyst app with a stable header, tool/action bar and side panel.",Public single-purpose viewers.,header; left action bar (tools); side panel; map; status bar,"+---------------------------------+
 | header  title        user  help |
 +---+-----------------------------+
@@ -17,7 +17,7 @@ shell-action-bar,Shell with action bar,"Analyst app with a stable header, tool/a
 |   |  results |                  |
 +---+----------+------------------+
 | status: source - as of 12:04    |
-+---------------------------------+",Action bar becomes a bottom tab bar; panel opens as full-height sheet.,L03;L04;L02;L06;D02;A03,shell action bar toolbar analyst tool app header side panel overflow menu workflow
++---------------------------------+",Action bar becomes a bottom tab bar; panel opens as full-height sheet.,L03;L04;L02;L06;D02;A03,shell action bar toolbar analyst tool app header side panel overflow menu workflow,"header: top, 56px; action-bar: left, 56px; panel: left, 320-400px; map: fill; status-bar: bottom, 28px","header: top, 48px; map: fill; sheet: bottom, peek 96px / half / full; action-bar: bottom tab bar, 56px"
 ops-dashboard,"Ops dashboard (KPIs top, map center, list right)","Monitoring and operations: KPIs, map and an actionable list.","Exploration without alerts, or small screens only.",KPI row top; filters left; map center; alert list right; timeline bottom,"+---------------------------------+
 | KPI | KPI | KPI | KPI | fresh.    |
 +------+---------------+----------+
@@ -26,7 +26,7 @@ ops-dashboard,"Ops dashboard (KPIs top, map center, list right)","Monitoring and
 |      |               | row row  |
 +------+---------------+----------+
 | timeline / trend                |
-+---------------------------------+",KPIs scroll horizontally; map on top; list in bottom sheet.,L05;L06;L08;D01;D02;D09;I05,kpi tiles map list ops operations dashboard monitoring command center cards alerts right sidebar
++---------------------------------+",KPIs scroll horizontally; map on top; list in bottom sheet.,L05;L06;L08;D01;D02;D09;I05,kpi tiles map list ops operations dashboard monitoring command center cards alerts right sidebar,"kpi-strip: top, 96-120px; filters: left, 240-280px; map: center, fill; list: right, 320-380px; drawer: right, replaces the list on selection 320-380px; timeline: bottom, 120-160px","kpi-strip: top, horizontal scroll 88px; map: top, 55vh; sheet: bottom, peek 96px / half / full"
 split-map-dashboard,Split map and dashboard,Map and charts side by side with linked brushing.,Map-only tasks.,map left; charts and table right; filters top,"+---------------------------------+
 | filters / indicator picker      |
 +--------------------+------------+
@@ -35,7 +35,7 @@ split-map-dashboard,Split map and dashboard,Map and charts side by side with lin
 |                    | chart 2    |
 |                    +------------+
 |                    | table      |
-+--------------------+------------+","Stack: map on top (about 50 percent height), charts in tabs below.",L12;I05;L05;L06;S13;D06,split map dashboard charts side by side linked brushing analytics indicator explorer histogram
++--------------------+------------+","Stack: map on top (about 50 percent height), charts in tabs below.",L12;I05;L05;L06;S13;D06,split map dashboard charts side by side linked brushing analytics indicator explorer histogram,"filters: top, 56-72px; map: left, 55-60% width; charts: right, 40-45% width; drawer: right over charts, 360px","filters: top, 56px; map: top, 50vh; charts: below, tabs"
 list-first-locator,List-first locator,"Find items from a list or search first, then see them on the map.",Spatial pattern discovery tasks.,search and filters top; result list left; map right,"+---------------------------------+
 | [search address]  [filters]     |
 +------------+--------------------+
@@ -43,7 +43,7 @@ list-first-locator,List-first locator,"Find items from a list or search first, t
 | result     |       MAP          |
 | result     |   (pins by list)   |
 | result     |                    |
-+------------+--------------------+","List first, map toggle button; selection opens the detail drawer.",I07;L12;C09;I09;A02;A11,list first locator store finder search results list map listings property fields
++------------+--------------------+","List first, map toggle button; selection opens the detail drawer.",I07;L12;C09;I09;A02;A11,list first locator store finder search results list map listings property fields,"header: top, 64px (search and filters); list: left, 360-420px; map: fill; drawer: right over map, 360-400px","header: top, 56px; list: full screen, default view (toggle to map); map: full screen, shown on toggle; sheet: bottom, peek 96px / half / full"
 compare-split-view,Compare split view,Two dates or two layers compared by swipe or side-by-side.,Single-state monitoring.,two synced maps or swipe; date pickers each side; delta summary strip,"+---------------------------------+
 | date A [v]            date B [v]|
 +----------------+----------------+
@@ -52,7 +52,7 @@ compare-split-view,Compare split view,Two dates or two layers compared by swipe 
 |     (swipe handle <->)          |
 |                |                |
 +----------------+----------------+
-| delta: +12 km2  -3 km2   net +9 |",Single map with a toggle between A and B; swipe retained on tablets.,T01;T02;T03;T05;L09;A05,compare split view swipe before after side by side two dates change detection synced maps
+| delta: +12 km2  -3 km2   net +9 |",Single map with a toggle between A and B; swipe retained on tablets.,T01;T02;T03;T05;L09;A05,compare split view swipe before after side by side two dates change detection synced maps,"header: top, 56px (date A and date B pickers); map: fill (two synced maps or swipe); drawer: right over map, 360px; delta-strip: bottom, 56-72px","header: top, 56px; map: fill (A/B toggle); delta-strip: bottom, 56px"
 mobile-bottom-sheet,Mobile bottom sheet,"Phones and field use: map on top, draggable bottom sheet below.",Wide dashboards on desktop only.,"map top; bottom sheet (peek, half, full); sticky search; floating locate button","+--------------+
 | [search]  [o]|
 |              |
@@ -61,7 +61,7 @@ mobile-bottom-sheet,Mobile bottom sheet,"Phones and field use: map on top, dragg
 +--[=====]-----+
 | sheet title  |
 | list / detail|
-+--------------+","This is the mobile variant; sheet has peek, half and full snap points.",L09;A11;A05;P04;C07;L08,phone bottom sheet mobile small screen field app touch drawer peek snap
++--------------+","This is the mobile variant; sheet has peek, half and full snap points.",L09;A11;A05;P04;C07;L08,phone bottom sheet mobile small screen field app touch drawer peek snap,"header: top, sticky search 48-56px; map: fill; sheet: bottom, peek 96px / half / full","header: top, sticky search 48-56px; map: fill; sheet: bottom, peek 96px / half / full"
 wall-display,Wall display,"Control rooms or lobby screens, glanceable from distance, no interaction.",Interactive analysis.,large KPIs; map; rolling alert strip; clock and freshness,"+---------------------------------+
 | TITLE                  12:04 UTC|
 +------------------+--------------+
@@ -69,7 +69,7 @@ wall-display,Wall display,"Control rooms or lobby screens, glanceable from dista
 |      MAP         |  BIG KPI     |
 |   (auto-rotate)  |  BIG KPI     |
 +------------------+--------------+
-| ticker: alert alert alert       |",Not applicable; link to the ops dashboard on phones.,L07;L05;D01;D02;A06;A09,wall display control room big screen tv glanceable kiosk lobby monitor auto rotate
+| ticker: alert alert alert       |",Not applicable; link to the ops dashboard on phones.,L07;L05;D01;D02;A06;A09,wall display control room big screen tv glanceable kiosk lobby monitor auto rotate,"header: top, 64px (title, clock, freshness); map: left, 70% width; kpi-strip: right, 30% width (large KPIs); ticker: bottom, 64-80px",
 scrolly-story,Scrolly story,Narrative: scrolling text steps drive map and chart state.,Exploratory analysis.,sticky map; scrolling narrative cards; step markers; sources footer,"+---------------------------------+
 | intro hero                      |
 +----------------+----------------+
@@ -78,4 +78,4 @@ scrolly-story,Scrolly story,Narrative: scrolling text steps drive map and chart 
 | step 2 text    |   MAP state 2  |
 | step 3 text    |   chart        |
 +----------------+----------------+
-| sources, about                  |",Map sticks on top third; text cards scroll over it.,L10;L07;L08;I06;A09;T01,scrolly story narrative storytelling scroll map steps report public explainer
+| sources, about                  |",Map sticks on top third; text cards scroll over it.,L10;L07;L08;I06;A09;T01,scrolly story narrative storytelling scroll map steps report public explainer,"narrative: left, 480-560px scrolling cards; map: sticky right, 100vh; footer: bottom, sources","map: sticky top, 33vh; narrative: below, cards scroll over the map; footer: bottom, sources"

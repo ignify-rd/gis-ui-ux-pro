@@ -17,9 +17,9 @@ COLUMNS = {
                 "dark_basemap_stops_hex", "classes", "cvd_safe", "keywords", "evidence",
                 "source_url"],
     "widget": ["id", "name", "purpose", "use_when", "avoid_when", "required_states",
-               "a11y", "rule_ids", "keywords"],
+               "a11y", "rule_ids", "keywords", "slot"],
     "layout": ["id", "name", "use_when", "avoid_when", "regions", "ascii_sketch",
-               "mobile_variant", "rule_ids", "keywords"],
+               "mobile_variant", "rule_ids", "keywords", "slots", "mobile_slots"],
     "stack": ["id", "category", "guideline", "keywords", "do", "dont", "code_good",
               "code_bad", "severity", "docs_url"],
 }
@@ -55,3 +55,10 @@ LIST_COLUMNS = {"rule_ids", "palette_ids", "stops_hex", "dark_basemap_stops_hex"
                 "required_states", "direction_ids", "intensity_range", "fits_problems"}
 
 INTENSITY_ORDER = ("subtle", "balanced", "bold")
+
+# Screen regions a layout can declare (`slots`, `mobile_slots`) and a widget can ask for (`slot`).
+# map-* corners exist implicitly whenever a layout has a `map` slot.
+MAP_CORNERS = ("map-top-left", "map-top-right", "map-bottom-left", "map-bottom-right")
+SLOTS = ("header", "action-bar", "kpi-strip", "filters", "panel", "list", "charts", "map",
+         "drawer", "sheet", "timeline", "delta-strip", "ticker", "narrative", "status-bar",
+         "footer") + MAP_CORNERS

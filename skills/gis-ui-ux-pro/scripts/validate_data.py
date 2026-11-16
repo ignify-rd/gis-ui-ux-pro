@@ -5,8 +5,8 @@ import re
 import sys
 from pathlib import Path
 
-from core import DATA_DIR, load_rows, split_list
-from schema import COLUMNS, ENUMS, FILES, INTENSITY_ORDER, STACKS
+from core import DATA_DIR, load_rows, parse_kv, split_list
+from schema import COLUMNS, ENUMS, FILES, INTENSITY_ORDER, SLOTS, STACKS
 
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
@@ -115,6 +115,15 @@ def validate(data_dir=DATA_DIR):
         errs.append(f"directions.csv [{did}] fits_problems: missing {pid!r} (linked by problem direction_ids)")
     for pid, did in sorted(fits - linked):
         errs.append(f"directions.csv [{did}] fits_problems: {pid!r} does not link {did!r} in direction_ids")
+    for w in rows_by.get("widget", []):
+        for s in split_list(w["slot"]):
+            if s not in SLOTS:
+                errs.append(f"widgets.csv [{w['id']}] slot: unknown slot {s!r}")
+    for lay in rows_by.get("layout", []):
+        for col in ("slots", "mobile_slots"):
+            for name, _ in parse_kv(lay[col]):
+                if name not in SLOTS:
+                    errs.append(f"layouts.csv [{lay['id']}] {col}: unknown slot {name!r}")
     return errs
 
 

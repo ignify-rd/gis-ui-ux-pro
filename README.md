@@ -1,6 +1,6 @@
 # gis-ui-ux-pro
 
-A Claude Code skill for designing, building and reviewing the UI/UX of web maps, GIS dashboards and Earth-observation apps. It pairs a CSV knowledge base with a standard-library Python BM25 search script and a blueprint generator that turns a problem description ("flood mapping from Sentinel-1") into a dashboard design: layout, layers, palettes, widgets, temporal UI, interactions, alerts, pitfalls, a map signature (two visual directions plus a safe baseline) and a pre-delivery checklist.
+A Claude Code skill for designing, building and reviewing the UI/UX of web maps, GIS dashboards and Earth-observation apps. It pairs a CSV knowledge base with a standard-library Python BM25 search script and a blueprint generator that turns a problem description ("flood mapping from Sentinel-1") into a dashboard design: layout, layers, palettes, widgets, temporal UI, interactions, alerts, pitfalls, a screen spec (regions with positions, sizes and widgets for desktop and phone, plus whole-screen states), a map signature (two visual directions plus a safe baseline) and a pre-delivery checklist.
 
 It covers what generic UI skills don't: the map surface, cartography and color ramps, layers and legends, temporal comparison, EO specifics and map accessibility. Generic styling (fonts, brand colors, buttons) is left to `ui-ux-pro-max` / `impeccable`.
 

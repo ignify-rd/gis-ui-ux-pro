@@ -13,7 +13,7 @@ FIX = HERE / "fixtures" / "data"
 SEARCH = str(HERE.parent / "search.py")
 
 SECTIONS = ["# Dashboard Blueprint: ", "## Matched problem", "## Key user questions",
-            "## Layout", "## Layers", "## Palettes", "## Widgets", "## Temporal",
+            "## Layout", "## Layers", "## Palettes", "## Widgets", "## Screen spec", "## Temporal",
             "## Interactions", "## Alerts & severity", "## Pitfalls", "## Rules to apply",
             "## Signature", "## Pre-delivery checklist"]
 

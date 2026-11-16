@@ -6,8 +6,8 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from core import DATA_DIR, get_by_id, load_rows, search, split_list  # noqa: E402
-from schema import INTENSITY_ORDER  # noqa: E402
+from core import DATA_DIR, get_by_id, load_rows, parse_kv, search, split_list  # noqa: E402
+from schema import INTENSITY_ORDER, MAP_CORNERS  # noqa: E402
 
 SEV_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
@@ -32,18 +32,85 @@ BASELINE_FALLBACK = "civic-paper"
 _TOKEN_COLS = ("basemap_recipe", "surface_recipe", "motion_recipe", "marker_grammar")
 
 
-def parse_kv(cell):
-    out = []
-    for item in cell.split(";"):
-        item = item.strip()
-        if item:
-            k, sep, v = item.partition(":")
-            out.append((k.strip(), v.strip()) if sep else ("", item))
-    return out
-
-
 class UnknownDirection(ValueError):
     pass
+
+
+# Screen spec: what every map screen must show in each whole-screen state (rule ids in brackets).
+SCREEN_STATES = [
+    {"state": "First load", "shows": "Restore the view from the URL; skeleton panels after ~1 s, "
+                                      "map frame and controls visible at once [I08, P04]"},
+    {"state": "No results", "shows": "Map stays; the list or panel says nothing matches and offers "
+                                     "'clear filters'; active filters stay visible [I09]"},
+    {"state": "Layer error", "shows": "Only the failed layer shows an error and retry in the layer panel; "
+                                      "the rest of the screen keeps working [P06]"},
+    {"state": "Stale or offline", "shows": "Freshness/status shows last update (and unsynced edits in the "
+                                           "field); stale data is marked, not hidden [D02]"},
+    {"state": "Feature selected", "shows": "Highlight on the map, details in the drawer or sheet, "
+                                           "selection in the URL; Esc or back clears it [I08, A02]"},
+]
+MAP_CONTROLS = [
+    "Top-right: zoom, compass (only if rotation), locate, fullscreen [C04, C05, C07]",
+    "Top-left: search or coordinate entry (or in the header) [C04, C09]",
+    "Bottom-left: scale bar [C04]; bottom edge: attribution, never covered [C01, L11]",
+    "Legend: one entry per drawn class or state, synced with visible layers; bottom-left above the "
+    "scale bar unless a panel holds it [S14]",
+]
+# Where desktop-only regions go on phones when the layout's mobile_slots do not list them.
+MOBILE_FALLBACK = {"panel": "sheet", "list": "sheet", "filters": "sheet", "drawer": "sheet",
+                   "charts": "sheet", "action-bar": "sheet", "narrative": "sheet",
+                   "kpi-strip": "sheet", "timeline": "sheet", "delta-strip": "sheet",
+                   "status-bar": "sheet", "ticker": "sheet", "header": "sheet"}
+
+
+# Content regions tried, in order, when none of a widget's preferred slots exists in the layout.
+CONTENT_FALLBACK = ("panel", "drawer", "list", "charts", "sheet", "narrative", "filters", "header")
+
+
+def _slot_rows(cell):
+    rows = []
+    for name, spec in parse_kv(cell):
+        position, _, size = spec.partition(",")
+        rows.append({"slot": name, "position": position.strip(), "size": size.strip(), "widgets": []})
+    return rows
+
+
+def _with_corners(rows):
+    if any(r["slot"] == "map" for r in rows):
+        have = {r["slot"] for r in rows}
+        rows += [{"slot": c, "position": c[4:].replace("-", " "), "size": "", "widgets": []}
+                 for c in MAP_CORNERS if c not in have]
+    return rows
+
+
+def build_screen(layout, widgets):
+    """Place the blueprint's widgets into the layout's named regions (desktop and mobile)."""
+    if not layout:
+        return None
+    desk = _with_corners(_slot_rows(layout.get("slots", "")))
+    mob = _with_corners(_slot_rows(layout.get("mobile_slots", "")))
+    by_desk, by_mob = {r["slot"]: r for r in desk}, {r["slot"]: r for r in mob}
+    unplaced, seen = [], set()
+    for w in widgets:
+        wd = w.get("widget")
+        if not wd or wd["name"] in seen:
+            continue
+        seen.add(wd["name"])
+        slot = next((s for s in split_list(wd.get("slot", "")) if s in by_desk), None)
+        label = wd["name"]
+        if not slot:
+            slot = next((s for s in CONTENT_FALLBACK if s in by_desk), None)
+            label += " (fallback)"
+        if not slot:
+            unplaced.append(wd["name"])
+            continue
+        by_desk[slot]["widgets"].append(label)
+        target = slot if slot in by_mob else MOBILE_FALLBACK.get(slot)
+        if target in by_mob:
+            by_mob[target]["widgets"].append(label)
+    keep = lambda rows: [r for r in rows if r["size"] or r["widgets"] or r["slot"] not in MAP_CORNERS]
+    return {"slots": keep(desk), "mobile": keep(mob), "unplaced": unplaced,
+            "map_controls": MAP_CONTROLS, "states": SCREEN_STATES}
 
 
 def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=None):
@@ -123,7 +190,8 @@ def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id
                             for i in split_list(problem["palette_ids"])) if p]
     widgets = []
     for item in split_list(problem["widgets"]):
-        h = search(item, "widget", 1, data_dir)["hits"]
+        exact = get_by_id("widget", item, data_dir)  # an item may name a widget id directly
+        h = [exact] if exact else search(item, "widget", 1, data_dir)["hits"]
         widgets.append({"item": item,
                         "widget": {k: v for k, v in h[0].items() if k != "_score"} if h else None})
     signature = build_signature(problem, data_dir, intensity, direction_id)
@@ -141,7 +209,29 @@ def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id
             "runner_up": hits[1]["id"] if len(hits) > 1 else None,
             "runner_up_score": round(hits[1]["_score"], 2) if len(hits) > 1 else None,
             "layout": layout, "palettes": palettes, "widgets": widgets,
-            "rules": rules, "checklist": checklist, "signature": signature}
+            "rules": rules, "checklist": checklist, "signature": signature,
+            "screen": build_screen(layout, widgets)}
+
+
+def _slot_table(rows):
+    out = ["| Region | Position | Size | Contains |", "|---|---|---|---|"]
+    out += [f"| {r['slot']} | {r['position'] or '-'} | {r['size'] or '-'} | "
+            f"{', '.join(r['widgets']) or '-'} |" for r in rows]
+    return out
+
+
+def _render_screen(screen):
+    if not screen:
+        return ["- (no layout)"]
+    out = ["Desktop (1024 px and wider):", *_slot_table(screen["slots"])]
+    if screen["unplaced"]:
+        out.append(f"- Not placed by the layout (choose a region): {', '.join(screen['unplaced'])}")
+    out += ["", "Map controls:", *[f"- {c}" for c in screen["map_controls"]], ""]
+    out += (["Phone (under 768 px) [L09]:", *_slot_table(screen["mobile"])]
+            if screen["mobile"] else ["Phone: see the layout's mobile note above [L09]"])
+    out += ["", "Screen states:", "| State | What the screen shows |", "|---|---|",
+            *[f"| {s['state']} | {s['shows']} |" for s in screen["states"]]]
+    return out
 
 
 def _group_tokens(tokens):
@@ -216,6 +306,7 @@ def render_markdown(bp, project=None):
                    if wd else f"- {w['item']} → (no widget match)")
     if not bp["widgets"]:
         out.append("- (none)")
+    out += ["", "## Screen spec", *_render_screen(bp.get("screen"))]
     out += ["", "## Temporal", *_bullets(p["temporal"]), "", "## Interactions",
             *_bullets(p["interactions"]), "", "## Alerts & severity", *_bullets(p["alerts"]),
             "", "## Pitfalls", *_bullets(p["pitfalls"]), "", "## Rules to apply"]

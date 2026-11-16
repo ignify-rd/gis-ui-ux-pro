@@ -1,3 +1,16 @@
+## 0.2.1 - 2026-11-16
+
+### Added
+
+- Blueprint "Screen spec" section after Widgets: a region table (region, position, size, widgets it holds) for desktop and phone, map-control corners and legend placement, and five whole-screen states (first load, no results, layer error, stale/offline, feature selected) with rule ids. JSON blueprints gain a `screen` object.
+- `layouts.csv` columns `slots` and `mobile_slots` (`region: position, size`); `widgets.csv` column `slot` (preferred regions in order). Widgets with no preferred region in a layout go to the first content region and are marked "(fallback)". The validator rejects unknown region names.
+- SKILL.md: how to work with ui-ux-pro-max (who owns the shell vs the map region, conflict rules, intensity ↔ variance/motion/density dial mapping).
+
+### Changed
+
+- A problem's `widgets` item that is an exact widget id now resolves to that widget before BM25 search.
+- `parse_kv` moved to `core.py` (still importable from `blueprint`).
+
 ## 0.2.0 - 2026-11-16
 
 ### Added
