@@ -1,0 +1,650 @@
+# Research: what a GIS dashboard should show, per problem type
+
+Date: 2026-11-14.
+
+- **Where the facts come from:** product facts are from web searches. URLs marked *(nv)* were not re-verified.
+- **What is synthesis:** default visibility, symbology and pitfalls are synthesized across the products listed.
+- **How each entry is laid out:** Q = key questions; Layers (✓ on by default, ✗ off); Widgets; Time; Interact; Alerts; Pitfalls; Data; Examples.
+
+## 0. Cross-cutting conventions
+- **Layout:** map in the center, KPI cards on top, filters on the left, alert/detail list on the right. The JHU COVID dashboard is the archetype. Its lessons: loading every map at once was slow, and about 60% of traffic was mobile.
+  - [Nature](https://www.nature.com/nature-index/news/behind-the-johns-hopkins-university-coronavirus-dashboard)
+  - [PSU capstone](https://handbook.geospatial.psu.edu/sites/default/files/capstone/Lee.pdf)
+- **Freshness:** every layer and KPI shows "as of time, source, latency".
+- **"No data" is its own class:** grey or hatched. The IQAir problem: blue meant both "clean" and "no data". [IQAir](https://www.iqair.com/us/newsroom/what-is-airvisual-earth-and-how-does-it-work)
+- **Detections have a confidence filter.** [Planet viewer](https://docs.planet.com/platform/get-started/analyze-data/analytic-feeds-viewer/)
+- **Severity:** 4–5 levels (Info / Low / Medium / High / Critical). Use a CVD-safe sequential palette plus an icon or label; never color alone.
+
+## 1. object-detection (vessels, vehicles, aircraft, buildings from imagery)
+- **Q:**
+  - What is where now?
+  - Count vs baseline?
+  - What is new since the last image?
+  - How confident is each detection?
+- **Layers:**
+  - ✓ detection points/boxes, colored by class, with opacity or outline by confidence
+  - ✓ scene footprint + date
+  - ✓ imagery at high zoom
+  - ✓ AOI
+  - ✗ count heatmap, used at low zoom
+- **Widgets:**
+  - KPI count per class
+  - count-over-time line per AOI
+  - bar by class
+  - detection table (class, confidence, size, time, scene id)
+  - review queue (confirm/reject)
+- **Time:** scene date picker; compare two dates by swipe or toggle; count time series.
+- **Interact:**
+  - draw or select an AOI
+  - confidence slider
+  - click a detection to zoom and open the image chip
+  - review/export
+  - class/size filter
+- **Alerts:** count above baseline + kσ; a new class inside a restricted AOI.
+- **Pitfalls:**
+  - no confidence or scene date shown
+  - comparing scenes with different cloud cover or resolution
+  - boxes at low zoom (cluster them instead)
+  - no false-positive feedback
+- **Data:** Planet, Maxar, S1/S2, model outputs.
+- **Examples:**
+  - [Planet Analytic Feeds](https://docs.planet.com/data/analytic-feeds/)
+  - [EO Browser](https://apps.sentinel-hub.com/eo-browser/) *(nv)*
+
+## 2. maritime-awareness (AIS tracking, dark vessels)
+- **Q:**
+  - Where are vessels now?
+  - Which ones are dark (SAR detection with no AIS)?
+  - Who had an AIS gap, spoofed, or did ship-to-ship (STS) transfers?
+  - Who is in a protected or sanctioned zone?
+  - What is a vessel's history and risk?
+- **Layers:**
+  - ✓ live AIS arrows rotated to heading, colored by vessel type
+  - selected vessel track only
+  - ✓ unmatched SAR/VIIRS detections in a distinct high-contrast color (magenta)
+  - ✓ AIS-gap start/end markers
+  - ✓ zones (EEZ, MPA, sanctions, port geofences) as outlines
+  - ✗ density heatmap
+- **Widgets:**
+  - KPIs: vessels in AOI, dark detections, gaps, encounters
+  - vessel table (flag, type, last seen, risk)
+  - event feed (gap, encounter, loitering, port visit)
+  - vessel profile with track timeline
+  - risk breakdown
+- **Time:** time-range slider and track replay; events on a timeline.
+- **Interact:**
+  - click a vessel for profile and track
+  - search by MMSI/IMO/name
+  - filter by type/flag
+  - draw an AOI/geofence to get alerts
+  - label unmatched detections as likely fishing / non-fishing / unknown (the GFW scheme)
+- **Alerts:** gap length; gap inside a sensitive zone; sanctions match; STS near a high-risk area. Windward frames this as go/no-go.
+- **Pitfalls:**
+  - "dark" ≠ illegal: gaps can be technical (GFW)
+  - not separating AIS from satellite detections visually
+  - rendering global tracks
+  - hiding AIS reception gaps (satellite vs terrestrial coverage)
+- **Data:** terrestrial and satellite AIS, S1 SAR detections, VIIRS boat detections, RF, registries.
+- **Examples:**
+  - [GFW radar](https://globalfishingwatch.org/data/radar-illuminated-ocean/)
+  - [GFW SAR dataset](https://globalfishingwatch.org/platform-update/2024-may-data-download-portal-new-dataset-released-featuring-vessel-detections-from-sentinel-1-sar/)
+  - [Windward MDA](https://windward.ai/solutions/maritime-domain-awareness/)
+  - [Windward screening](https://windward.ai/solutions/vessel-screening/)
+  - MarineTraffic *(nv)*
+
+## 3. land-change (LULC change, urban expansion)
+- **Q:**
+  - What changed, where, when, and how many hectares?
+  - Which from→to transitions?
+  - Which admin units are hotspots?
+- **Layers:**
+  - land cover for year A and year B, one at a time, on a categorical palette
+  - ✓ change-only layer, colored by "to" class or gain/loss
+  - ✓ admin boundaries
+  - imagery for checking
+- **Widgets:**
+  - stacked bar of area by class per year
+  - transition matrix or Sankey
+  - diverging bar of net change
+  - region table
+- **Time:** pick year A and year B; swipe or split view; change mode with a threshold slider (Esri Explorers).
+- **Interact:** AOI or admin unit; isolate one transition; pixel or polygon history.
+- **Alerts:** mostly analytical; optionally change above X% inside protected or zoning areas.
+- **Pitfalls:**
+  - comparing different products or versions
+  - hiding accuracy
+  - too many classes
+  - red/green for gain/loss
+- **Data:** Esri/IO 10 m LULC, ESA WorldCover, Dynamic World, Landsat, S2, GHSL.
+- **Examples:**
+  - [Land Cover Explorer](https://www.esri.com/about/newsroom/announcements/esri-releases-new-app-to-easily-view-and-analyze-global-land-cover-changes)
+  - [Landsat Explorer](https://www.esri.com/arcgis-blog/products/arcgis-living-atlas/imagery/landsat-explorer-earth-science-and-observation-for-all)
+  - [Sentinel-2 Explorer](https://www.esri.com/arcgis-blog/products/arcgis-living-atlas/imagery/sentinel-2-explorer-another-level-of-earth-observation)
+  - [source code](https://github.com/Esri/imagery-explorer-apps)
+
+## 4. surface-water-drought (reservoir/lake area change, drought)
+- **Q:**
+  - How has the area changed against the long-term normal?
+  - Is the water permanent or seasonal; is it lost or new?
+  - Which regions are in drought, how severe, and is it worsening?
+- **Layers:**
+  - ✓ current water extent in solid blue
+  - ✓ long-term occurrence 0–100% in sequential blues
+  - ✗ transitions on a categorical palette
+  - drought index (CDI/SPI) yellow → orange → red → dark red
+  - reservoir points sized by % capacity
+- **Widgets:**
+  - area-over-time line with a min/max band and the long-term mean
+  - % of normal gauge
+  - bar of regions by drought class
+  - reservoir table with sparklines
+- **Time:** monthly or annual slider; same month in previous years; before/after swipe.
+- **Interact:** click a water body to see its series; pick an admin unit; switch index (SPI-3/6/12, soil moisture, fAPAR).
+- **Alerts:** CDI classes (watch, warning, alert); reservoir below X%.
+- **Pitfalls:**
+  - cloud-masked optical "no water" vs real absence
+  - absolute area with no seasonal context
+  - using the deprecated GSW v1.2
+- **Data:** JRC GSW, S1/S2, altimetry, SPI/ERA5, soil moisture, GRACE.
+- **Examples:**
+  - [JRC GSW](https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater)
+  - [EDO/GDO](https://drought.emergency.copernicus.eu/)
+  - [CDI factsheet](https://drought.emergency.copernicus.eu/data/factsheets/factsheet_combinedDroughtIndicator_v4.pdf)
+  - US Drought Monitor *(nv)*
+
+## 5. flood
+- **Q:**
+  - Flooded now vs normal water?
+  - Who and what is exposed?
+  - Rising or receding?
+  - Where can't the satellite see?
+- **Layers:**
+  - ✓ observed flood in strong blue, distinct from ✓ reference water in pale blue
+  - ✓ exclusion/no-data mask, hatched grey. **Critical:** GFM masks radar shadow, urban areas and look-alikes.
+  - ✗ flood likelihood
+  - ✓ exposed assets at high zoom
+  - forecast hazard (GloFAS) as a separate layer
+  - depth
+- **Widgets:**
+  - KPIs: flooded km², affected population, buildings, roads cut
+  - flooded area over time
+  - impact by admin unit
+  - acquisition timeline
+  - product status (first estimate / delineation / grading)
+- **Time:** pre/post swipe; slider over acquisitions; "maximum extent so far".
+- **Interact:** event or activation picker; admin unit; click a building for its exposure; download.
+- **Alerts:**
+  - forecast return period (2/5/20 y)
+  - EMS grading
+  - EMS rapid mapping timing: first estimate at about 2 h, delineation about 7 h, grading about 10 h
+- **Pitfalls:**
+  - showing "no flood" where water can't be detected (urban areas, forest)
+  - observed and modelled flooding in the same color
+  - hidden acquisition time
+  - the same dark blue for flood and permanent water
+- **Data:** S1 SAR, S2, DEM/HAND, GloFAS/EFAS, WorldPop, OSM.
+- **Examples:**
+  - [GloFAS GFM](https://global-flood.emergency.copernicus.eu/technical-information/glofas-gfm)
+  - [GFM exclusion mask](https://extwiki.eodc.eu/GFM/PUM/TechnicalOverview)
+  - [EMS rapid mapping](https://mapping.emergency.copernicus.eu/about/rapid-mapping-portfolio/)
+  - [EMSR517](https://mapping.emergency.copernicus.eu/activations/EMSR517)
+  - [UN-SPIDER flood](https://un-spider.org/node/13456)
+
+## 6. ground-deformation (landslide, subsidence, InSAR)
+- **Q:**
+  - What is moving, how fast in mm/yr, and in which direction (vertical/east-west/LOS)?
+  - Is it accelerating?
+  - Which assets sit on moving ground?
+- **Layers:**
+  - ✓ PS/DS points on a diverging red-yellow-green-cyan-blue ramp, centered on 0 with a symmetric clamp (e.g. ±10 mm/yr)
+  - vertical and east-west layers kept separate
+  - ✓ assets
+  - ✓ landslide inventory
+  - hillshade
+  - acceleration
+- **Widgets:**
+  - the key widget is the displacement time series of the selected point(s), with a trend line
+  - velocity histogram
+  - assets ranked by nearby velocity
+  - point stats (coherence, reference point)
+- **Time:** per-point series rather than a map slider; optional cumulative animation; release selector (EGMS publishes yearly).
+- **Interact:**
+  - click or lasso to average series
+  - switch ascending / descending / ortho
+  - coherence filter
+  - velocity threshold
+- **Alerts:** velocity bands (stable within ±2 mm/yr, moderate, high); escalate on acceleration and on the number of assets hit.
+- **Pitfalls:**
+  - showing LOS to non-experts without explaining it
+  - EGMS Basic is relative to a local reference, so don't compare it across large areas
+  - a non-diverging ramp
+  - hiding point-density gaps
+- **Data:** EGMS Basic/Calibrated/Ortho, GNSS, inventories, assets.
+- **Examples:**
+  - [EGMS](https://land.copernicus.eu/en/products/european-ground-motion-service)
+  - [EGMS product description](https://library.land.copernicus.eu/products/European_Ground_Motion_Service_Product_Description_v3.pdf)
+
+## 7. wildfire (active fire, burned area)
+- **Q:**
+  - Where are active fires and how new are they?
+  - How large is the burned area?
+  - What is threatened?
+  - Where will smoke or spread go?
+- **Layers:**
+  - ✓ hotspots colored by age (red <6 h, orange 6–24 h, yellow/grey older), with confidence and sensor (VIIRS 375 m vs MODIS 1 km)
+  - ✓ perimeters as outlines
+  - ✓ burn severity (dNBR) yellow → dark red
+  - ✗ wind/smoke
+  - ✓ values at risk at high zoom
+  - fire weather index
+- **Widgets:**
+  - KPIs: detections in 24 h, burned ha, fires near assets
+  - detections per day vs climatology
+  - list of fires near assets, with distance
+  - hotspot table (time, satellite, FRP, confidence)
+- **Time:** 24 h / 48 h / 7 d window presets rather than a free slider; swipe for burn severity.
+- **Interact:** AOI subscription and e-mail (FIRMS); hotspot details; distance ring around assets.
+- **Alerts:** new detection within X km of an asset; FRP + distance + weather.
+- **Pitfalls:**
+  - drawing hotspot pixels as exact points (each is a 375 m–1 km area)
+  - no age shown
+  - industrial flares mixed with fires
+  - hidden latency (about 3 h globally)
+- **Data:** FIRMS (MODIS/VIIRS/Landsat), geostationary satellites, S2 dNBR, EFFIS, CAMS.
+- **Examples:**
+  - [FIRMS](https://firms.modaps.eosdis.nasa.gov)
+  - [AirNow fire & smoke](https://document.airnow.gov/airnow-fire-and-smoke-map-faqs.pdf)
+  - EFFIS *(nv)*
+
+## 8. deforestation (forest loss, forest damage)
+- **Q:**
+  - Where is loss happening this week?
+  - Inside concessions or protected areas?
+  - What are the drivers?
+  - Annual trend?
+  - Which alerts should be checked in the field first?
+- **Layers:**
+  - ✓ integrated alerts pink → magenta by confidence (low / high / highest)
+  - ✓ annual loss by year, yellow → red
+  - tree-cover baseline in green
+  - ✓ protected areas, concessions and indigenous lands as outlines
+  - ✗ drivers
+- **Widgets:**
+  - KPI: alerts this week vs the previous period
+  - alerts per week
+  - loss per year
+  - alerts by driver
+  - ranked hotspots ("Places to Watch")
+  - AOI dashboard
+- **Time:** alert date range; annual year slider; before/after imagery.
+- **Interact:** draw or upload an AOI and subscribe; confidence filter; export for patrols (Forest Watcher).
+- **Alerts:** confidence + legal context (protected area raises it) + cluster size.
+- **Pitfalls:**
+  - comparing integrated counts with single-system counts
+  - assuming every alert is human-caused
+  - not stating the 30N–30S coverage
+- **Data:** GLAD-L, GLAD-S2, RADD, DIST-ALERT, Hansen, WDPA.
+- **Examples:**
+  - [GFW integrated alerts](https://globalforestwatch.org/blog/data-and-tools/integrated-deforestation-alerts)
+  - [drivers](https://www.globalforestwatch.org/blog/data-and-tools/drivers-deforestation-alerts/)
+  - [Places to Watch](https://wri.org/research/places-watch-identifying-high-priority-forest-disturbance-near-real-time-satellite-data)
+
+## 9. oil-spill
+- **Q:**
+  - Is there a possible spill: where, how large, how confident?
+  - Who is the likely source?
+  - Where will it drift, and which sensitive coast is at risk?
+- **Layers:**
+  - ✓ slick polygons with dark fill, outline colored by confidence class A/B
+  - ✓ SAR footprint
+  - ✓ AIS tracks within a window around image time
+  - ✓ installations and pipelines
+  - ✗ drift forecast (cone or particles)
+  - ✓ ESI coast
+- **Widgets:**
+  - alert list (time, km², length, confidence, possible source)
+  - slick detail card
+  - detections per month
+  - response status (unverified / verified / confirmed by aircraft)
+- **Time:** image time vs AIS backtrack slider; drift animation.
+- **Interact:** click a slick to list candidate vessels within a buffer and time window; request verification; export a report.
+- **Alerts:** confidence × size × proximity to sensitive coast. CleanSeaNet alerts within about 20–30 min of the pass.
+- **Pitfalls:**
+  - SAR look-alikes (low wind, biogenic films) shown as confirmed spills
+  - no wind context
+  - accusing a vessel without showing the uncertainty
+- **Data:** S1 and commercial SAR, AIS, wind, CMEMS currents, ESI.
+- **Examples:**
+  - [CleanSeaNet](https://emsa.europa.eu/csn-menu.html)
+  - [CSN FAQ](https://www.emsa.europa.eu/csn-menu/csn-faq/item/2215-what-is-cleanseanet-and-what-information-does-the-cleanseanet-provide.html)
+
+## 10. crop-health (NDVI, yield)
+- **Q:**
+  - Which fields or zones are underperforming?
+  - This season vs past seasons?
+  - Where to scout, fertilize or irrigate?
+  - Expected yield?
+- **Layers:**
+  - ✓ field boundaries
+  - ✓ NDVI clipped to fields, red → yellow → green with a fixed range (never stretch per image)
+  - ✗ productivity zones (3/5/7 classes)
+  - cloud-masked areas hatched
+  - yield map
+  - VRA prescription
+- **Widgets:**
+  - sortable field list (crop, area, NDVI, trend arrow)
+  - NDVI series this season vs past seasons
+  - weather (rain, GDD)
+  - zone stats
+  - yield KPI
+  - scouting notes
+- **Time:** image picker showing cloud %; season comparison; side-by-side dates.
+- **Interact:** field detail; generate zones or a prescription and export it to machinery; scouting pin.
+- **Alerts:** NDVI drop greater than X between images; field below its own historical percentile.
+- **Pitfalls:**
+  - auto-stretched NDVI
+  - cloudy images shown as real values
+  - zones built from unstable seasons
+  - NDVI treated as yield
+- **Data:** S2, Planet, Landsat, weather, yield logs, soil.
+- **Examples:**
+  - [OneSoil zones](https://blog.onesoil.ai/en/what-are-productivity-zones)
+  - [OneSoil analysis](https://help.onesoil.ai/en/articles/6998999-analyzing-field-data)
+  - Climate FieldView *(nv)*
+
+## 11. urban-planning (zoning, permits)
+- **Q:** What is allowed on this parcel? Where is development and permitting happening? Is growth consistent with the plan? What is the infrastructure capacity?
+- **Layers:**
+  - ✓ zoning with standard land-use colors (residential yellow, commercial red, industrial purple, green space green)
+  - parcels at high zoom
+  - ✓ permits as points colored by status
+  - ✗ planned vs actual built-up
+  - overlays: flood, heritage, transit buffers
+  - 3D
+- **Widgets:**
+  - parcel panel (zone, FAR, height limit, permits)
+  - permits by status (funnel)
+  - approvals over time
+  - capacity KPIs
+- **Time:** permit date range; swipe between existing and proposed plans.
+- **Interact:** address or parcel search; "what's allowed here"; scenario sketch; public comment.
+- **Alerts:** conflicts, e.g. a permit inside a hazard overlay.
+- **Pitfalls:** non-standard zoning colors; legal layers with no effective date or disclaimer; too many overlays.
+- **Data:** cadastre, zoning ordinance, permits, footprints, census.
+- **Examples:** ArcGIS Solutions planning templates. Sources are thin here.
+
+## 12. infrastructure-network (pipelines, cables, power lines, utilities)
+- **Q:**
+  - What is each asset's condition and inspection status?
+  - Who is affected by a break (trace)?
+  - What threatens the network: encroachment, ground movement, vegetation, fire?
+  - Which maintenance is overdue?
+- **Layers:**
+  - ✓ network lines styled by type, colored by condition or status
+  - ✓ devices at high zoom
+  - ✓ outage/isolation areas in red
+  - ✓ affected customers
+  - ✓ encroachment detections
+  - ✗ right-of-way (ROW) buffers
+  - ✗ InSAR, fire and vegetation overlays
+- **Widgets:**
+  - KPIs: outages, customers affected, overdue inspections
+  - outage list with ETA
+  - condition bar
+  - work orders
+  - trace result (valves to close, customers)
+- **Time:** outage history; inspection age as a color.
+- **Interact:** click a main to run an isolation trace; upstream/downstream; asset record; dispatch a work order.
+- **Alerts:** customers × critical customers × duration; encroachment inside ROW; ground movement above a threshold on a pipeline.
+- **Pitfalls:** a schematic with no spatial context (or the reverse); no "last updated" on SCADA/OMS data; every device rendered at every zoom.
+- **Data:** utility network GIS, SCADA, OMS, EAM, SAR/InSAR, LiDAR.
+- **Examples:**
+  - [Water Outage](https://solutions.arcgis.com/water/help/water-outage/use/what-is-water-outage.htm)
+  - [Isolation trace](https://solutions.arcgis.com/utilities/water/help/web-isolation-trace/get-started/)
+  - [UN for water](https://learn.arcgis.com/en/projects/get-started-with-arcgis-utility-network-for-water/)
+
+## 13. disaster-response (common operating picture)
+- **Q:**
+  - What happened, where, and how bad?
+  - Where are resources and teams?
+  - What needs are unmet?
+  - What changed this operational period?
+- **Layers:**
+  - ✓ hazard footprint
+  - ✓ damage grading: destroyed red, damaged orange, possibly damaged yellow
+  - ✓ critical facilities with status icons
+  - shelters with capacity
+  - road closures
+  - live units
+  - field reports
+  - ✗ population
+- **Widgets:**
+  - KPIs: casualties, displaced, shelters open / % capacity
+  - resource table
+  - objectives progress
+  - event log
+  - sitrep download
+- **Time:** operational-period selector; pre/post imagery swipe.
+- **Interact:** filter by sector; update facility status from the field; share or print.
+- **Alerts:** incident type × severity; unmet-need thresholds (e.g. shelter above 90%).
+- **Pitfalls:**
+  - too many widgets
+  - unverified reports mixed with authoritative data without labels
+  - no mobile layout
+  - no per-feed timestamp
+- **Data:** Copernicus EMS, UNOSAT, ShakeMap, Survey123/KoBo, OSM, HDX.
+- **Examples:**
+  - [EM Operations](https://doc.arcgis.com/en/arcgis-solutions/latest/reference/introduction-to-emergency-management-operations.htm)
+  - [Community Impact](https://solutions.arcgis.com/emergency-management/help/community-impact-dashboard/get-started/explore-dashboard/)
+  - [Esri emergency dashboards](https://www.esri.com/arcgis-blog/products/ops-dashboard/decision-support/dashboards-for-emergency-response)
+
+## 14. air-quality-heat (environmental monitoring)
+- **Q:**
+  - How is the air or heat now, and what is the forecast?
+  - Which neighborhoods are worst?
+  - Who is vulnerable?
+  - What is the source?
+- **Layers:**
+  - ✓ stations in official AQI colors (EPA: green, yellow, orange, red, purple, maroon)
+  - ✓ modelled CAMS / S5P surface, semi-transparent
+  - ✗ wind
+  - ✗ fires
+  - heat: LST anomaly from median, blue → red; tree canopy; cooling centers
+- **Widgets:**
+  - current AQI KPI with health message
+  - 24 h / 7 d trend
+  - hourly forecast bar
+  - station ranking
+  - heat vs vulnerability scatter
+- **Time:** hourly slider and forecast animation; day/night or seasonal comparison.
+- **Interact:** location search; station history; pollutant switch; compare stations.
+- **Alerts:** official AQI categories or heat levels only; don't invent scales.
+- **Pitfalls:**
+  - "no data" that looks like "clean"
+  - smooth interpolation over sparse stations
+  - LST treated as air temperature
+  - AQI standards mixed across countries
+- **Data:** OpenAQ, government stations, PurpleAir, CAMS, S5P, Landsat thermal, ECOSTRESS.
+- **Examples:**
+  - [IQAir](https://www.iqair.com/us/newsroom/what-is-airvisual-earth-and-how-does-it-work)
+  - [AirNow](https://www.airnow.gov/fasm-v4/how-to-use)
+  - CAMS *(nv)*
+
+## 15. fleet-tracking (real-time vehicles)
+- **Q:**
+  - Where is every vehicle, and is it on schedule?
+  - Who is idle, speeding, or off-route?
+  - Arrivals and departures?
+  - Fuel use and driver safety?
+- **Layers:**
+  - ✓ live markers rotated to heading, colored by status: moving green, idle amber, stopped grey, alert red; clustered at low zoom
+  - planned vs actual route for the selected vehicle
+  - ✓ geofences
+  - ✗ traffic/weather
+- **Widgets:**
+  - status KPIs
+  - exception feed
+  - vehicle list with ping age
+  - on-time %
+  - driver scorecard
+- **Time:** live view with a "last updated" ticker; historical replay with a scrubber.
+- **Interact:** vehicle preview; geofence editing; dispatch; share a live link.
+- **Alerts:** safety rules are critical, operational rules are warnings; flag a stale ping (offline for more than X min).
+- **Pitfalls:** stale positions shown as current (fade them); all history rendered at once; alert fatigue.
+- **Data:** telematics/ELD, routing engine, TMS, traffic.
+- **Examples:** [Samsara](https://samsara.com/ca/products/telematics/gps-fleet-tracking)
+
+## 16. site-suitability
+- **Q:** Which locations fit the criteria best? How sensitive is the ranking to the weights? What is each candidate's catchment?
+- **Layers:**
+  - ✓ suitability surface, sequential, 5 classes
+  - ✓ candidate sites numbered by rank
+  - ✓ exclusions hatched
+  - drive-time catchment for the selected site
+  - ✗ competitors
+- **Widgets:**
+  - the key widget is the criteria weight sliders
+  - ranked table with per-criterion scores
+  - score breakdown (stacked bar or radar)
+  - side-by-side compare
+- **Time:** rarely used; compare scenarios instead.
+- **Interact:** add or remove criteria; live recompute; pin and compare; export. The pipeline: preprocess → weight → combine → scale → rank.
+- **Alerts:** none; rank instead.
+- **Pitfalls:**
+  - hidden weights or normalization (a black box)
+  - hard constraints mixed with soft criteria
+  - false precision
+  - MAUP
+- **Data:** demographics, POIs, network, land cover, terrain, zoning.
+- **Examples:**
+  - [BA suitability](https://doc.esri.com/en/arcgis-business-analyst/latest/web/understand-suitability-analysis.html)
+  - [urgent care example](https://www.esri.com/arcgis-blog/products/bus-analyst/analytics/urgent-care-center-suitability-analysis)
+
+## 17. demographic-choropleth
+- **Q:** How does the indicator vary? Where are outliers or clusters? How does it relate to another variable? What changed between censuses?
+- **Layers:**
+  - ✓ choropleth of a normalized rate, sequential, 5–7 classes, with the classification method stated
+  - diverging ramp for change
+  - ✗ bivariate
+  - boundaries and labels
+  - proportional symbols for counts
+- **Widgets:**
+  - the key widget is a histogram with the class breaks
+  - ranked bar or table
+  - scatter of two variables
+  - area profile
+  - MOE column
+- **Time:** census-year selector; change map.
+- **Interact:** indicator picker; classification switch; hover values; brushing between map and charts.
+- **Alerts:** none.
+- **Pitfalls:**
+  - raw counts on a choropleth
+  - ignoring MOE
+  - rainbow ramps
+  - no legend
+  - large rural areas dominating the eye (offer a cartogram)
+- **Data:** census, ACS, Eurostat, WorldPop, DHS.
+- **Examples:**
+  - [Berkeley D-Lab](https://live-dlab.pantheon.berkeley.edu/blog/data-and-tools-mapping-covid-19)
+  - [Abley](https://abley.com/our-insights/cartography-covid-maps)
+
+## 18. real-estate
+- **Q:** What is this property worth, and how does it compare with nearby sales? Where are prices rising? Which risks and amenities are nearby?
+- **Layers:**
+  - ✓ listings colored by price per m²
+  - ✓ price-change choropleth (diverging)
+  - parcels
+  - ✗ hazards
+  - ✗ POIs
+  - isochrones
+- **Widgets:** property card, comparables table, price history, neighborhood stats, filters.
+- **Time:** sale date range; price trend.
+- **Interact:** search, draw an area, filter, save a search, compare.
+- **Alerts:** saved-search notifications.
+- **Pitfalls:** total price instead of price per m²; hidden hazards; marker clutter (cluster instead).
+- **Examples:** none verified, so examples still need to be added.
+
+## 19. public-health (epidemiology)
+- **Q:** Where are cases rising? What are the rates? Is capacity enough? Who is vulnerable? Where should testing or vaccination go?
+- **Layers:**
+  - ✓ rate per 100k choropleth
+  - graduated symbols for counts, but never both encodings for the same metric
+  - facilities with capacity
+  - ✗ vulnerability index
+  - ✗ Gi* hotspots
+- **Widgets:**
+  - KPIs: new cases, 7-day average, deaths, tests, positivity
+  - epi curve (bars + 7-day average)
+  - region table
+  - capacity gauges
+- **Time:** date slider; 7-day and 14-day change.
+- **Interact:** a region selection filters everything; metric switch; log/linear toggle.
+- **Alerts:** incidence bands; trend.
+- **Pitfalls:**
+  - raw counts
+  - loading all maps at once
+  - weekend reporting artifacts
+  - hidden legend
+  - small counts not suppressed (privacy)
+- **Examples:**
+  - [JHU via Esri](https://www.esri.com/about/newsroom/blog/how-researchers-built-johns-hopkins-dashboard)
+  - [Learn ArcGIS COVID dashboard](https://learn.arcgis.com/en/projects/create-a-covid-19-dashboard)
+
+## 20. mining
+- **Q:** Where is mining, and is it licensed? Is it expanding beyond the permit? Is there illegal mining in protected areas or rivers? Are the tailings dams stable?
+- **Layers:**
+  - ✓ footprint in orange/brown
+  - ✓ licence outlines
+  - ✓ footprint outside the licence in red
+  - protected areas and rivers
+  - new disturbance
+  - ✗ InSAR on tailings
+  - ✗ turbidity
+- **Widgets:**
+  - KPIs: mined area, growth %, area outside the licence
+  - area over time per site
+  - expansion ranking
+  - review queue
+- **Time:** year or quarter slider; before/after swipe.
+- **Interact:** site licence and series; draw a site; export evidence.
+- **Alerts:** outside the licence or inside a protected area is critical; tailings deformation.
+- **Pitfalls:** quarries confused with construction or bare soil; footprint datasets disagree, so state which one is used.
+- **Examples:**
+  - [Amazon Mining Watch](https://directory.civictech.guide/listing/amazon-mining-watch)
+  - [global mining footprint](https://gee-community-catalog.org/projects/global-mining/)
+
+## 21. coastal-erosion
+- **Q:** Where is the shoreline retreating or advancing, and at how many m/yr? Which assets are at risk? How does it relate to storms or sea level?
+- **Layers:**
+  - ✓ transects on a diverging ramp: erosion red, stable (±0.5 m/yr) white, accretion blue/green
+  - ✗ historical shorelines, sequential by year
+  - ✓ assets
+  - surge risk
+- **Widgets:** shoreline position series per transect with trend; rate histogram; ranked segments; KPIs (km eroding, maximum rate).
+- **Time:** year slider; swipe.
+- **Interact:** transect series; segment selection; stable-threshold control.
+- **Alerts:** rate classes; an asset within the projected retreat distance.
+- **Pitfalls:** tide and runup noise (correct it); not suitable for cliffs; reading ~10 m pixels as precise.
+- **Examples:**
+  - [EMODnet](https://emodnet.eu/sites/emodnet.ec.europa.eu/files/public/PDF/20210318-EMODnet_Geology-Coastal_Erosion-Press_Release_FINAL.pdf)
+  - [MASCOT](https://marine.copernicus.eu/services/use-cases/mascot-monitoring-and-assessment-multi-scale-coastal-hazards)
+
+## 22. crime-mapping
+- **Q:** What happened near me, and when? Hotspots? Trend? Time of day?
+- **Layers:**
+  - ✓ incident icons by type, clustered, with locations generalized to the block (privacy)
+  - ✗ density
+  - address buffer
+  - beats
+- **Widgets:** bar by type; time-of-day × weekday matrix; trend; incident grid.
+- **Time:** date presets (often capped at one year).
+- **Interact:** address + radius; type filter; e-mail alerts.
+- **Pitfalls:** exact addresses; density not normalized; implying causation.
+- **Examples:**
+  - [LexisNexis](https://risk.lexisnexis.com/law-enforcement-and-public-safety/crime-analytics-and-mapping)
+  - [Tempe guide](https://tempe.gov/home/showpublisheddocument/106168/638427466386130000)
+
+## Gaps
+- **Real estate:** no examples verified.
+- **Planning and smart city:** sources limited to Esri templates.
+- **Electric utilities:** no Esri template confirmed; only water is documented.

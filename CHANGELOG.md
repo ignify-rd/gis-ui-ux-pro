@@ -1,0 +1,7 @@
+## 0.1.0 - 2026-11-14
+
+- Add `SKILL.md` (frontmatter `name` + `description`, workflows, query contract, worked example), plugin manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`) and `README.md`.
+- `claude plugin validate . --strict` passes. The marketplace manifest has a `metadata.description` to clear the strict-mode warning. The plugin-directory icon check (ICON_MISSING) is advisory and does not affect the result.
+- Knowledge base: 250 rows in 9 files (rules 103, problems 22, palettes 33, widgets 22, layouts 9, stacks 61: mapbox-maplibre 20, deckgl 17, leaflet 13, openlayers 11). 46 tests pass.
+- Evals (`evals/`): 3 scenarios, 20 trigger queries. With-skill 21/24 vs baseline 19/24 expected checks (single run per arm, n=1; indicative only). The skill adds rule ids, a symmetric-clamp InSAR legend and sourced/synth labels. Gaps found in the evals were fixed with 3 new synth rules: S18 (no-data legend class), D10 (source and date per layer), E09 (AIS match gate).
+- Final-review fix wave: corrected rule counts (103) in SKILL.md/README with a packaging test, retyped `severity-5` and `detection-confidence` palettes as qualitative, `--persist -f json` keeps stdout valid JSON (status messages on stderr), accent-folding slugs with problem-id fallback, `--json` with `--blueprint`, match scores in the blueprint, `map` ignored as noise in problem search, clean error for a missing `--data-dir`, Leaflet lf-06 and OpenLayers ol-01 stack fixes, generic README install path.

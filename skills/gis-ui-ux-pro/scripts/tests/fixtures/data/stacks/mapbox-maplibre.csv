@@ -1,0 +1,4 @@
+id,category,guideline,keywords,do,dont,code_good,code_bad,severity,docs_url
+MB-01,layers,Always set attribution,attribution license credit,Keep the attribution control visible,Remove attribution control,,,high,https://example.org/src
+MB-02,performance,Use vector tiles for large data,vector tiles performance,Serve MVT,Load huge GeoJSON,,,medium,https://example.org/src
+MB-03,interaction,Debounce move events,debounce moveend,Use moveend,Use move,,,low,https://example.org/src

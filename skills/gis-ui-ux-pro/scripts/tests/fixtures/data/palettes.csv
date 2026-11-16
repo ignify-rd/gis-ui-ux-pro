@@ -1,0 +1,4 @@
+id,name,type,use_for,domain_range,stops_hex,dark_basemap_stops_hex,classes,cvd_safe,keywords,evidence,source_url
+P-SEQ,Sequential blues,sequential,depth density,,#EFF3FF;#6BAED6;#08519C,,3,yes,blues sequential depth,synth,
+P-DIV,Diverging red blue,diverging,velocity anomaly,,#B2182B;#F7F7F7;#2166AC,#EF8A62;#F7F7F7;#67A9CF,3,yes,diverging anomaly,sourced,https://example.org/src
+P-NDVI,NDVI greens,standard,vegetation index,-1..1,#A6611A;#F5F5F5;#018571,,3,no,ndvi greens vegetation,synth,

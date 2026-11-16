@@ -1,0 +1,81 @@
+id,name,use_when,avoid_when,regions,ascii_sketch,mobile_variant,rule_ids,keywords
+full-map-floating-panels,Full map with floating panels,Exploration where the map is the product and controls are sparse.,Dense numeric dashboards or data-first tasks.,map (full bleed); floating search top-left; floating layer panel left; legend bottom-left; detail card right,"+---------------------------------+
+| [search]                [zoom]  |
+| +-------+                       |
+| |layers |        MAP            |
+| +-------+                       |
+|                       +------+  |
+| [legend]              |detail|  |
+|                       +------+  |
+| attribution                     |
++---------------------------------+",Panels collapse to a bottom sheet; map keeps full height.,L01;L11;C01;C04;S10;A04,full map floating panels immersive explorer map first overlay cards viewer
+shell-action-bar,Shell with action bar,"Analyst app with a stable header, tool/action bar and side panel.",Public single-purpose viewers.,header; left action bar (tools); side panel; map; status bar,"+---------------------------------+
+| header  title        user  help |
++---+-----------------------------+
+|tl |  panel   |      MAP         |
+|bar|  filters |                  |
+|   |  results |                  |
++---+----------+------------------+
+| status: source - as of 12:04    |
++---------------------------------+",Action bar becomes a bottom tab bar; panel opens as full-height sheet.,L03;L04;L02;L06;D02;A03,shell action bar toolbar analyst tool app header side panel overflow menu workflow
+ops-dashboard,"Ops dashboard (KPIs top, map center, list right)","Monitoring and operations: KPIs, map and an actionable list.","Exploration without alerts, or small screens only.",KPI row top; filters left; map center; alert list right; timeline bottom,"+---------------------------------+
+| KPI | KPI | KPI | KPI | fresh.    |
++------+---------------+----------+
+|filter|               | alert    |
+|chips |     MAP       | list     |
+|      |               | row row  |
++------+---------------+----------+
+| timeline / trend                |
++---------------------------------+",KPIs scroll horizontally; map on top; list in bottom sheet.,L05;L06;L08;D01;D02;D09;I05,kpi tiles map list ops operations dashboard monitoring command center cards alerts right sidebar
+split-map-dashboard,Split map and dashboard,Map and charts side by side with linked brushing.,Map-only tasks.,map left; charts and table right; filters top,"+---------------------------------+
+| filters / indicator picker      |
++--------------------+------------+
+|                    | chart 1    |
+|        MAP         +------------+
+|                    | chart 2    |
+|                    +------------+
+|                    | table      |
++--------------------+------------+","Stack: map on top (about 50 percent height), charts in tabs below.",L12;I05;L05;L06;S13;D06,split map dashboard charts side by side linked brushing analytics indicator explorer histogram
+list-first-locator,List-first locator,"Find items from a list or search first, then see them on the map.",Spatial pattern discovery tasks.,search and filters top; result list left; map right,"+---------------------------------+
+| [search address]  [filters]     |
++------------+--------------------+
+| result     |                    |
+| result     |       MAP          |
+| result     |   (pins by list)   |
+| result     |                    |
++------------+--------------------+","List first, map toggle button; selection opens the detail drawer.",I07;L12;C09;I09;A02;A11,list first locator store finder search results list map listings property fields
+compare-split-view,Compare split view,Two dates or two layers compared by swipe or side-by-side.,Single-state monitoring.,two synced maps or swipe; date pickers each side; delta summary strip,"+---------------------------------+
+| date A [v]            date B [v]|
++----------------+----------------+
+|                |                |
+|    BEFORE      |     AFTER      |
+|     (swipe handle <->)          |
+|                |                |
++----------------+----------------+
+| delta: +12 km2  -3 km2   net +9 |",Single map with a toggle between A and B; swipe retained on tablets.,T01;T02;T03;T05;L09;A05,compare split view swipe before after side by side two dates change detection synced maps
+mobile-bottom-sheet,Mobile bottom sheet,"Phones and field use: map on top, draggable bottom sheet below.",Wide dashboards on desktop only.,"map top; bottom sheet (peek, half, full); sticky search; floating locate button","+--------------+
+| [search]  [o]|
+|              |
+|     MAP      |
+|              |
++--[=====]-----+
+| sheet title  |
+| list / detail|
++--------------+","This is the mobile variant; sheet has peek, half and full snap points.",L09;A11;A05;P04;C07;L08,phone bottom sheet mobile small screen field app touch drawer peek snap
+wall-display,Wall display,"Control rooms or lobby screens, glanceable from distance, no interaction.",Interactive analysis.,large KPIs; map; rolling alert strip; clock and freshness,"+---------------------------------+
+| TITLE                  12:04 UTC|
++------------------+--------------+
+|                  |  BIG KPI     |
+|      MAP         |  BIG KPI     |
+|   (auto-rotate)  |  BIG KPI     |
++------------------+--------------+
+| ticker: alert alert alert       |",Not applicable; link to the ops dashboard on phones.,L07;L05;D01;D02;A06;A09,wall display control room big screen tv glanceable kiosk lobby monitor auto rotate
+scrolly-story,Scrolly story,Narrative: scrolling text steps drive map and chart state.,Exploratory analysis.,sticky map; scrolling narrative cards; step markers; sources footer,"+---------------------------------+
+| intro hero                      |
++----------------+----------------+
+| step 1 text    |   MAP state 1  |
+|                |   (sticky)     |
+| step 2 text    |   MAP state 2  |
+| step 3 text    |   chart        |
++----------------+----------------+
+| sources, about                  |",Map sticks on top third; text cards scroll over it.,L10;L07;L08;I06;A09;T01,scrolly story narrative storytelling scroll map steps report public explainer

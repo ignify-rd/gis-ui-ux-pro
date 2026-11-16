@@ -1,0 +1,6 @@
+﻿id,category,name,keywords,do,dont,why,severity,evidence,source_url,checklist,code_good,code_bad
+L-01,layout,Keep the map dominant,map dominant viewport sidebar,Give the map most of the viewport → sidebar under 30%,Do not cover the map with panels,The map is the primary content,high,sourced,https://example.org/src,,,
+A-01,accessibility,Never rely on color alone,colorblind cvd redundant encoding,Pair color with shape or pattern,Do not encode status by hue only,Roughly 8% of men have color vision deficiency,critical,sourced,https://example.org/src,"Is every color-coded status also encoded by shape, label or pattern?",,
+Y-01,layers,Legend stays visible,legend zebrafish visible,"Show legend,
+keep it visible while panning",Hide the legend in a menu,Users need the key to read symbols,medium,synth,,,,
+T-01,temporal,Time slider shows range,time slider range playback,Label start and end dates,Unlabeled scrubbers,Context for the time window,low,synth,,,,

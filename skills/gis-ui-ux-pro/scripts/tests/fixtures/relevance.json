@@ -1,0 +1,166 @@
+[
+  {
+    "query": "mapbox attribution hidden",
+    "domain": "rule",
+    "expected_id": "C02"
+  },
+  {
+    "query": "choropleth raw counts",
+    "domain": "rule",
+    "expected_id": "S01"
+  },
+  {
+    "query": "number of classes legend",
+    "domain": "rule",
+    "expected_id": "S04"
+  },
+  {
+    "query": "rainbow color ramp",
+    "domain": "rule",
+    "expected_id": "S08"
+  },
+  {
+    "query": "before after swipe compare",
+    "domain": "rule",
+    "expected_id": "T01"
+  },
+  {
+    "query": "cloud cover filter",
+    "domain": "rule",
+    "expected_id": "T06"
+  },
+  {
+    "query": "detection confidence threshold",
+    "domain": "rule",
+    "expected_id": "E08"
+  },
+  {
+    "query": "large geojson slow",
+    "domain": "rule",
+    "expected_id": "P01"
+  },
+  {
+    "query": "keyboard trap map",
+    "domain": "rule",
+    "expected_id": "A03"
+  },
+  {
+    "query": "hover highlight popup click",
+    "domain": "rule",
+    "expected_id": "I02"
+  },
+  {
+    "query": "data freshness last updated",
+    "domain": "rule",
+    "expected_id": "D02"
+  },
+  {
+    "query": "mobile bottom sheet map",
+    "domain": "rule",
+    "expected_id": "L09"
+  },
+  {
+    "query": "dark vessels without AIS",
+    "domain": "problem",
+    "expected_id": "maritime-awareness"
+  },
+  {
+    "query": "landslide insar velocity",
+    "domain": "problem",
+    "expected_id": "ground-deformation"
+  },
+  {
+    "query": "reservoir water area change",
+    "domain": "problem",
+    "expected_id": "surface-water-drought"
+  },
+  {
+    "query": "flood extent sentinel-1",
+    "domain": "problem",
+    "expected_id": "flood"
+  },
+  {
+    "query": "deforestation alerts",
+    "domain": "problem",
+    "expected_id": "deforestation"
+  },
+  {
+    "query": "oil slick sar",
+    "domain": "problem",
+    "expected_id": "oil-spill"
+  },
+  {
+    "query": "ndvi field health",
+    "domain": "problem",
+    "expected_id": "crop-health"
+  },
+  {
+    "query": "ship detection satellite imagery",
+    "domain": "problem",
+    "expected_id": "object-detection"
+  },
+  {
+    "query": "pipeline encroachment monitoring",
+    "domain": "problem",
+    "expected_id": "infrastructure-network"
+  },
+  {
+    "query": "active fire hotspots",
+    "domain": "problem",
+    "expected_id": "wildfire"
+  },
+  {
+    "query": "air quality index colors",
+    "domain": "palette",
+    "expected_id": "epa-aqi"
+  },
+  {
+    "query": "insar velocity diverging",
+    "domain": "palette",
+    "expected_id": "insar-velocity"
+  },
+  {
+    "query": "time slider playback",
+    "domain": "widget",
+    "expected_id": "time-slider"
+  },
+  {
+    "query": "before after swipe",
+    "domain": "widget",
+    "expected_id": "swipe-compare"
+  },
+  {
+    "query": "kpi tiles map list ops",
+    "domain": "layout",
+    "expected_id": "ops-dashboard"
+  },
+  {
+    "query": "phone bottom sheet",
+    "domain": "layout",
+    "expected_id": "mobile-bottom-sheet"
+  },
+  {
+    "query": "cluster points",
+    "domain": "stack",
+    "stack": "mapbox-maplibre",
+    "expected_id": "mbx-09"
+  },
+  {
+    "query": "keyboard accessibility",
+    "domain": "stack",
+    "stack": "leaflet",
+    "expected_id": "lf-01"
+  },
+  {
+    "query": "attribution collapse",
+    "domain": "stack",
+    "stack": "openlayers",
+    "expected_id": "ol-01"
+  },
+  {
+    "query": "picking hover",
+    "domain": "stack",
+    "stack": "deckgl",
+    "expected_id": "dk-01"
+  }
+]

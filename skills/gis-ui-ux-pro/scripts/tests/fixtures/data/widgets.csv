@@ -1,0 +1,4 @@
+id,name,purpose,use_when,avoid_when,required_states,a11y,rule_ids,keywords
+W-01,Time slider,Scrub through time,Temporal layers,Static data,loading;empty;error,Keyboard arrows step,T-01,time slider scrubber
+W-02,Legend panel,Explain symbols,Any styled layer,,empty,,Y-01,legend key
+W-03,Layer toggle,Toggle layers,More than one layer,,,,L-01,layer toggle switch
