@@ -85,7 +85,7 @@ class TestValidate(unittest.TestCase):
         self.one_error(d, "intensity_default")
 
     def test_unknown_direction_ref(self):
-        d = self.mutated("problems.csv", "night-ops;story-bold", "night-ops;nope")
+        d = self.mutated("problems.csv", "night-ops;story-bold", "night-ops;story-bold;nope")
         self.one_error(d, "unknown direction id 'nope'")
 
     def test_intensity_range_must_include_default(self):
@@ -94,8 +94,25 @@ class TestValidate(unittest.TestCase):
 
     def test_fits_problems_unknown(self):
         d = self.mutated("directions.csv", "night-ops,night-ops,calm,balanced,balanced,flood-monitoring",
-                         "night-ops,night-ops,calm,balanced,balanced,nope")
+                         "night-ops,night-ops,calm,balanced,balanced,flood-monitoring;nope")
         self.one_error(d, "unknown problem id")
+
+    def test_problem_needs_direction(self):
+        d = self.mutated("problems.csv", "night-ops;story-bold,balanced", ",balanced")
+        errs = validate_data.validate(d)
+        self.assertTrue(any("direction_ids: empty" in e for e in errs), errs)
+
+    def test_intensity_default_needs_supporting_direction(self):
+        # flood-monitoring links night-ops and story-bold, neither has subtle
+        d = self.mutated("problems.csv", "night-ops;story-bold,balanced", "night-ops;story-bold,subtle")
+        self.one_error(d, "intensity_default")
+
+    def test_fits_problems_symmetry(self):
+        d = self.mutated("directions.csv", "flood-monitoring,", ",")
+        self.one_error(d, "missing 'flood-monitoring'")
+        d = self.mutated("directions.csv", "subtle;balanced,deformation-insar;ndvi-vegetation",
+                         "subtle;balanced,deformation-insar;ndvi-vegetation;flood-monitoring")
+        self.one_error(d, "does not link 'civic-paper'")
 
 
 if __name__ == "__main__":

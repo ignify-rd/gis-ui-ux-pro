@@ -91,6 +91,25 @@ def validate(data_dir=DATA_DIR):
                               ("direction", "fits_problems", "problem")]:
         for r in rows_by.get(kind, []):
             ref(kind, r, col, target)
+    dirs = {d["id"]: d for d in rows_by.get("direction", [])}
+    linked = set()
+    for pr in rows_by.get("problem", []):
+        pid, dids = pr["id"], split_list(pr["direction_ids"])
+        if not dids:
+            errs.append(f"problems.csv [{pid}] direction_ids: empty")
+            continue
+        known = [d for d in dids if d in dirs]
+        linked.update((pid, d) for d in known)
+        if known and pr["intensity_default"] in ENUMS["intensity"] and not any(pr["intensity_default"] in split_list(dirs[d]["intensity_range"])
+                             for d in known):
+            errs.append(f"problems.csv [{pid}] intensity_default: {pr['intensity_default']!r} "
+                        f"not in intensity_range of any linked direction")
+    fits = {(p, d["id"]) for d in dirs.values() for p in split_list(d["fits_problems"])
+            if p in ids.get("problem", ())}
+    for pid, did in sorted(linked - fits):
+        errs.append(f"directions.csv [{did}] fits_problems: missing {pid!r} (linked by problem direction_ids)")
+    for pid, did in sorted(fits - linked):
+        errs.append(f"directions.csv [{did}] fits_problems: {pid!r} does not link {did!r} in direction_ids")
     return errs
 
 

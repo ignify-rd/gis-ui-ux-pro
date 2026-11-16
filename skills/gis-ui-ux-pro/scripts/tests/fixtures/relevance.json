@@ -242,5 +242,75 @@
     "query": "hectare rtl locale units",
     "domain": "rule",
     "expected_id": "A12"
+  },
+  {
+    "query": "311 city service requests overdue by neighborhood",
+    "domain": "problem",
+    "expected_id": "service-requests"
+  },
+  {
+    "query": "field asset survey photo evidence coverage gaps",
+    "domain": "problem",
+    "expected_id": "asset-survey"
+  },
+  {
+    "query": "parcel registry missing boundaries filtered export",
+    "domain": "problem",
+    "expected_id": "parcel-registry"
+  },
+  {
+    "query": "enforcement casework detected change review to closure",
+    "domain": "problem",
+    "expected_id": "enforcement-casework"
+  },
+  {
+    "query": "spatial data catalog portal find preview metadata",
+    "domain": "problem",
+    "expected_id": "data-catalog"
+  },
+  {
+    "query": "vegetation cover by administrative unit over time report",
+    "domain": "problem",
+    "expected_id": "vegetation-cover-admin"
+  },
+  {
+    "query": "upload csv validate coordinate column add layer",
+    "domain": "widget",
+    "expected_id": "data-import"
+  },
+  {
+    "query": "raster band stretch no-data pixel identify",
+    "domain": "widget",
+    "expected_id": "raster-display"
+  },
+  {
+    "query": "query builder select by attribute match count",
+    "domain": "widget",
+    "expected_id": "query-builder"
+  },
+  {
+    "query": "administrative drilldown breadcrumb province district",
+    "domain": "widget",
+    "expected_id": "admin-drilldown"
+  },
+  {
+    "query": "edit feature geometry drag snap form unsaved",
+    "domain": "widget",
+    "expected_id": "feature-editor"
+  },
+  {
+    "query": "case status transition assign audit timeline",
+    "domain": "widget",
+    "expected_id": "case-workflow"
+  },
+  {
+    "query": "offline unsynced edits queue last synced",
+    "domain": "widget",
+    "expected_id": "sync-status"
+  },
+  {
+    "query": "natural language command preview confirm undo",
+    "domain": "widget",
+    "expected_id": "ai-command"
   }
 ]
