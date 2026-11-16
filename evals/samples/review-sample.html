@@ -1,0 +1,83 @@
+<!-- Synthetic sample for evals; intentionally contains UI/UX defects. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>District requests</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/dayjs@1/dayjs.min.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  #map { position: absolute; inset: 0; }
+  #filter { position: absolute; top: 8px; left: 8px; background: #fff; padding: 8px; border-radius: 4px; z-index: 1; }
+</style>
+</head>
+<body>
+<div id="filter">
+  <label for="day">Reported on</label>
+  <input type="date" id="day" value="2026-11-01">
+</div>
+<div id="map"></div>
+<script>
+const districts = {
+  type: 'FeatureCollection',
+  features: [
+    { type: 'Feature', properties: { name: 'District A', count: 12, note: 'Pothole near school', owner: 'Person One', phone: '555-0101' },
+      geometry: { type: 'Polygon', coordinates: [[[10, 10], [10.1, 10], [10.1, 10.1], [10, 10.1], [10, 10]]] } },
+    { type: 'Feature', properties: { name: 'District B', count: 87, note: 'Broken streetlight', owner: 'Person Two', phone: '555-0102' },
+      geometry: { type: 'Polygon', coordinates: [[[10.1, 10], [10.2, 10], [10.2, 10.1], [10.1, 10.1], [10.1, 10]]] } },
+    { type: 'Feature', properties: { name: 'District C', count: 240, note: 'Blocked drain', owner: 'Person Three', phone: '555-0103' },
+      geometry: { type: 'Polygon', coordinates: [[[10, 10.1], [10.1, 10.1], [10.1, 10.2], [10, 10.2], [10, 10.1]]] } }
+  ]
+};
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://demotiles.maplibre.org/style.json',
+  center: [10.1, 10.1],
+  zoom: 10,
+  attributionControl: false
+});
+map.addControl(new maplibregl.NavigationControl(), 'top-right');
+map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
+
+map.on('load', () => {
+  map.addSource('districts', { type: 'geojson', data: districts });
+  map.addLayer({
+    id: 'districts-fill',
+    type: 'fill',
+    source: 'districts',
+    paint: {
+      'fill-opacity': 0.7,
+      'fill-color': ['interpolate', ['linear'], ['get', 'count'],
+        0, '#0000ff', 60, '#00ffff', 120, '#00ff00', 180, '#ffff00', 240, '#ff0000']
+    }
+  });
+});
+
+map.on('click', 'districts-fill', (e) => {
+  const feature = e.features[0];
+  const popup = new maplibregl.Popup().setLngLat(e.lngLat);
+  popup.setHTML(feature.properties.note);
+  popup.addTo(map);
+  const who = document.createElement('p');
+  who.textContent = 'Owner: ' + feature.properties.owner + ', phone: ' + feature.properties.phone;
+  popup.getElement().appendChild(who);
+});
+
+document.getElementById('day').addEventListener('change', (ev) => {
+  const start = dayjs(ev.target.value).startOf('day');
+  const end = start.add(1, 'day');
+  loadRequests({ from: start.toISOString(), to: end.toISOString() });
+});
+
+function loadRequests(range) {
+  fetch('/api/requests?from=' + range.from + '&to=' + range.to)
+    .then((r) => r.json())
+    .then((data) => map.getSource('districts').setData(data));
+}
+</script>
+</body>
+</html>
