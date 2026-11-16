@@ -7,6 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from core import DATA_DIR, get_by_id, load_rows, search, split_list  # noqa: E402
+from schema import INTENSITY_ORDER  # noqa: E402
 
 SEV_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
@@ -17,7 +18,73 @@ def slug(project, fallback=""):
     return re.sub(r"[^a-z0-9]+", "-", text).strip("-") or fallback
 
 
-def build_blueprint(description, data_dir=DATA_DIR):
+LOCKED_BASE = ["Control positions (zoom, search, layers, legend) follow platform conventions",
+               "Data colours come only from the listed palettes; the signature never recolours data",
+               "Attribution stays visible",
+               "Standard interactions: click opens details, drag pans, scroll or pinch zooms"]
+TEST_PLAN = ["5-second test: show the map for 5 seconds; viewers should name its purpose and the main layer",
+             "Preference test: show baseline vs top direction to 5+ users; ask which feels more trustworthy and easier to read",
+             "First-click test: ask users to complete the key task; check the first click lands on the right control",
+             "Squint test: blur the screen; the hero element and the data must still stand out"]
+BASELINE_FALLBACK = "civic-paper"
+_TOKEN_COLS = ("basemap_recipe", "surface_recipe", "motion_recipe", "marker_grammar")
+
+
+def parse_kv(cell):
+    out = []
+    for item in cell.split(";"):
+        item = item.strip()
+        if item:
+            k, sep, v = item.partition(":")
+            out.append((k.strip(), v.strip()) if sep else ("", item))
+    return out
+
+
+def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=None):
+    rows = [r for r in (get_by_id("direction", i, data_dir)
+                        for i in split_list(problem.get("direction_ids", ""))) if r]
+    if direction_id:
+        forced = get_by_id("direction", direction_id, data_dir)
+        if not forced:
+            raise ValueError(f"Unknown direction {direction_id!r}")
+        rows = [forced] + [r for r in rows if r["id"] != forced["id"]]
+    if not rows:
+        return None
+    source = "override" if intensity else "problem"
+    if not intensity:
+        intensity = problem.get("intensity_default", "")
+        if intensity not in INTENSITY_ORDER:
+            intensity = "balanced"
+    idx = INTENSITY_ORDER.index
+    chosen = [r for r in rows if intensity in split_list(r["intensity_range"])][:2]
+    note = None
+    if len(chosen) < 2:
+        rest = [r for r in rows if r not in chosen]  # stable sort keeps linked order on ties
+
+        def dist(r):
+            rng = [idx(x) for x in split_list(r["intensity_range"]) if x in INTENSITY_ORDER]
+            return min((abs(x - idx(intensity)) for x in rng), default=9)
+        added = sorted(rest, key=dist)[:2 - len(chosen)]
+        chosen += added
+        if added:
+            note = (f"Fewer than 2 directions support {intensity}; added nearest: "
+                    + ", ".join(f"{r['id']} ({r['intensity_range']})" for r in added))
+    base = next((r for r in rows if "subtle" in split_list(r["intensity_range"])), None) \
+        or get_by_id("direction", BASELINE_FALLBACK, data_dir)
+    top = chosen[0]
+    tokens = [[f"{c.split('_')[0]}.{k}" if k else c.split("_")[0], v]
+              for c in _TOKEN_COLS for k, v in parse_kv(top[c])]
+    tokens += [["type_pair", top["type_pair"]], ["accent_strategy", top["accent_strategy"]]]
+    return {"intensity": intensity, "intensity_source": source, "directions": chosen,
+            "fallback_note": note,
+            "baseline": {"id": base["id"], "name": base["name"], "intensity": "subtle"} if base else None,
+            "locked": LOCKED_BASE + split_list(top["locked"]), "tokens": tokens,
+            "hero_element": top["hero_element"],
+            "variations": [[k, v] for k, v in parse_kv(top["variation_axes"])],
+            "tests": TEST_PLAN}
+
+
+def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id=None):
     hits = search(description, "problem", 2, data_dir)["hits"]
     if not hits:
         return None
@@ -30,6 +97,7 @@ def build_blueprint(description, data_dir=DATA_DIR):
         h = search(item, "widget", 1, data_dir)["hits"]
         widgets.append({"item": item,
                         "widget": {k: v for k, v in h[0].items() if k != "_score"} if h else None})
+    signature = build_signature(problem, data_dir, intensity, direction_id)
     all_rules = load_rows("rule", data_dir)
     by_id = {r["id"]: r for r in all_rules}
     linked = [by_id[i] for i in split_list(problem["rule_ids"]) if i in by_id]
@@ -44,7 +112,26 @@ def build_blueprint(description, data_dir=DATA_DIR):
             "runner_up": hits[1]["id"] if len(hits) > 1 else None,
             "runner_up_score": round(hits[1]["_score"], 2) if len(hits) > 1 else None,
             "layout": layout, "palettes": palettes, "widgets": widgets,
-            "rules": rules, "checklist": checklist}
+            "rules": rules, "checklist": checklist, "signature": signature}
+
+
+def _render_signature(sig):
+    if not sig:
+        return ["- (no directions linked)"]
+    out = [f"- Intensity: **{sig['intensity']}** ({sig['intensity_source']})"]
+    out += [f"- {'Primary' if i == 0 else 'Alternative'}: **{d['name']}** [{d['id']}] - {d['mood']}"
+            for i, d in enumerate(sig["directions"])]
+    if sig["fallback_note"]:
+        out.append(f"- Note: {sig['fallback_note']}")
+    if sig["baseline"]:
+        out.append(f"- Safe baseline: {sig['baseline']['name']} [{sig['baseline']['id']}] (subtle)")
+    out += ["", "### Locked conventions", *[f"- {x}" for x in sig["locked"]],
+            "", "### Tokens (top direction)", "| Token | Value |", "|---|---|",
+            *[f"| {k} | {v.replace('|', '/')} |" for k, v in sig["tokens"]],
+            "", "### Hero element", sig["hero_element"] or "n/a"]
+    out += [f"- {k}: {v}" for k, v in sig["variations"]]
+    out += ["", "### Test with users", *[f"{i}. {t}" for i, t in enumerate(sig["tests"], 1)]]
+    return out
 
 
 def _bullets(cell):
@@ -90,6 +177,7 @@ def render_markdown(bp, project=None):
             "", "## Pitfalls", *_bullets(p["pitfalls"]), "", "## Rules to apply"]
     out += [f"- [{r['severity']}] {r['name']} ({r['id']}){_syn(r)}: {r['do']}" for r in bp["rules"]] \
         or ["- (none)"]
+    out += ["", "## Signature", *_render_signature(bp.get("signature"))]
     out += ["", "## Pre-delivery checklist"]
     out += [f"- [ ] {c['question']} ({c['rule_id']})" for c in bp["checklist"]] or ["- (none)"]
     return "\n".join(out) + "\n"
@@ -105,7 +193,12 @@ def persist(markdown, out_dir, project, force=False, fallback=""):
 
 
 def main_blueprint(args):
-    bp = build_blueprint(args.query, args.data_dir)
+    try:
+        bp = build_blueprint(args.query, args.data_dir, args.intensity, args.direction)
+    except ValueError as e:
+        ids = ", ".join(r["id"] for r in load_rows("direction", args.data_dir))
+        print(f"{e}. Available: {ids}", file=sys.stderr)
+        return 2
     if bp is None:
         ids = ", ".join(r["id"] for r in load_rows("problem", args.data_dir))
         print(f'No problem matched "{args.query}". Available: {ids}')

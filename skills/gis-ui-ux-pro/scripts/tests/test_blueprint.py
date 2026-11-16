@@ -15,7 +15,7 @@ SEARCH = str(HERE.parent / "search.py")
 SECTIONS = ["# Dashboard Blueprint: ", "## Matched problem", "## Key user questions",
             "## Layout", "## Layers", "## Palettes", "## Widgets", "## Temporal",
             "## Interactions", "## Alerts & severity", "## Pitfalls", "## Rules to apply",
-            "## Pre-delivery checklist"]
+            "## Signature", "## Pre-delivery checklist"]
 
 
 def cli(*args):
@@ -98,6 +98,52 @@ class TestBlueprint(unittest.TestCase):
     def test_json_flag_with_blueprint(self):
         r = cli("flood river gauge", "--blueprint", "--json")
         self.assertIn("problem", json.loads(r.stdout))
+
+    def _sig(self, **kw):
+        return blueprint.build_blueprint("flood river gauge", FIX, **kw)["signature"]
+
+    def _ids(self, sig):
+        return [d["id"] for d in sig["directions"]]
+
+    def test_signature_default_intensity(self):
+        sig = self._sig()
+        self.assertEqual(sig["intensity"], "balanced")
+        self.assertEqual(sig["intensity_source"], "problem")
+        self.assertEqual(self._ids(sig), ["night-ops", "story-bold"])
+        self.assertIsNone(sig["fallback_note"])
+        self.assertEqual(sig["baseline"]["id"], "civic-paper")
+
+    def test_signature_override_subtle_falls_back(self):
+        sig = self._sig(intensity="subtle")
+        self.assertEqual(self._ids(sig), ["night-ops", "story-bold"])
+        self.assertIn("balanced", sig["fallback_note"])
+
+    def test_signature_override_bold(self):
+        sig = self._sig(intensity="bold")
+        self.assertEqual(self._ids(sig), ["story-bold", "night-ops"])
+        self.assertIsNotNone(sig["fallback_note"])
+
+    def test_signature_forced_direction_first(self):
+        self.assertEqual(self._ids(self._sig(direction_id="story-bold"))[0], "story-bold")
+
+    def test_signature_unknown_direction_raises(self):
+        with self.assertRaises(ValueError):
+            self._sig(direction_id="nope")
+
+    def test_signature_no_directions(self):
+        self.assertIsNone(blueprint.build_signature({"direction_ids": ""}, FIX))
+        self.assertIsNone(blueprint.build_signature({}, FIX))
+        bp = blueprint.build_blueprint("flood river gauge", FIX)
+        bp["signature"] = None
+        self.assertIn("(no directions linked)", blueprint.render_markdown(bp))
+
+    def test_parse_kv(self):
+        self.assertEqual(blueprint.parse_kv("tone: light; labels: sparse; odd"),
+                         [("tone", "light"), ("labels", "sparse"), ("", "odd")])
+
+    def test_json_has_signature(self):
+        r = cli("flood river gauge", "--blueprint", "-f", "json")
+        self.assertEqual(json.loads(r.stdout)["signature"]["intensity"], "balanced")
 
 
 if __name__ == "__main__":
