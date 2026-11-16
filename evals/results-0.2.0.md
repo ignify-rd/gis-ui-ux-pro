@@ -49,7 +49,7 @@ Eight runs for the new scenarios 4-7. Each scenario was run once following `SKIL
 | Rainbow on raw counts, S08, normalise or sequential | yes (S08 with S01, S09) | no (found and fixed, no rule id) |
 | Local-midnight `startOf('day')`, T10 | yes | no (found, no rule id) |
 | Concrete fix for each finding | yes | yes |
-| No invented defects as findings | no (missing legend and keyboard listed as critical, basemap and no-data as high) | no (23 unlabelled findings) |
+| No invented defects as findings | no (missing legend listed as critical; basemap, freshness and no-data as high) | no (23 unlabelled findings, including the missing legend) |
 | Location for each finding | yes | yes |
 
 The baseline found all five planted defects. It loses those checks only because they require the rule id.
@@ -67,19 +67,20 @@ Baselines: all three were competent but generic. None named a visual direction, 
 - The largest gains came from specific rules and the signature layer: query-level PII removal (I11), text-only popups (I10), reduced-motion paths (A13), the Cesium credit, exaggeration and 2D-fallback cautions, and rule ids in the review.
 - S6 was the only scenario with no matching playbook. The run picked `site-suitability` as the closest problem and said so, then drew most content from the Cesium stack rows (cs-01 to cs-09). It still scored 8/8.
 - Legends were the common miss. In S4 the Civic Paper hero ("legend written as a sentence") replaced a per-status key, and no rule asked for an entry per class. The baseline S4 run did better here.
-- In S7 the skill run raised things the page never attempts (legend, keyboard list, search) to critical or high. The review checklist names keyboard and colour-only meaning as critical items, and nothing told the agent to keep absent features apart from defects.
-- The S7 sample has some real incidental bugs beyond the five planted ones (the `setData` call replaces the polygon source, the popup `<p>` is appended outside the content container, and the filter never runs on load). Both runs found them. They were not counted against either run, but the answer key's "exactly five" is not strictly true.
+- In S7 the skill run raised optional things the page never attempts to critical or high (a legend as critical; basemap and no-data as high). Nothing told the agent to keep absent optional features apart from defects. A missing keyboard or text alternative is a real accessibility gap, so it is not counted as invented.
+- The S7 sample has some real incidental bugs beyond the five planted ones (the `setData` call replaces the polygon source, the popup `<p>` is appended outside the content container, and the filter never runs on load). Both runs found them. `ANSWER_KEY.md` now lists them as known incidental bugs that are not penalised. S7 "no invented defects" was re-graded against the updated key and did not change: the with run still lists the missing legend as critical, and the key names that example as a remark that must be labelled low or optional. The baseline still lists 23 unlabelled findings.
 
 ## Fixes made (data and skill gaps the runs revealed)
 - S14 "Legend reflects what is drawn" now also asks for one entry for every class or state drawn (each status, stale, unmatched, no data) with the map's icon or shape. The checklist question was updated to match.
 - S14 was added to `service-requests` and `fleet-tracking`, so their blueprints carry the legend rule and checklist item.
 - C01 was added to `service-requests`, so its blueprint carries "findable after it collapses". The S4 run took attribution only from the locked-conventions list, which says "visible".
-- SKILL.md review workflow, step 7: findings are defects in what the code does. Features the page never attempts go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
+- SKILL.md review workflow, step 7: findings are defects in what the code does. Accessibility (keyboard, text alternative, contrast, colour-only meaning), privacy, attribution and security gaps always stay in the severity-ordered findings, even when the feature is absent. Only optional features the page never attempts (search, legend extras, table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
+- S14 was also added to `disaster-response` and `maritime-awareness`.
+- `ANSWER_KEY.md` lists the sample's known incidental bugs, and the broken nested backticks in `scenarios.md` line 3 were fixed. No scenario expectation changed.
 - `references/quick-reference.md` and `checklist.md` were regenerated (`build_reference.py --check` passes). The validator and all 80 tests pass, and SKILL.md is 203 lines.
 
 ## Known gaps
 - No fresh agent has re-run these fixes. They are verified only through blueprint output (S14 and C01 now appear for `service-requests`).
-- Step 7 of the review workflow is a trade-off. A missing keyboard alternative is a real accessibility failure, and putting it in an optional list may undersell it in practice. Revisit after real reviews.
-- `maritime-awareness` and other playbooks with status classes still do not list S14. They pick it up only through the checklist.
+- Step 7 of the review workflow has not yet been verified by a fresh S7 run.
 - S6 has no scroll-story or presentation playbook. The run had to use `site-suitability` plus the Cesium stack.
-- The S7 sample contains unplanted real bugs (see above). Fixing the sample would need new runs, so it was left for a later version.
+- The S7 sample still contains its unplanted bugs. They are now documented in the answer key instead of being fixed, because fixing them would need new runs.

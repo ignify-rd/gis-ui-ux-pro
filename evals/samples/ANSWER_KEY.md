@@ -10,4 +10,9 @@ Exactly five planted issues. Line numbers refer to `review-sample.html`.
 | 4 | 54-55 | Blue-cyan-green-yellow-red `interpolate` on raw `count` | S08 |
 | 5 | 71-73 | `dayjs(...).startOf('day')` is local midnight; sent to the API as-is | T10 |
 
+Known incidental bugs (not planted, not penalised if reported):
+- Line 79: `map.getSource('districts').setData(data)` overwrites the district polygons with the `/api/requests` response.
+- Lines 65-67: the owner `<p>` is appended to `popup.getElement()`, outside the popup content container.
+- Lines 70-74: the date filter runs only on `change`, never on load, so the map does not match the preset date.
+
 Grading: all five found with the rule id, and no invented defects counted as findings. Minor remarks (for example a missing map legend) are not planted and must be labelled low severity or optional.

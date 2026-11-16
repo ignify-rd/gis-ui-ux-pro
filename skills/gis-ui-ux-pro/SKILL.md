@@ -165,7 +165,7 @@ Then: directions with sketches, layers table (default on/off, symbology, palette
 4. For each failure, look up the rule with `-d rule` (or `-s <stack>` for the fix in that library) to get do/don't and why.
 5. If the user asks about the look, compare against the blueprint's directions and check the signature list above (a recoloured ramp or moved control is a finding, not a style choice).
 6. Report findings ordered by severity (critical, high, medium, low). Each finding has: rule id, what you observed (file:line or screen region), why it matters, and the concrete fix.
-7. Findings are defects in what the code or screen does. Things it never attempts (no legend, search or table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
+7. Findings are defects in what the code or screen does. Accessibility (keyboard, text alternative, contrast, colour-only meaning), privacy, attribution and security gaps always stay in the severity-ordered findings, even when the feature is absent. Only optional features it never attempts (search, legend extras, table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
 
 Review checklist for yourself:
 

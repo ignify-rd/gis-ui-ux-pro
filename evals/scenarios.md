@@ -1,6 +1,6 @@
 # Evaluation scenarios
 
-Each scenario is run twice by a subagent: once told to follow `SKILL.md`, once as a baseline without it. Record which checks each run hits in `the matching `results-<version>.md``.
+Each scenario is run twice by a subagent: once told to follow `SKILL.md`, once as a baseline without it. Record which checks each run hits in the matching `results-<version>.md`.
 
 ## Scenario 1: Vessel detection dashboard (Sentinel-1 + AIS)
 
