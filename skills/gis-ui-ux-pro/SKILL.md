@@ -5,7 +5,7 @@ description: GIS and remote-sensing UI/UX design intelligence for map screens - 
 
 # GIS UI/UX Pro
 
-A searchable knowledge base for designing and reviewing map-centric web apps: 103 rules, 22 problem playbooks, 33 palettes, 22 widgets, 9 layouts and 4 map-library stack guides. The search script is the entry point; the two reference files are generated from the same data.
+A searchable knowledge base for designing and reviewing map-centric web apps: 121 rules, 22 problem playbooks, 33 palettes, 22 widgets, 9 layouts and 4 map-library stack guides. The search script is the entry point; the two reference files are generated from the same data.
 
 ## When to apply
 

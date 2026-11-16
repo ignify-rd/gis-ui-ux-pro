@@ -13,6 +13,9 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Do text (4.5:1) and symbols or outlines (3:1) meet contrast minimums? (A06, high)
 - [ ] Do markers have accessible names, and are decorative maps inert? (A08, high)
 - [ ] Does a popup take focus when it opens and return it on close? (A10, high)
+- [ ] Does the camera jump instead of fly, and do animations stop, under prefers-reduced-motion? (A13, high)
+- [ ] Are numbers, dates and area units locale-formatted and every control label translated, with RTL handled? (A12, medium)
+- [ ] Are panels over the map solid, or is blur limited to calm areas with a reduce-transparency option? (A14, medium)
 
 ## Controls
 
@@ -34,8 +37,11 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does the ramp lightness direction match the basemap (dark=high on light, bright=high on dark)? (S07, high)
 - [ ] Are continuous fields free of rainbow or jet ramps? (S08, high)
 - [ ] Is the basemap muted enough for the data layer to dominate? (S10, high)
+- [ ] Does the legend list only visible, in-scale layers and follow the active filter? (S14, high)
 - [ ] Are dense point layers clustered at low zoom, with clusterMaxZoom set? (S16, high)
 - [ ] Does the legend have a class for no data that is separate from normal and from zero? (S18, high)
+- [ ] Does the visual signature leave data ramps and control positions untouched? (S19, medium)
+- [ ] Do labels on the dark basemap stay readable, with halos matched to the land colour? (S20, medium)
 
 ## Layers
 
@@ -43,13 +49,20 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does every layer have a min/max visible zoom range? (Y02, high)
 - [ ] Are layer titles and field names human-readable, with IDs and codes hidden? (Y04, high)
 - [ ] Are rasters under vectors and reference labels on top? (Y05, high)
+- [ ] Does import check required shapefile parts, warn on missing .prj/.cpg, and preview the count? (Y08, high)
+- [ ] Are WMS legends fetched with SCALE and only queryable layers sent to GetFeatureInfo? (Y09, medium)
 
 ## Interaction
 
 - [ ] Does hover only highlight (feature-state, cursor) while click opens the details? (I02, high)
 - [ ] Do popups show a curated, formatted set of fields with the title first? (I04, high)
 - [ ] Do map, chart and table share one selection state and highlight color? (I05, high)
-- [ ] Are active filters shown as chips with an 'N of M features' count? (I09, high)
+- [ ] Are active filters shown as chips with an 'N of M features' count, and is map sync opt-in and visible? (I09, high)
+- [ ] Are popup and identify values inserted as text (setText or DOM), never as raw HTML from data? (I10, high)
+- [ ] Are personal fields excluded from the query and export for roles that do not need them? (I11, high)
+- [ ] Do AI map actions show a preview, confirm destructive changes, and offer one-step undo? (I12, high)
+- [ ] Does the query builder use plain-word predicates and show a count before apply? (I13, medium)
+- [ ] Does changing a parent unit clear child selections, zoom to the unit, and update the breadcrumb? (I14, medium)
 
 ## Temporal
 
@@ -58,6 +71,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Is there an adjustable cloud cover filter, defaulting to about 30%? (T06, high)
 - [ ] Does the UI say cloud % is per scene (or compute it per AOI)? (T07, high)
 - [ ] Are cloudy observations flagged or removed from time series? (T09, high)
+- [ ] Are times stored and queried in UTC, shown with a zone label, and are date-range bounds converted to UTC? (T10, high)
 
 ## EO
 
@@ -66,6 +80,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Do scene cards show thumbnail, date, AOI coverage, resolution, sensor and cloud %? (E05, high)
 - [ ] Is detection confidence shown, filterable by threshold, and visually encoded? (E08, high)
 - [ ] Does the UI state the AIS match radius and time tolerance, and the offset to the SAR time? (E09, high)
+- [ ] Does pixel identify show a unit or scale factor with the value? (E10, medium)
 
 ## Widgets
 
@@ -75,7 +90,9 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Do map and charts share one categorical palette? (D06, high)
 - [ ] Is uncertainty encoded (VSUP or a confidence channel)? (D08, high)
 - [ ] Does the alert list sort by severity/time and sync with map selection both ways? (D09, high)
+- [ ] Does every export include title, legend, scale, source/date, active filter or extent, and text attribution? (D11, high)
 - [ ] Does every layer show its source and acquisition date without hover? (D10, medium)
+- [ ] Are only valid transitions offered, with who/when/from-to/remark recorded? (D12, medium)
 
 ## Layout
 
@@ -94,3 +111,5 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Is GeoJSON trimmed (6 decimals, needed properties only, loaded by URL, maxzoom set)? (P02, high)
 - [ ] Are points above a few hundred rendered as layers (clustered), not DOM markers? (P03, high)
 - [ ] Does each layer show its own error state with retry, leaving others working? (P06, high)
+- [ ] Is the map captured on idle/rendercomplete without preserveDrawingBuffer and without moving the live view? (P08, medium)
+- [ ] Are tile URLs stable, changing only when the data version changes? (P09, medium)

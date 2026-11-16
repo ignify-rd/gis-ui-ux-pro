@@ -162,5 +162,85 @@
     "domain": "stack",
     "stack": "deckgl",
     "expected_id": "dk-01"
+  },
+  {
+    "query": "popup sethtml xss",
+    "domain": "rule",
+    "expected_id": "I10"
+  },
+  {
+    "query": "utc date filter timezone",
+    "domain": "rule",
+    "expected_id": "T10"
+  },
+  {
+    "query": "shapefile prj cpg upload",
+    "domain": "rule",
+    "expected_id": "Y08"
+  },
+  {
+    "query": "getlegendgraphic wms legend",
+    "domain": "rule",
+    "expected_id": "Y09"
+  },
+  {
+    "query": "ai chat confirm undo map",
+    "domain": "rule",
+    "expected_id": "I12"
+  },
+  {
+    "query": "export map print attribution",
+    "domain": "rule",
+    "expected_id": "D11"
+  },
+  {
+    "query": "tile url cache",
+    "domain": "rule",
+    "expected_id": "P09"
+  },
+  {
+    "query": "personal data popup role",
+    "domain": "rule",
+    "expected_id": "I11"
+  },
+  {
+    "query": "preserveDrawingBuffer capture idle",
+    "domain": "rule",
+    "expected_id": "P08"
+  },
+  {
+    "query": "reduced motion flyTo",
+    "domain": "rule",
+    "expected_id": "A13"
+  },
+  {
+    "query": "case workflow status transitions audit",
+    "domain": "rule",
+    "expected_id": "D12"
+  },
+  {
+    "query": "query builder select by location count",
+    "domain": "rule",
+    "expected_id": "I13"
+  },
+  {
+    "query": "admin drilldown breadcrumb",
+    "domain": "rule",
+    "expected_id": "I14"
+  },
+  {
+    "query": "dark basemap halo",
+    "domain": "rule",
+    "expected_id": "S20"
+  },
+  {
+    "query": "offline unsynced edits sync",
+    "domain": "rule",
+    "expected_id": "D02"
+  },
+  {
+    "query": "hectare rtl locale units",
+    "domain": "rule",
+    "expected_id": "A12"
   }
 ]
