@@ -2,7 +2,7 @@
 
 Eight runs for the new scenarios 4-7. Each scenario was run once following `SKILL.md` (with) and once without it (base), each by a fresh subagent. Graded strictly against the checks in `scenarios.md`: a check counts only if the output clearly states it. Raw outputs are in `runs-0.2.0/`. The runs contained no local paths or private names, so they are committed unchanged.
 
-**Totals (scenarios 4-6): with skill 21/24, baseline 13/24.** Scenario 7: re-run pending.
+**Totals: with skill 28/32, baseline 15/32.**
 
 ## Scenario 4: civic service-requests map (with 6/8, base 4/8)
 | Check | with | base |
@@ -40,8 +40,21 @@ Eight runs for the new scenarios 4-7. Each scenario was run once following `SKIL
 | Keyboard and non-scroll navigation | yes | yes |
 | Performance cautions | yes | yes |
 
-## Scenario 7: review of the synthetic page (re-run pending)
-The first S7 runs were withdrawn. Planted issue 5 was not a real defect: `startOf('day').toISOString()` converts local midnight to UTC, which is what T10 asks for. The sample now sends zone-less wall-clock strings (`format('YYYY-MM-DDTHH:mm:ss')`) at line 73, and `ANSWER_KEY.md` row 5 was updated. Both S7 runs are being re-run against the fixed sample. They will be graded here after the re-run.
+## Scenario 7: review of the synthetic page (with 7/8, base 2/8)
+Both runs were re-run after two changes: the sample fix, which made planted issue 5 a real T10 violation, and the SKILL.md review step 7 change. Those are the runs in `runs-0.2.0/`. Incidental bugs listed in `ANSWER_KEY.md` are not penalised.
+
+| Check | with | base |
+|---|---|---|
+| Attribution disabled, C01 | yes | no (found, no rule id) |
+| `setHTML` XSS, I10 | yes | no (found, no rule id) |
+| Owner name and phone, I11 | yes | no (found, no rule id) |
+| Rainbow on raw counts, S08, normalise or sequential | yes (S08 with S01, S09) | no (found and fixed, no rule id) |
+| Zone-less local date range, T10 | yes (high; send RFC 3339 with Z) | no (found in item 16, no rule id) |
+| Concrete fix for each finding | yes | yes |
+| No invented defects as findings | no (missing legend inside critical item 7; hover/outline and basemap as high; not labelled low or optional) | no (23 unlabelled findings, including the missing legend) |
+| Location for each finding | yes | yes |
+
+The baseline found all five planted defects. It loses those checks only because they require the rule id.
 
 ## Signature behaviour (scenarios 4-6, with skill)
 | | S4 | S5 | S6 |
@@ -56,7 +69,8 @@ Baselines: all three were competent but generic. None named a visual direction, 
 - The largest gains came from specific rules and the signature layer: query-level PII removal (I11), text-only popups (I10), reduced-motion paths (A13), the Cesium credit, exaggeration and 2D-fallback cautions, and rule ids in the review.
 - S6 was the only scenario with no matching playbook. The run picked `site-suitability` as the closest problem and said so, then drew most content from the Cesium stack rows (cs-01 to cs-09). It still scored 8/8.
 - Legends were the common miss. In S4 the Civic Paper hero ("legend written as a sentence") replaced a per-status key, and no rule asked for an entry per class. The baseline S4 run did better here.
-- S7 notes are pending the re-run. The old runs showed two things. The skill run raised optional absent features (a legend) to critical. The sample also had unplanted real bugs, which are now listed in `ANSWER_KEY.md` as not penalised.
+- In S7 the re-run verifies part of step 7. The with run kept the accessibility gaps (keyboard and text alternative, colour-only) in the severity list and moved optional extras (table view, clustering layer, export) to "Also consider (low, optional)". But it still bundled the missing legend into a critical colour-only finding and rated hover/outline and the basemap high, so the "no invented defects" check still fails.
+- The S7 sample had unplanted real bugs (the `setData` overwrite, the popup `<p>` outside the content container, the filter not run on load). `ANSWER_KEY.md` now lists them as not penalised. Both re-runs found them.
 
 ## Fixes made (data and skill gaps the runs revealed)
 - S14 "Legend reflects what is drawn" now also asks for one entry for every class or state drawn (each status, stale, unmatched, no data) with the map's icon or shape. The checklist question was updated to match.
@@ -68,7 +82,7 @@ Baselines: all three were competent but generic. None named a visual direction, 
 - `references/quick-reference.md` and `checklist.md` were regenerated (`build_reference.py --check` passes). The validator and all 80 tests pass, and SKILL.md is 203 lines.
 
 ## Known gaps
-- No fresh agent has re-run these fixes. They are verified only through blueprint output (S14 and C01 now appear for `service-requests`).
-- Step 7 of the review workflow has not yet been verified by a fresh S7 run.
+- No fresh agent has re-run the data fixes (S14, C01) for S4 and S5. They are verified only through blueprint output.
+- Step 7 of the review workflow is only partly effective. A missing legend and polish items (hover, basemap) still reach critical or high when they sit next to an accessibility rule. A sharper cue, such as listing a missing legend explicitly as an optional extra, could help. It was not changed in this round.
 - S6 has no scroll-story or presentation playbook. The run had to use `site-suitability` plus the Cesium stack.
-- The S7 sample still contains its unplanted bugs. They are now documented in the answer key instead of being fixed, because fixing them would need new runs.
+- The S7 sample still contains its unplanted bugs. They are documented in the answer key, not removed.
