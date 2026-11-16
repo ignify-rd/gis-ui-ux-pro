@@ -70,7 +70,7 @@ map.on('click', 'districts-fill', (e) => {
 document.getElementById('day').addEventListener('change', (ev) => {
   const start = dayjs(ev.target.value).startOf('day');
   const end = start.add(1, 'day');
-  loadRequests({ from: start.toISOString(), to: end.toISOString() });
+  loadRequests({ from: start.format('YYYY-MM-DDTHH:mm:ss'), to: end.format('YYYY-MM-DDTHH:mm:ss') });
 });
 
 function loadRequests(range) {
