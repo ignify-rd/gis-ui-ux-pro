@@ -57,12 +57,13 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does hover only highlight (feature-state, cursor) while click opens the details? (I02, high)
 - [ ] Do popups show a curated, formatted set of fields with the title first? (I04, high)
 - [ ] Do map, chart and table share one selection state and highlight color? (I05, high)
-- [ ] Are active filters shown as chips with an 'N of M features' count, and is map sync opt-in and visible? (I09, high)
+- [ ] Are active filters shown as chips with an 'N of M features' count? (I09, high)
 - [ ] Are popup and identify values inserted as text (setText or DOM), never as raw HTML from data? (I10, high)
 - [ ] Are personal fields excluded from the query and export for roles that do not need them? (I11, high)
 - [ ] Do AI map actions show a preview, confirm destructive changes, and offer one-step undo? (I12, high)
 - [ ] Does the query builder use plain-word predicates and show a count before apply? (I13, medium)
 - [ ] Does changing a parent unit clear child selections, zoom to the unit, and update the breadcrumb? (I14, medium)
+- [ ] Is a visible search box kept even when a command bar exists? (I16, medium)
 
 ## Temporal
 
