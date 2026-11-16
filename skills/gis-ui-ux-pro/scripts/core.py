@@ -19,11 +19,13 @@ SYNONYMS = {"colour": "color", "colours": "color", "colors": "color",
             "maps": "map", "mapping": "map"}
 
 DOMAIN_HINTS = {
-    "palette": ["color", "ramp", "palette", "colormap", "colour", "legend colors"],
+    "palette": ["color", "ramp", "palette", "colormap", "colour", "colors", "legend colors"],
     "problem": ["dashboard for", "app for", "monitoring", "detection", "playbook",
                 "tracking"],
     "widget": ["widget", "component", "slider", "panel", "control"],
     "layout": ["layout", "sidebar", "mobile", "wall", "responsive"],
+    "direction": ["signature", "look and feel", "visual identity", "visual direction",
+                  "art direction"],
 }
 
 

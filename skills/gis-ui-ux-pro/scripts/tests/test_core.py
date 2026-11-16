@@ -42,6 +42,11 @@ class TestCore(unittest.TestCase):
         self.assertEqual(core.detect_domain("dashboard for flood mapping")[0], "problem")
         self.assertEqual(core.detect_domain("xyzzy"), ("rule", None))
 
+    def test_direction_hints_narrow(self):
+        self.assertEqual(core.detect_domain("signature look and feel")[0], "direction")
+        self.assertEqual(core.detect_domain("dark basemap colors")[0], "palette")
+        self.assertNotEqual(core.detect_domain("theme")[0], "direction")
+
     def test_search_stack(self):
         r = core.search("attribution", stack="mapbox-maplibre", data_dir=FIX)
         self.assertEqual(r["domain"], "stack")

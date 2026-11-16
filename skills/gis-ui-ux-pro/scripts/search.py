@@ -42,13 +42,15 @@ def main(argv=None):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     p = argparse.ArgumentParser(description="Search the GIS UI/UX knowledge base")
     p.add_argument("query")
-    p.add_argument("-d", "--domain", choices=["rule", "problem", "palette", "widget", "layout"])
+    p.add_argument("-d", "--domain", choices=["rule", "problem", "palette", "widget", "layout", "direction"])
     p.add_argument("-s", "--stack", choices=STACKS)
     p.add_argument("-n", type=int, default=3, choices=range(1, 21), metavar="1..20")
     p.add_argument("--json", action="store_true")
     p.add_argument("--full", action="store_true")
     p.add_argument("--data-dir", default=str(core.DATA_DIR))
     p.add_argument("--blueprint", action="store_true")
+    p.add_argument("--intensity", choices=["subtle", "balanced", "bold"])
+    p.add_argument("--direction")
     p.add_argument("-f", "--format", choices=["markdown", "json"], default="markdown")
     p.add_argument("--persist", action="store_true")
     p.add_argument("-o", "--output-dir")
@@ -58,6 +60,8 @@ def main(argv=None):
 
     if not Path(args.data_dir).is_dir():
         p.error(f"--data-dir not found: {args.data_dir}")
+    if (args.intensity or args.direction) and not args.blueprint:
+        p.error("--intensity/--direction require --blueprint")
     if args.blueprint:
         if args.json:
             args.format = "json"

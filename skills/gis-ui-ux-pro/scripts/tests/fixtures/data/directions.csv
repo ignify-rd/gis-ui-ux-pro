@@ -1,4 +1,4 @@
 id,name,mood,intensity_default,intensity_range,fits_problems,basemap_recipe,reference_basemaps,surface_recipe,type_pair,accent_strategy,motion_recipe,marker_grammar,hero_element,locked,variation_axes,pitfalls,examples,keywords,evidence,source_url
 civic-paper,civic-paper,calm,subtle,subtle;balanced,flood-monitoring,tone: x; labels: y,,,,,,,legend,no blur,density: a | b,,,civic-paper,synth,
-night-ops,night-ops,calm,balanced,balanced,flood-monitoring,tone: x; labels: y,,,,,,,legend,no blur,density: a | b,,,night-ops,synth,
+night-ops,night-ops,calm,balanced,balanced,flood-monitoring,tone: x; labels: y,,,,,,,legend,no blur,density: a | b,,,night-ops;night operations status,synth,
 story-bold,story-bold,calm,bold,balanced;bold,flood-monitoring,tone: x; labels: y,,,,,,,legend,no blur,density: a | b,,,story-bold,synth,

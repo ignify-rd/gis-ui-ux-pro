@@ -61,6 +61,30 @@ class TestSearchCli(unittest.TestCase):
     def test_n_out_of_range_rc2(self):
         self.assertEqual(run("x", "-n", "50").returncode, 2)
 
+    def test_direction_domain_search(self):
+        r = run("night operations status", "-d", "direction")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("night-ops", r.stdout)
+
+    def test_intensity_requires_blueprint(self):
+        r = run("flood", "--intensity", "bold")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("--intensity", r.stderr)
+        self.assertNotIn("Traceback", r.stderr)
+
+    def test_direction_requires_blueprint(self):
+        r = run("flood", "--direction", "night-ops")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("--direction", r.stderr)
+        self.assertNotIn("Traceback", r.stderr)
+
+    @unittest.expectedFailure  # Task 5 removes this decorator
+    def test_unknown_direction_exit_2(self):
+        r = run("flood river gauge", "--blueprint", "--direction", "nope")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("Unknown direction 'nope'", r.stderr)
+        self.assertIn("night-ops", r.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
