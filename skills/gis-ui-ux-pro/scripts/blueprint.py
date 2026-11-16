@@ -84,18 +84,20 @@ def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=Non
                          + ", ".join(f"{r['id']} (at {used(r)})" for r in added))
     note = "; ".join(notes) or None
     top = chosen[0]
-    base = next((r for r in rows if r is not top and "subtle" in split_list(r["intensity_range"])), None)
-    if not base:
-        cp = get_by_id("direction", BASELINE_FALLBACK, data_dir)
-        base = cp if cp and cp["id"] != top["id"] else top
-    same = base is top or base["id"] == top["id"]
+    chosen_ids = {r["id"] for r in chosen}
+    base = next((r for r in rows if r["id"] not in chosen_ids
+                 and "subtle" in split_list(r["intensity_range"])), None)
+    if not base and BASELINE_FALLBACK not in chosen_ids:
+        base = get_by_id("direction", BASELINE_FALLBACK, data_dir)
+    stripped = not base
+    base = base or top
     tokens = [[f"{c.split('_')[0]}.{k}" if k else c.split("_")[0], v]
               for c in _TOKEN_COLS for k, v in parse_kv(top[c])]
     tokens += [["type_pair", top["type_pair"]], ["accent_strategy", top["accent_strategy"]]]
     return {"intensity": intensity, "intensity_source": source, "directions": chosen,
             "fallback_note": note,
             "baseline": {"id": base["id"], "name": base["name"], "intensity": "subtle",
-                         "same_as_primary": same},
+                         "stripped": stripped},
             "locked": LOCKED_BASE + split_list(top["locked"]), "tokens": tokens,
             "hero_element": top["hero_element"],
             "variations": [[k, v] for k, v in parse_kv(top["variation_axes"])],
@@ -149,9 +151,12 @@ def _render_signature(sig):
             for i, d in enumerate(sig["directions"])]
     if sig["fallback_note"]:
         out.append(f"- Note: {sig['fallback_note']}")
-    if sig["baseline"]:
-        out.append(f"- Safe baseline: {sig['baseline']['name']} [{sig['baseline']['id']}] (subtle)"
-                   + (" (same as primary)" if sig["baseline"].get("same_as_primary") else ""))
+    b = sig["baseline"]
+    if b and b.get("stripped"):
+        out.append(f"- Safe baseline: {b['name']} with signature removed "
+                   "(locked conventions, default markers, no hero)")
+    elif b:
+        out.append(f"- Safe baseline: {b['name']} [{b['id']}] (subtle)")
     out += ["", "### Locked conventions", *[f"- {x}" for x in sig["locked"]],
             "", "### Tokens (top direction)", "| Token | Value |", "|---|---|",
             *[f"| {g} | {v.replace('|', '/')} |" for g, v in _group_tokens(sig["tokens"])],

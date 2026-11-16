@@ -4,7 +4,7 @@
 
 - Map signature system: `data/directions.csv` with 12 directions (civic-paper, field-atlas, night-ops, signal-track, orbital-lightbox, newsroom-story, canvas-studio, analytic-glow, living-atmosphere, conservation-signal, urban-twin, heritage-atlas), each with basemap/surface/motion/marker recipes, an open-licensed type pair, one hero element, locked conventions, variation axes and pitfalls. Directions reference palette ids only and never define data ramps.
 - `-d direction` domain; `--intensity subtle|balanced|bold` and `--direction <id>` for `--blueprint` (exit 2 without `--blueprint`; an unknown direction exits 2 and lists the ids).
-- Blueprint "Signature" section before the checklist: audience and intensity with the reason, two directions plus a safe `subtle` baseline, locked conventions, token table, hero element with variations, and a user-test plan. JSON blueprints gain a `signature` object.
+- Blueprint "Signature" section before the checklist: audience and intensity with the reason, two directions plus a safe `subtle` baseline that differs from both (or the primary with its signature removed), locked conventions, token table, hero element with variations, and a user-test plan. JSON blueprints gain a `signature` object.
 - `problems.csv` columns `direction_ids` and `intensity_default`; 6 new playbooks: service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin (28 problems).
 - 19 new rules (122 total), including UTC time filters (T10), popups as text not HTML (I10), personal data by role (I11), export map elements (D11), case workflow with audit (D12), reduced motion for the camera (A13), glass panels (A14), signature never changes data encoding (S19), designed dark basemaps (S20) and command bar beside search (I16).
 - 8 new widgets (30 total): data-import, raster-display, query-builder, admin-drilldown, feature-editor, case-workflow, sync-status, ai-command.
@@ -18,7 +18,6 @@
 - `histogram-class-breaks` and `export-report` widgets extended instead of adding new widgets.
 - S14 (legend reflects what is drawn) severity medium -> high.
 - D02 (data freshness) now also covers offline sync and unsynced edits; its evidence is now `synth`.
-- Directions `analytic-glow` no longer lists real-estate or urban-planning, and `urban-twin` no longer lists real-estate, in `fits_problems`: they are balanced/bold only while those problems default to subtle.
 - Plugin and marketplace version 0.2.0; README data table and install from `ignify-rd/gis-ui-ux-pro`.
 
 ## 0.1.0 - 2026-11-14

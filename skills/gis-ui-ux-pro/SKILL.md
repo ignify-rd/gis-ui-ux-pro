@@ -109,7 +109,7 @@ If the user wants speed, skip the questions and state your assumptions in the su
 
 **2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). The blueprint gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
 
-- **Signature:** intensity with its reason, primary and alternative directions, a safe baseline (always `subtle`), locked conventions, a token table for the primary (basemap, surface, motion, marker, type pair, accent), the hero element with one variation per axis, and a test plan (5-second, preference baseline vs primary, first-click, squint). A note appears when fewer than two directions fit the intensity or a forced direction is outside its range.
+- **Signature:** intensity with its reason, primary and alternative directions, a safe `subtle` baseline that differs from both directions (a third linked direction, else Civic Paper, else "<Primary> with signature removed (locked conventions, default markers, no hero)"), locked conventions, a token table for the primary (basemap, surface, motion, marker, type pair, accent), the hero element with one variation per axis, and a test plan (5-second, preference baseline vs primary, first-click, squint). A note appears when fewer than two directions fit the intensity or a forced direction is outside its range.
 - **Pre-delivery checklist** with rule ids.
 
 **3. Fill gaps** with one concern per query: `-d palette` for ramps, `-d widget` for states, `-d rule` for a behavior, `-d direction` for another look. Detect the map library from `package.json` or imports and run `-s <stack>` for what you will implement (attribution, layer order, clustering, picking, credits).
@@ -117,12 +117,12 @@ If the user wants speed, skip the questions and state your assumptions in the su
 **4. Present two directions plus the safe baseline.** Short and contrasting, not three variants of the same thing. For each: one line of mood, what the user sees first, the hero element, and a small text sketch. Use the direction's `variation_axes` to make it this product's own (density, temperature, radius, tempo, hero variant) so two products never get identical output. Recommend one and say why in one sentence.
 
 ```text
-A  Civic Paper (subtle)          B  Canvas Studio (subtle)        Baseline
-+--------------------------+     +--------------------------+     plain light basemap,
-| [search]          [+][-] |     | [search] [tools]  [+][-] |     solid panels, default
-|  . .   .  light gray     |     |   soft strokes, sticky   |     markers, no hero.
-|    .  .   base, dots     |     |   note annotations       |     Ships if the signature
-| "Each dot = one report,  |     | [sketch][note][share]    |     is cut.
+A  Civic Paper (subtle)          B  Canvas Studio (subtle)        Baseline: Civic Paper
++--------------------------+     +--------------------------+     with signature removed
+| [search]          [+][-] |     | [search] [tools]  [+][-] |     plain light basemap,
+|  . .   .  light gray     |     |   soft strokes, sticky   |     solid panels, default
+|    .  .   base, dots     |     |   note annotations       |     markers, no hero.
+| "Each dot = one report,  |     | [sketch][note][share]    |     Ships if the signature is cut.
 |  last 30 days"   [legend]|     |                 [legend] |
 +--------------------------+     +--------------------------+
 ```
@@ -150,7 +150,7 @@ Lead with a 5-line summary, then details:
 ```text
 Problem:   service-requests (runner-up data-catalog) - residents reporting city issues
 Layout:    map-first with list drawer; bottom sheet on mobile
-Direction: Civic Paper, subtle (alt Canvas Studio; baseline ready)
+Direction: Civic Paper, subtle (alt Canvas Studio; baseline Civic Paper with signature removed)
 Hero:      sentence legend "Each dot = one report, last 30 days"
 Risks:     PII in popups (I11) - status by colour only (A07) - stale data without timestamp (D02)
 ```
@@ -196,7 +196,7 @@ python "${CLAUDE_SKILL_DIR}/scripts/search.py" "alert list" -d widget -n 1
 python "${CLAUDE_SKILL_DIR}/scripts/search.py" "attribution layer order" -s mapbox-maplibre
 ```
 
-1. Audience (ops room) and library are known, so discovery asks one question: the feeling (calm watch vs fast alerting) and any brand colors.
+1. Audience (ops room) and library are known, so discovery asks two questions: the feeling (calm watch vs fast alerting) and any brand colors.
 2. The blueprint suggests `balanced`, primary Signal Track (track replay scrubber as hero, type by shape before colour), alternative Night Ops (freshness strip with live/stale pulse), and Civic Paper as the safe baseline.
 3. Present A and B with sketches, recommend Signal Track because replay answers the ops room's "what happened here" question; keep data colours from the blueprint's palettes.
 4. Self-critique: attribution and logo visible (C01, C02), status not colour-only (A07), stale-data timestamp (D02), reduced-motion path for the scrubber playback, contrast of labels on the dark basemap, baseline still works.

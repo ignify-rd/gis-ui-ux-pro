@@ -1,7 +1,7 @@
 {
   "name": "gis-ui-ux-pro",
   "version": "0.2.0",
-  "description": "GIS and remote-sensing UI/UX design intelligence: map layouts, legends, color ramps, temporal compare, map accessibility and per-problem dashboard blueprints.",
+  "description": "GIS and remote-sensing UI/UX design intelligence: map layouts, legends, color ramps, temporal compare, map accessibility and per-problem dashboard blueprints and distinct-but-familiar map signature directions.",
   "author": {"name": "Khanhle19"},
   "license": "MIT",
   "keywords": ["gis", "webgis", "map", "dashboard", "remote-sensing", "ui", "ux", "cartography"]

@@ -136,10 +136,36 @@ class TestBlueprint(unittest.TestCase):
         self.assertEqual(self._ids(sig)[0], "civic-paper")
         self.assertIn("civic-paper", sig["fallback_note"])
 
-    def test_baseline_same_as_primary_when_no_alternative(self):
+    def test_baseline_stripped_when_no_alternative(self):
         sig = self._sig(direction_id="civic-paper", intensity="subtle")
         self.assertEqual(sig["baseline"]["id"], "civic-paper")
-        self.assertTrue(sig["baseline"]["same_as_primary"])
+        self.assertTrue(sig["baseline"]["stripped"])
+        md = blueprint.render_markdown(blueprint.build_blueprint(
+            "flood river gauge", FIX, direction_id="civic-paper", intensity="subtle"))
+        self.assertIn(f"- Safe baseline: {sig['baseline']['name']} with signature removed "
+                      "(locked conventions, default markers, no hero)", md)
+
+    def test_baseline_differs_from_chosen_by_default(self):
+        sig = self._sig()
+        self.assertNotIn(sig["baseline"]["id"], self._ids(sig))
+        self.assertFalse(sig["baseline"]["stripped"])
+
+    def test_baseline_skips_chosen_subtle_link(self):
+        sig = blueprint.build_signature(
+            {"direction_ids": "civic-paper;night-ops", "intensity_default": "subtle"}, FIX)
+        self.assertEqual(self._ids(sig), ["civic-paper", "night-ops"])
+        self.assertTrue(sig["baseline"]["stripped"])
+        self.assertEqual(sig["baseline"]["id"], "civic-paper")
+
+    def test_baseline_stripped_without_fallback_row(self):
+        old = blueprint.BASELINE_FALLBACK
+        blueprint.BASELINE_FALLBACK = "missing-direction"
+        try:
+            sig = self._sig()
+        finally:
+            blueprint.BASELINE_FALLBACK = old
+        self.assertEqual(sig["baseline"]["id"], "night-ops")
+        self.assertTrue(sig["baseline"]["stripped"])
 
     def test_duplicate_direction_ids_deduped(self):
         sig = blueprint.build_signature({"direction_ids": "night-ops;night-ops;story-bold"}, FIX)
