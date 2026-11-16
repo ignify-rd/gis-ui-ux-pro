@@ -1,4 +1,4 @@
-id,name,keywords,user_questions,layers_default_on,layers_default_off,symbology,widgets,temporal,interactions,alerts,pitfalls,data_sources,examples,layout_id,palette_ids,rule_ids,evidence,source_url
-flood-monitoring,Flood monitoring,flood inundation river gauge,Where is water rising?,gauges;inundation,,blue sequential depth,W-01,,,,,,,LY-01,P-SEQ,L-01;Y-01,synth,
-deformation-insar,Ground deformation,insar subsidence velocity,Which areas are sinking?,,,,,,,,,,,LY-01,P-DIV,L-01,sourced,https://example.org/src
-ndvi-vegetation,Vegetation health,ndvi vegetation crop,Is the crop healthy?,,,,,,,,,,,LY-02,P-SEQ,T-01,synth,
+id,name,keywords,user_questions,layers_default_on,layers_default_off,symbology,widgets,temporal,interactions,alerts,pitfalls,data_sources,examples,layout_id,palette_ids,rule_ids,evidence,source_url,direction_ids,intensity_default
+flood-monitoring,Flood monitoring,flood inundation river gauge,Where is water rising?,gauges;inundation,,blue sequential depth,W-01,,,,,,,LY-01,P-SEQ,L-01;Y-01,synth,,night-ops;story-bold,balanced
+deformation-insar,Ground deformation,insar subsidence velocity,Which areas are sinking?,,,,,,,,,,,LY-01,P-DIV,L-01,sourced,https://example.org/src,civic-paper,subtle
+ndvi-vegetation,Vegetation health,ndvi vegetation crop,Is the crop healthy?,,,,,,,,,,,LY-02,P-SEQ,T-01,synth,,night-ops,balanced

@@ -6,7 +6,13 @@ COLUMNS = {
     "problem": ["id", "name", "keywords", "user_questions", "layers_default_on",
                 "layers_default_off", "symbology", "widgets", "temporal", "interactions",
                 "alerts", "pitfalls", "data_sources", "examples", "layout_id",
-                "palette_ids", "rule_ids", "evidence", "source_url"],
+                "palette_ids", "rule_ids", "evidence", "source_url", "direction_ids",
+                "intensity_default"],
+    "direction": ["id", "name", "mood", "intensity_default", "intensity_range",
+                  "fits_problems", "basemap_recipe", "reference_basemaps", "surface_recipe",
+                  "type_pair", "accent_strategy", "motion_recipe", "marker_grammar",
+                  "hero_element", "locked", "variation_axes", "pitfalls", "examples",
+                  "keywords", "evidence", "source_url"],
     "palette": ["id", "name", "type", "use_for", "domain_range", "stops_hex",
                 "dark_basemap_stops_hex", "classes", "cvd_safe", "keywords", "evidence",
                 "source_url"],
@@ -19,9 +25,10 @@ COLUMNS = {
 }
 
 FILES = {"rule": "rules.csv", "problem": "problems.csv", "palette": "palettes.csv",
-         "widget": "widgets.csv", "layout": "layouts.csv"}
+         "widget": "widgets.csv", "layout": "layouts.csv",
+         "direction": "directions.csv"}
 
-STACKS = ("mapbox-maplibre", "leaflet", "openlayers", "deckgl")
+STACKS = ("mapbox-maplibre", "leaflet", "openlayers", "deckgl", "cesium", "ogc")
 
 SEARCH_FIELDS = {
     "rule": ["name", "keywords", "do", "dont", "why", "category"],
@@ -30,6 +37,7 @@ SEARCH_FIELDS = {
     "palette": ["name", "keywords", "use_for", "type"],
     "widget": ["name", "keywords", "purpose", "use_when"],
     "layout": ["name", "keywords", "use_when", "regions"],
+    "direction": ["name", "mood", "keywords", "fits_problems", "hero_element", "examples"],
     "stack": ["guideline", "keywords", "do", "dont", "category"],
 }
 
@@ -39,8 +47,11 @@ ENUMS = {
     "palette_type": {"sequential", "diverging", "qualitative", "standard"},
     "category": {"layout", "controls", "layers", "symbology", "interaction", "temporal",
                  "widgets", "eo", "performance", "accessibility"},
+    "intensity": {"subtle", "balanced", "bold"},
 }
 
 # Cells holding ';'-separated lists.
 LIST_COLUMNS = {"rule_ids", "palette_ids", "stops_hex", "dark_basemap_stops_hex",
-                "required_states"}
+                "required_states", "direction_ids", "intensity_range", "fits_problems"}
+
+INTENSITY_ORDER = ("subtle", "balanced", "bold")

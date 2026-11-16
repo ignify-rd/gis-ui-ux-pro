@@ -58,6 +58,17 @@ def validate(data_dir=DATA_DIR):
                 _check_enum(errs, fname, rid, "evidence", r, "evidence")
                 if r["evidence"] == "sourced" and not r["source_url"].strip():
                     errs.append(f"{fname} [{rid}] source_url: required when evidence=sourced")
+            if "intensity_default" in COLUMNS[kind]:
+                _check_enum(errs, fname, rid, "intensity_default", r, "intensity")
+            if kind == "direction":
+                rng = split_list(r["intensity_range"])
+                for x in rng:
+                    if x not in ENUMS["intensity"]:
+                        errs.append(f"{fname} [{rid}] intensity_range: {x!r} not in "
+                                    f"{sorted(ENUMS['intensity'])}")
+                if r["intensity_default"] in ENUMS["intensity"] and r["intensity_default"] not in rng:
+                    errs.append(f"{fname} [{rid}] intensity_range: must include "
+                                f"intensity_default {r['intensity_default']!r}")
             if kind == "palette":
                 _check_enum(errs, fname, rid, "type", r, "palette_type")
                 for col in ("stops_hex", "dark_basemap_stops_hex"):
@@ -75,7 +86,9 @@ def validate(data_dir=DATA_DIR):
 
     for kind, col, target in [("problem", "rule_ids", "rule"), ("problem", "palette_ids", "palette"),
                               ("problem", "layout_id", "layout"), ("widget", "rule_ids", "rule"),
-                              ("layout", "rule_ids", "rule")]:
+                              ("layout", "rule_ids", "rule"),
+                              ("problem", "direction_ids", "direction"),
+                              ("direction", "fits_problems", "problem")]:
         for r in rows_by.get(kind, []):
             ref(kind, r, col, target)
     return errs

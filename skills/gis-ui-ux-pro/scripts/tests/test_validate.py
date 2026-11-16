@@ -80,6 +80,23 @@ class TestValidate(unittest.TestCase):
         d = self.mutated("widgets.csv", ",T-01,", ",T-99,")
         self.one_error(d, "T-99")
 
+    def test_bad_intensity_default(self):
+        d = self.mutated("problems.csv", ",balanced", ",loud")
+        self.one_error(d, "intensity_default")
+
+    def test_unknown_direction_ref(self):
+        d = self.mutated("problems.csv", "night-ops;story-bold", "night-ops;nope")
+        self.one_error(d, "unknown direction id 'nope'")
+
+    def test_intensity_range_must_include_default(self):
+        d = self.mutated("directions.csv", "balanced,balanced,", "balanced,subtle,")
+        self.one_error(d, "intensity_range")
+
+    def test_fits_problems_unknown(self):
+        d = self.mutated("directions.csv", "night-ops,night-ops,calm,balanced,balanced,flood-monitoring",
+                         "night-ops,night-ops,calm,balanced,balanced,nope")
+        self.one_error(d, "unknown problem id")
+
 
 if __name__ == "__main__":
     unittest.main()
