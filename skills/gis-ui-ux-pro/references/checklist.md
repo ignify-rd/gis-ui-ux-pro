@@ -37,7 +37,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does the ramp lightness direction match the basemap (dark=high on light, bright=high on dark)? (S07, high)
 - [ ] Are continuous fields free of rainbow or jet ramps? (S08, high)
 - [ ] Is the basemap muted enough for the data layer to dominate? (S10, high)
-- [ ] Does the legend list only visible, in-scale layers and follow the active filter? (S14, high)
+- [ ] Does the legend list only visible, in-scale layers, follow the active filter, and have an entry for every class or state drawn? (S14, high)
 - [ ] Are dense point layers clustered at low zoom, with clusterMaxZoom set? (S16, high)
 - [ ] Does the legend have a class for no data that is separate from normal and from zero? (S18, high)
 - [ ] Does the visual signature leave data ramps and control positions untouched? (S19, medium)
