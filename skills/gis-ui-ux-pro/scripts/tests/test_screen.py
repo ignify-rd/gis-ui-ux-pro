@@ -69,6 +69,54 @@ class TestScreenSpec(unittest.TestCase):
         self.assertLess(md.index("## Screen spec"), md.index("## Temporal"))
         self.assertIn("| panel | left | 320px | Time slider |", md)
 
+    def test_widget_item_that_is_an_id_resolves_exactly(self):
+        self.assertEqual(bp()["widgets"][0]["widget"]["id"], "W-01")
+
+    def test_phone_catchall_when_mobile_lacks_region(self):
+        screen = blueprint.build_screen(
+            {"slots": "drawer: right, 360px; map: fill", "mobile_slots": "map: fill; sheet: bottom, 30vh"},
+            [{"item": "x", "widget": {"id": "a", "name": "Chart", "slot": "header"}}])
+        self.assertEqual(screen["slots"][0]["widgets"], ["Chart (fallback)"])
+        mob = {s["slot"]: s for s in screen["mobile"]}
+        self.assertEqual(mob["sheet"]["widgets"], ["Chart (fallback)"])
+
+    def test_phone_unplaced_reported(self):
+        screen = blueprint.build_screen(
+            {"slots": "drawer: right, 360px; map: fill", "mobile_slots": "map: fill; header: top, 48px"},
+            [{"item": "x", "widget": {"id": "a", "name": "Chart", "slot": "drawer"}}])
+        self.assertEqual(screen["phone_unplaced"], ["Chart"])
+        self.assertTrue(any("No phone region for: Chart" in line
+                            for line in blueprint._render_screen(screen)))
+
+    def test_duplicates_deduped_by_id_not_name(self):
+        same = {"id": "a", "name": "Chart", "slot": "panel"}
+        other = {"id": "b", "name": "Chart", "slot": "panel"}
+        screen = blueprint.build_screen(
+            {"slots": "panel: left, 300px", "mobile_slots": ""},
+            [{"item": "1", "widget": same}, {"item": "2", "widget": same}, {"item": "3", "widget": other}])
+        self.assertEqual(screen["slots"][0]["widgets"], ["Chart", "Chart"])
+
+    def test_no_map_no_corners(self):
+        screen = blueprint.build_screen({"slots": "panel: left, 300px", "mobile_slots": ""}, [])
+        self.assertEqual([s["slot"] for s in screen["slots"]], ["panel"])
+
+    def test_cited_rule_ids_exist(self):
+        import re
+        import core
+        ids = {r["id"] for r in core.load_rows("rule")}
+        text = " ".join(blueprint.MAP_CONTROLS + [s["shows"] for s in blueprint.SCREEN_STATES])
+        cited = set(re.findall(r"\b[A-Z]\d{2}\b", text))
+        self.assertTrue(cited)
+        self.assertEqual(cited - ids, set())
+
+    def test_every_real_playbook_places_all_widgets(self):
+        import core
+        for p in core.load_rows("problem"):
+            with self.subTest(problem=p["id"]):
+                s = blueprint.build_blueprint(p["name"])["screen"]
+                self.assertEqual(s["unplaced"], [])
+                self.assertEqual(s["phone_unplaced"], [])
+
     def test_json_has_screen(self):
         r = subprocess.run([sys.executable, SEARCH, "flood river gauge", "--blueprint", "-f", "json",
                             "--data-dir", str(FIX)], capture_output=True, text=True, encoding="utf-8")

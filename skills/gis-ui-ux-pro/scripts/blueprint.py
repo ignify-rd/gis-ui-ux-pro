@@ -54,13 +54,14 @@ MAP_CONTROLS = [
     "Top-left: search or coordinate entry (or in the header) [C04, C09]",
     "Bottom-left: scale bar [C04]; bottom edge: attribution, never covered [C01, L11]",
     "Legend: one entry per drawn class or state, synced with visible layers; bottom-left above the "
-    "scale bar unless a panel holds it [S14]",
+    "scale bar unless a panel holds it; on phones keep it above the sheet's peek height [S14, L09]",
 ]
 # Where desktop-only regions go on phones when the layout's mobile_slots do not list them.
 MOBILE_FALLBACK = {"panel": "sheet", "list": "sheet", "filters": "sheet", "drawer": "sheet",
                    "charts": "sheet", "action-bar": "sheet", "narrative": "sheet",
                    "kpi-strip": "sheet", "timeline": "sheet", "delta-strip": "sheet",
-                   "status-bar": "sheet", "ticker": "sheet", "header": "sheet"}
+                   "status-bar": "sheet", "ticker": "sheet"}
+PHONE_CATCHALL = ("sheet", "panel", "list", "charts", "narrative")
 
 
 # Content regions tried, in order, when none of a widget's preferred slots exists in the layout.
@@ -90,12 +91,12 @@ def build_screen(layout, widgets):
     desk = _with_corners(_slot_rows(layout.get("slots", "")))
     mob = _with_corners(_slot_rows(layout.get("mobile_slots", "")))
     by_desk, by_mob = {r["slot"]: r for r in desk}, {r["slot"]: r for r in mob}
-    unplaced, seen = [], set()
+    unplaced, phone_unplaced, seen = [], [], set()
     for w in widgets:
         wd = w.get("widget")
-        if not wd or wd["name"] in seen:
+        if not wd or wd.get("id", wd["name"]) in seen:
             continue
-        seen.add(wd["name"])
+        seen.add(wd.get("id", wd["name"]))
         slot = next((s for s in split_list(wd.get("slot", "")) if s in by_desk), None)
         label = wd["name"]
         if not slot:
@@ -105,11 +106,17 @@ def build_screen(layout, widgets):
             unplaced.append(wd["name"])
             continue
         by_desk[slot]["widgets"].append(label)
+        if not by_mob:
+            continue
         target = slot if slot in by_mob else MOBILE_FALLBACK.get(slot)
-        if target in by_mob:
+        if target not in by_mob:
+            target = next((s for s in PHONE_CATCHALL if s in by_mob), None)
+        if target:
             by_mob[target]["widgets"].append(label)
+        else:
+            phone_unplaced.append(label)
     keep = lambda rows: [r for r in rows if r["size"] or r["widgets"] or r["slot"] not in MAP_CORNERS]
-    return {"slots": keep(desk), "mobile": keep(mob), "unplaced": unplaced,
+    return {"slots": keep(desk), "mobile": keep(mob), "unplaced": unplaced, "phone_unplaced": phone_unplaced,
             "map_controls": MAP_CONTROLS, "states": SCREEN_STATES}
 
 
@@ -227,8 +234,12 @@ def _render_screen(screen):
     if screen["unplaced"]:
         out.append(f"- Not placed by the layout (choose a region): {', '.join(screen['unplaced'])}")
     out += ["", "Map controls:", *[f"- {c}" for c in screen["map_controls"]], ""]
+    out += ["Tablet (768-1023 px): keep the desktop regions; side panels shrink to their minimum "
+            "width or become overlay drawers.", ""]
     out += (["Phone (under 768 px) [L09]:", *_slot_table(screen["mobile"])]
             if screen["mobile"] else ["Phone: see the layout's mobile note above [L09]"])
+    if screen.get("phone_unplaced"):
+        out.append(f"- No phone region for: {', '.join(screen['phone_unplaced'])} (choose one)")
     out += ["", "Screen states:", "| State | What the screen shows |", "|---|---|",
             *[f"| {s['state']} | {s['shows']} |" for s in screen["states"]]]
     return out

@@ -3,7 +3,7 @@
 ### Added
 
 - Blueprint "Screen spec" section after Widgets: a region table (region, position, size, widgets it holds) for desktop and phone, map-control corners and legend placement, and five whole-screen states (first load, no results, layer error, stale/offline, feature selected) with rule ids. JSON blueprints gain a `screen` object.
-- `layouts.csv` columns `slots` and `mobile_slots` (`region: position, size`); `widgets.csv` column `slot` (preferred regions in order). Widgets with no preferred region in a layout go to the first content region and are marked "(fallback)". The validator rejects unknown region names.
+- `layouts.csv` columns `slots` and `mobile_slots` (`region: position, size`); `widgets.csv` column `slot` (preferred regions in order). Widgets with no preferred region in a layout go to the first content region and are marked "(fallback)"; on phones, regions the layout lacks fall back to the sheet, panel, list, charts or narrative, and anything left is listed as "No phone region for". A tablet line (768-1023 px) and a legend-above-the-sheet rule are included. The validator rejects unknown region names; a test checks every playbook places all its widgets on desktop and phone.
 - SKILL.md: how to work with ui-ux-pro-max (who owns the shell vs the map region, conflict rules, intensity ↔ variance/motion/density dial mapping).
 
 ### Changed

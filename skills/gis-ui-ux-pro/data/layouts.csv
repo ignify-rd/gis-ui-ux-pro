@@ -26,7 +26,7 @@ ops-dashboard,"Ops dashboard (KPIs top, map center, list right)","Monitoring and
 |      |               | row row  |
 +------+---------------+----------+
 | timeline / trend                |
-+---------------------------------+",KPIs scroll horizontally; map on top; list in bottom sheet.,L05;L06;L08;D01;D02;D09;I05,kpi tiles map list ops operations dashboard monitoring command center cards alerts right sidebar,"kpi-strip: top, 96-120px; filters: left, 240-280px; map: center, fill; list: right, 320-380px; drawer: right, replaces the list on selection 320-380px; timeline: bottom, 120-160px","kpi-strip: top, horizontal scroll 88px; map: top, 55vh; sheet: bottom, peek 96px / half / full"
++---------------------------------+",KPIs scroll horizontally; map on top; list in bottom sheet.,L05;L06;L08;D01;D02;D09;I05,kpi tiles map list ops operations dashboard monitoring command center cards alerts right sidebar,"kpi-strip: top, 96-120px; filters: left, 240-280px; map: center, fill; list: right, 320-380px; drawer: right (replaces the list on selection), 320-380px; timeline: bottom, 120-160px","kpi-strip: top, 88px (horizontal scroll); map: top, 55vh; sheet: bottom, peek 96px / half / full"
 split-map-dashboard,Split map and dashboard,Map and charts side by side with linked brushing.,Map-only tasks.,map left; charts and table right; filters top,"+---------------------------------+
 | filters / indicator picker      |
 +--------------------+------------+
@@ -35,7 +35,7 @@ split-map-dashboard,Split map and dashboard,Map and charts side by side with lin
 |                    | chart 2    |
 |                    +------------+
 |                    | table      |
-+--------------------+------------+","Stack: map on top (about 50 percent height), charts in tabs below.",L12;I05;L05;L06;S13;D06,split map dashboard charts side by side linked brushing analytics indicator explorer histogram,"filters: top, 56-72px; map: left, 55-60% width; charts: right, 40-45% width; drawer: right over charts, 360px","filters: top, 56px; map: top, 50vh; charts: below, tabs"
++--------------------+------------+","Stack: map on top (about 50 percent height), charts in tabs below.",L12;I05;L05;L06;S13;D06,split map dashboard charts side by side linked brushing analytics indicator explorer histogram,"filters: top, 56-72px; map: left, 55-60% width; charts: right, 40-45% width; drawer: right over charts, 360px","filters: top, 56px; map: top, 50vh; charts: below (tabs); sheet: bottom, peek 96px / half / full"
 list-first-locator,List-first locator,"Find items from a list or search first, then see them on the map.",Spatial pattern discovery tasks.,search and filters top; result list left; map right,"+---------------------------------+
 | [search address]  [filters]     |
 +------------+--------------------+
@@ -43,7 +43,7 @@ list-first-locator,List-first locator,"Find items from a list or search first, t
 | result     |       MAP          |
 | result     |   (pins by list)   |
 | result     |                    |
-+------------+--------------------+","List first, map toggle button; selection opens the detail drawer.",I07;L12;C09;I09;A02;A11,list first locator store finder search results list map listings property fields,"header: top, 64px (search and filters); list: left, 360-420px; map: fill; drawer: right over map, 360-400px","header: top, 56px; list: full screen, default view (toggle to map); map: full screen, shown on toggle; sheet: bottom, peek 96px / half / full"
++------------+--------------------+","List first, map toggle button; selection opens the detail drawer.",I07;L12;C09;I09;A02;A11,list first locator store finder search results list map listings property fields,"header: top, 64px (search and filters); list: left, 360-420px; map: fill; drawer: right over map, 360-400px","header: top, 56px; list: full screen (default view), 100vh; map: full screen (toggle from the list), 100vh; sheet: bottom, peek 96px / half / full"
 compare-split-view,Compare split view,Two dates or two layers compared by swipe or side-by-side.,Single-state monitoring.,two synced maps or swipe; date pickers each side; delta summary strip,"+---------------------------------+
 | date A [v]            date B [v]|
 +----------------+----------------+
@@ -52,7 +52,7 @@ compare-split-view,Compare split view,Two dates or two layers compared by swipe 
 |     (swipe handle <->)          |
 |                |                |
 +----------------+----------------+
-| delta: +12 km2  -3 km2   net +9 |",Single map with a toggle between A and B; swipe retained on tablets.,T01;T02;T03;T05;L09;A05,compare split view swipe before after side by side two dates change detection synced maps,"header: top, 56px (date A and date B pickers); map: fill (two synced maps or swipe); drawer: right over map, 360px; delta-strip: bottom, 56-72px","header: top, 56px; map: fill (A/B toggle); delta-strip: bottom, 56px"
+| delta: +12 km2  -3 km2   net +9 |",Single map with a toggle between A and B; swipe retained on tablets.,T01;T02;T03;T05;L09;A05,compare split view swipe before after side by side two dates change detection synced maps,"header: top, 56px (date A and date B pickers); map: fill (two synced maps or swipe); drawer: right over map, 360px; delta-strip: bottom, 56-72px","header: top, 56px; map: fill (A/B toggle); delta-strip: bottom, 56px; sheet: bottom, peek 96px / half / full"
 mobile-bottom-sheet,Mobile bottom sheet,"Phones and field use: map on top, draggable bottom sheet below.",Wide dashboards on desktop only.,"map top; bottom sheet (peek, half, full); sticky search; floating locate button","+--------------+
 | [search]  [o]|
 |              |
@@ -61,7 +61,7 @@ mobile-bottom-sheet,Mobile bottom sheet,"Phones and field use: map on top, dragg
 +--[=====]-----+
 | sheet title  |
 | list / detail|
-+--------------+","This is the mobile variant; sheet has peek, half and full snap points.",L09;A11;A05;P04;C07;L08,phone bottom sheet mobile small screen field app touch drawer peek snap,"header: top, sticky search 48-56px; map: fill; sheet: bottom, peek 96px / half / full","header: top, sticky search 48-56px; map: fill; sheet: bottom, peek 96px / half / full"
++--------------+","This is the mobile variant; sheet has peek, half and full snap points.",L09;A11;A05;P04;C07;L08,phone bottom sheet mobile small screen field app touch drawer peek snap,"header: top (sticky search), 48-56px; map: fill; sheet: bottom, peek 96px / half / full","header: top (sticky search), 48-56px; map: fill; sheet: bottom, peek 96px / half / full"
 wall-display,Wall display,"Control rooms or lobby screens, glanceable from distance, no interaction.",Interactive analysis.,large KPIs; map; rolling alert strip; clock and freshness,"+---------------------------------+
 | TITLE                  12:04 UTC|
 +------------------+--------------+
