@@ -312,5 +312,17 @@
     "query": "natural language command preview confirm undo",
     "domain": "widget",
     "expected_id": "ai-command"
+  },
+  {
+    "query": "cesium credits",
+    "domain": "stack",
+    "stack": "cesium",
+    "expected_id": "cs-01"
+  },
+  {
+    "query": "wms legend",
+    "domain": "stack",
+    "stack": "ogc",
+    "expected_id": "ogc-04"
   }
 ]
