@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import core  # noqa: E402
-from schema import STACKS  # noqa: E402
+from schema import INTENSITY_ORDER, STACKS  # noqa: E402
 
 MAX_LEN = 300
 
@@ -49,7 +49,7 @@ def main(argv=None):
     p.add_argument("--full", action="store_true")
     p.add_argument("--data-dir", default=str(core.DATA_DIR))
     p.add_argument("--blueprint", action="store_true")
-    p.add_argument("--intensity", choices=["subtle", "balanced", "bold"])
+    p.add_argument("--intensity", choices=INTENSITY_ORDER)
     p.add_argument("--direction")
     p.add_argument("-f", "--format", choices=["markdown", "json"], default="markdown")
     p.add_argument("--persist", action="store_true")

@@ -128,8 +128,31 @@ class TestBlueprint(unittest.TestCase):
         self.assertEqual(self._ids(self._sig(direction_id="story-bold"))[0], "story-bold")
 
     def test_signature_unknown_direction_raises(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(blueprint.UnknownDirection):
             self._sig(direction_id="nope")
+
+    def test_cli_unknown_direction_exits_2(self):
+        r = cli("zzz", "--blueprint", "--direction", "nope")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("Unknown direction 'nope'. Available:", r.stderr)
+
+    def test_intensity_reason(self):
+        sig = self._sig()
+        self.assertEqual(sig["intensity_reason"], "default for flood-monitoring: ops and analyst tools")
+        md = blueprint.render_markdown(blueprint.build_blueprint("flood river gauge", FIX))
+        self.assertIn("- Intensity: **balanced** (default for flood-monitoring: ops and analyst tools)", md)
+        sig = self._sig(intensity="bold")
+        self.assertEqual(sig["intensity_reason"], "override via --intensity")
+        md = blueprint.render_markdown(blueprint.build_blueprint("flood river gauge", FIX, intensity="bold"))
+        self.assertIn("- Intensity: **bold** (override via --intensity)", md)
+
+    def test_direction_keeps_separate_from_locked(self):
+        sig = self._sig()
+        self.assertEqual(sig["locked"], blueprint.LOCKED_BASE)
+        self.assertEqual(sig["direction_keeps"], ["no blur"])
+        md = blueprint.render_markdown(blueprint.build_blueprint("flood river gauge", FIX))
+        self.assertLess(md.index("### Locked conventions"), md.index("### Direction must-keeps"))
+        self.assertIn("### Direction must-keeps\n- no blur", md)
 
     def test_forced_direction_is_primary_even_out_of_range(self):
         sig = self._sig(direction_id="civic-paper", intensity="bold")

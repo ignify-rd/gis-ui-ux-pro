@@ -26,6 +26,8 @@ TEST_PLAN = ["5-second test: show the map for 5 seconds; viewers should name its
              "Preference test: show baseline vs top direction to 5+ users; ask which feels more trustworthy and easier to read",
              "First-click test: ask users to complete the key task; check the first click lands on the right control",
              "Squint test: blur the screen; the hero element and the data must still stand out"]
+INTENSITY_AUDIENCE = {"subtle": "public/civic audience", "balanced": "ops and analyst tools",
+                      "bold": "pre-sales, story, events"}
 BASELINE_FALLBACK = "civic-paper"
 _TOKEN_COLS = ("basemap_recipe", "surface_recipe", "motion_recipe", "marker_grammar")
 
@@ -40,6 +42,10 @@ def parse_kv(cell):
     return out
 
 
+class UnknownDirection(ValueError):
+    pass
+
+
 def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=None):
     ids = list(dict.fromkeys(split_list(problem.get("direction_ids", ""))))
     rows = [r for r in (get_by_id("direction", i, data_dir) for i in ids) if r]
@@ -47,15 +53,17 @@ def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=Non
     if direction_id:
         forced = get_by_id("direction", direction_id, data_dir)
         if not forced:
-            raise ValueError(f"Unknown direction {direction_id!r}")
+            raise UnknownDirection(f"Unknown direction {direction_id!r}")
         rows = [forced] + [r for r in rows if r["id"] != forced["id"]]
     if not rows:
         return None
     source = "override" if intensity else "problem"
+    reason = "override via --intensity"
     if not intensity:
         intensity = problem.get("intensity_default", "")
         if intensity not in INTENSITY_ORDER:
             intensity = "balanced"
+        reason = f"default for {problem.get('id', 'problem')}: {INTENSITY_AUDIENCE[intensity]}"
     idx = INTENSITY_ORDER.index
 
     def supports(r):
@@ -67,7 +75,7 @@ def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=Non
 
     def dist(r):
         u = used(r)
-        return abs(idx(u) - idx(intensity)) if u else 9
+        return abs(idx(u) - idx(intensity)) if u else len(INTENSITY_ORDER)
     notes = []
     chosen = [r for r in rows if supports(r)]
     if forced and not supports(forced):
@@ -94,11 +102,12 @@ def build_signature(problem, data_dir=DATA_DIR, intensity=None, direction_id=Non
     tokens = [[f"{c.split('_')[0]}.{k}" if k else c.split("_")[0], v]
               for c in _TOKEN_COLS for k, v in parse_kv(top[c])]
     tokens += [["type_pair", top["type_pair"]], ["accent_strategy", top["accent_strategy"]]]
-    return {"intensity": intensity, "intensity_source": source, "directions": chosen,
+    return {"intensity": intensity, "intensity_source": source, "intensity_reason": reason,
+            "directions": chosen,
             "fallback_note": note,
             "baseline": {"id": base["id"], "name": base["name"], "intensity": "subtle",
                          "stripped": stripped},
-            "locked": LOCKED_BASE + split_list(top["locked"]), "tokens": tokens,
+            "locked": LOCKED_BASE, "direction_keeps": split_list(top["locked"]), "tokens": tokens,
             "hero_element": top["hero_element"],
             "variations": [[k, v] for k, v in parse_kv(top["variation_axes"])],
             "tests": TEST_PLAN}
@@ -146,7 +155,7 @@ def _group_tokens(tokens):
 def _render_signature(sig):
     if not sig:
         return ["- (no directions linked)"]
-    out = [f"- Intensity: **{sig['intensity']}** ({sig['intensity_source']})"]
+    out = [f"- Intensity: **{sig['intensity']}** ({sig['intensity_reason']})"]
     out += [f"- {'Primary' if i == 0 else 'Alternative'}: **{d['name']}** [{d['id']}] - {d['mood']}"
             for i, d in enumerate(sig["directions"])]
     if sig["fallback_note"]:
@@ -155,9 +164,11 @@ def _render_signature(sig):
     if b and b.get("stripped"):
         out.append(f"- Safe baseline: {b['name']} with signature removed "
                    "(locked conventions, default markers, no hero)")
-    elif b:
+    else:
         out.append(f"- Safe baseline: {b['name']} [{b['id']}] (subtle)")
     out += ["", "### Locked conventions", *[f"- {x}" for x in sig["locked"]],
+            *(["", "### Direction must-keeps", *[f"- {x}" for x in sig["direction_keeps"]]]
+              if sig["direction_keeps"] else []),
             "", "### Tokens (top direction)", "| Token | Value |", "|---|---|",
             *[f"| {g} | {v.replace('|', '/')} |" for g, v in _group_tokens(sig["tokens"])],
             "", "### Hero element", sig["hero_element"] or "n/a"]
@@ -226,12 +237,12 @@ def persist(markdown, out_dir, project, force=False, fallback=""):
 
 
 def main_blueprint(args):
-    try:
-        bp = build_blueprint(args.query, args.data_dir, args.intensity, args.direction)
-    except ValueError as e:
-        ids = ", ".join(r["id"] for r in load_rows("direction", args.data_dir))
-        print(f"{e}. Available: {ids}", file=sys.stderr)
-        return 2
+    if args.direction:
+        ids = [r["id"] for r in load_rows("direction", args.data_dir)]
+        if args.direction not in ids:
+            print(f"Unknown direction {args.direction!r}. Available: {', '.join(ids)}", file=sys.stderr)
+            return 2
+    bp = build_blueprint(args.query, args.data_dir, args.intensity, args.direction)
     if bp is None:
         ids = ", ".join(r["id"] for r in load_rows("problem", args.data_dir))
         print(f'No problem matched "{args.query}". Available: {ids}')

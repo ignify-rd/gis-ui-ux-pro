@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from core import DATA_DIR, load_rows, split_list
-from schema import COLUMNS, ENUMS, FILES, STACKS
+from schema import COLUMNS, ENUMS, FILES, INTENSITY_ORDER, STACKS
 
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
@@ -66,6 +66,10 @@ def validate(data_dir=DATA_DIR):
                     if x not in ENUMS["intensity"]:
                         errs.append(f"{fname} [{rid}] intensity_range: {x!r} not in "
                                     f"{sorted(ENUMS['intensity'])}")
+                pos = sorted(INTENSITY_ORDER.index(x) for x in rng if x in INTENSITY_ORDER)
+                if pos and pos != list(range(pos[0], pos[-1] + 1)):
+                    errs.append(f"{fname} [{rid}] intensity_range: {r['intensity_range']!r} "
+                                f"has a gap in {INTENSITY_ORDER}")
                 if r["intensity_default"] in ENUMS["intensity"] and r["intensity_default"] not in rng:
                     errs.append(f"{fname} [{rid}] intensity_range: must include "
                                 f"intensity_default {r['intensity_default']!r}")
@@ -100,8 +104,9 @@ def validate(data_dir=DATA_DIR):
             continue
         known = [d for d in dids if d in dirs]
         linked.update((pid, d) for d in known)
-        if known and pr["intensity_default"] in ENUMS["intensity"] and not any(pr["intensity_default"] in split_list(dirs[d]["intensity_range"])
-                             for d in known):
+        want = pr["intensity_default"]
+        supported = any(want in split_list(dirs[d]["intensity_range"]) for d in known)
+        if known and want in ENUMS["intensity"] and not supported:
             errs.append(f"problems.csv [{pid}] intensity_default: {pr['intensity_default']!r} "
                         f"not in intensity_range of any linked direction")
     fits = {(p, d["id"]) for d in dirs.values() for p in split_list(d["fits_problems"])

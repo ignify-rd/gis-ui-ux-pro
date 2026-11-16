@@ -85,7 +85,7 @@ Map products tend to look alike. The skill gives each one a distinct but familia
 - **Signature zones** - basemap recipe, panel surface, type pair (open-licensed fonts), one accent, motion, marker grammar and exactly one hero element.
 - **Intensity** - `subtle` (public and civic), `balanced` (ops and analyst tools), `bold` (pre-sales, story, events). Each problem has a default; `--intensity` overrides it.
 
-The blueprint's Signature section suggests two directions plus a safe `subtle` baseline, the locked conventions, a token table, the hero element with variations, and a short user-test plan. The signature never recolours data or moves controls, and removing it leaves a fully usable app. In Claude, the skill runs a short discovery (at most 3 questions), presents the directions with text sketches, can produce an optional single-file MapLibre + OpenFreeMap mock (or hand the tokens to `impeccable`), and self-critiques before delivering.
+The blueprint's Signature section suggests two directions plus a safe `subtle` baseline, the locked conventions, a token table, the hero element with variations, and a short user-test plan. All suggested fonts are SIL Open Font License. The signature never recolours data or moves controls, and removing it leaves a fully usable app. In Claude, the skill runs a short discovery (at most 3 questions), presents the directions with text sketches, can produce an optional single-file MapLibre + OpenFreeMap mock (or hand the tokens to `impeccable`), and self-critiques before delivering.
 
 ## Contributing
 

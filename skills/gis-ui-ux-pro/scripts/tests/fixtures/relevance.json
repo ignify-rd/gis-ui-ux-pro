@@ -324,5 +324,15 @@
     "domain": "stack",
     "stack": "ogc",
     "expected_id": "ogc-04"
+  },
+  {
+    "query": "map signature for a harbour ops screen",
+    "domain": "direction",
+    "expected_id": "signal-track"
+  },
+  {
+    "query": "citizen complaints map for residents",
+    "domain": "problem",
+    "expected_id": "service-requests"
   }
 ]

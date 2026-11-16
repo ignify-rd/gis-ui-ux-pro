@@ -92,6 +92,11 @@ class TestValidate(unittest.TestCase):
         d = self.mutated("directions.csv", "balanced,balanced,", "balanced,subtle,")
         self.one_error(d, "intensity_range")
 
+    def test_intensity_range_must_be_contiguous(self):
+        d = self.mutated("directions.csv", "subtle;balanced,deformation-insar;ndvi-vegetation",
+                         "subtle;bold,deformation-insar;ndvi-vegetation")
+        self.one_error(d, "intensity_range")
+
     def test_fits_problems_unknown(self):
         d = self.mutated("directions.csv", "night-ops,night-ops,calm,balanced,balanced,flood-monitoring",
                          "night-ops,night-ops,calm,balanced,balanced,flood-monitoring;nope")
