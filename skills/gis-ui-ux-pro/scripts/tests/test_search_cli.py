@@ -78,6 +78,9 @@ class TestSearchCli(unittest.TestCase):
         self.assertIn("--direction", r.stderr)
         self.assertNotIn("Traceback", r.stderr)
 
+    def test_empty_direction_requires_blueprint(self):
+        self.assertEqual(run("flood", "--direction", "").returncode, 2)
+
     @unittest.expectedFailure  # Task 5 removes this decorator
     def test_unknown_direction_exit_2(self):
         r = run("flood river gauge", "--blueprint", "--direction", "nope")

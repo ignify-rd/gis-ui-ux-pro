@@ -47,6 +47,10 @@ class TestCore(unittest.TestCase):
         self.assertEqual(core.detect_domain("dark basemap colors")[0], "palette")
         self.assertNotEqual(core.detect_domain("theme")[0], "direction")
 
+    def test_detect_domain_normalizes_plurals(self):
+        self.assertEqual(core.detect_domain("layer panel colors"),
+                         core.detect_domain("layer panel color"))
+
     def test_search_stack(self):
         r = core.search("attribution", stack="mapbox-maplibre", data_dir=FIX)
         self.assertEqual(r["domain"], "stack")

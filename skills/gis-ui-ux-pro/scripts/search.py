@@ -60,12 +60,12 @@ def main(argv=None):
 
     if not Path(args.data_dir).is_dir():
         p.error(f"--data-dir not found: {args.data_dir}")
-    if (args.intensity or args.direction) and not args.blueprint:
+    if (args.intensity is not None or args.direction is not None) and not args.blueprint:
         p.error("--intensity/--direction require --blueprint")
     if args.blueprint:
         if args.json:
             args.format = "json"
-        import blueprint  # lazy: created in Task 4
+        import blueprint  # lazy import
         return blueprint.main_blueprint(args)
 
     res = core.search(args.query, args.domain, args.n, args.data_dir, args.stack)
