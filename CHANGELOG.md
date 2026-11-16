@@ -1,3 +1,26 @@
+## 0.2.0 - 2026-11-16
+
+### Added
+
+- Map signature system: `data/directions.csv` with 12 directions (civic-paper, field-atlas, night-ops, signal-track, orbital-lightbox, newsroom-story, canvas-studio, analytic-glow, living-atmosphere, conservation-signal, urban-twin, heritage-atlas), each with basemap/surface/motion/marker recipes, an open-licensed type pair, one hero element, locked conventions, variation axes and pitfalls. Directions reference palette ids only and never define data ramps.
+- `-d direction` domain; `--intensity subtle|balanced|bold` and `--direction <id>` for `--blueprint` (exit 2 without `--blueprint`; an unknown direction exits 2 and lists the ids).
+- Blueprint "Signature" section before the checklist: audience and intensity with the reason, two directions plus a safe `subtle` baseline, locked conventions, token table, hero element with variations, and a user-test plan. JSON blueprints gain a `signature` object.
+- `problems.csv` columns `direction_ids` and `intensity_default`; 6 new playbooks: service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin (28 problems).
+- 19 new rules (122 total), including UTC time filters (T10), popups as text not HTML (I10), personal data by role (I11), export map elements (D11), case workflow with audit (D12), reduced motion for the camera (A13), glass panels (A14), signature never changes data encoding (S19), designed dark basemaps (S20) and command bar beside search (I16).
+- 8 new widgets (30 total): data-import, raster-display, query-builder, admin-drilldown, feature-editor, case-workflow, sync-status, ai-command.
+- Stack guides `-s cesium` (9 rows) and `-s ogc` (8 rows, WMS/WFS/WMTS clients).
+- SKILL.md designer workflow: discovery (at most 3 questions), two directions plus a safe baseline with text sketches, optional visual mock (`impeccable` hand-off or a single MapLibre + OpenFreeMap HTML file with visible attribution), self-critique, and a 5-line summary output style.
+- Trigger queries: 3 should-trigger (signature/visual direction for map apps) and 2 should-not-trigger (brand identity, marketing site theme).
+
+### Changed
+
+- Domain auto-detect now normalizes plurals (colors -> color, colormaps/palettes -> palette).
+- `histogram-class-breaks` and `export-report` widgets extended instead of adding new widgets.
+- S14 (legend reflects what is drawn) severity medium -> high.
+- D02 (data freshness) now also covers offline sync and unsynced edits; its evidence is now `synth`.
+- Directions `analytic-glow` no longer lists real-estate or urban-planning, and `urban-twin` no longer lists real-estate, in `fits_problems`: they are balanced/bold only while those problems default to subtle.
+- Plugin and marketplace version 0.2.0; README data table and install from `ignify-rd/gis-ui-ux-pro`.
+
 ## 0.1.0 - 2026-11-14
 
 - Add `SKILL.md` (frontmatter `name` + `description`, workflows, query contract, worked example), plugin manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`) and `README.md`.

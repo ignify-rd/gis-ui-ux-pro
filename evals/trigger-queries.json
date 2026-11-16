@@ -9,7 +9,10 @@
     "Choose a symbology for NDVI crop-stress anomalies on a Leaflet map",
     "Design the UX for an alert triage screen for deforestation detections on a map",
     "Which basemap and layer order works best for a wildfire burned-area web app?",
-    "Show me best practice for a confidence threshold slider for AI object detections on satellite imagery"
+    "Show me best practice for a confidence threshold slider for AI object detections on satellite imagery",
+    "Our city service-request map looks like every other WebGIS app; give it its own visual direction without confusing residents",
+    "Propose two signature looks for a dark vessel-tracking ops screen in MapLibre, plus a safe fallback",
+    "Make our deck.gl pre-sales demo map feel bold and memorable but keep the legend and controls standard"
   ],
   "should_not_trigger": [
     "Style a generic SaaS analytics dashboard with KPI cards, a sidebar and dark mode",
@@ -21,6 +24,8 @@
     "Design a settings page with toggles and tabs for a mobile banking app",
     "Set up a PostGIS database and index for 10 million polygons",
     "Explain how SAR backscatter works for a physics lecture",
-    "Pick a font pairing and colour palette for a portfolio website"
+    "Pick a font pairing and colour palette for a portfolio website",
+    "Design a logo and brand identity for a geospatial analytics company",
+    "Create a colour theme and typography for our company's marketing website"
   ]
 }
