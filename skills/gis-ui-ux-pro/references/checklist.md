@@ -100,7 +100,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 
 - [ ] Can a new user state the one question this screen answers and find the answer within about 5 seconds? (B01, high)
 - [ ] Does each quantity use one unit in every widget on the screen (KPI; axis; table; popup) with the unit printed? (B04, high)
-- [ ] Do KPI totals equal the table and chart sums under the same filters with the filter scope stated beside the total? (B05, high)
+- [ ] If two visible numbers disagree or a total has no stated filter scope: do KPI totals equal the table and chart sums under the same filters, with the scope stated beside the total (not a unit or precision issue)? (B05, high)
 - [ ] Are measured, estimated and forecast values marked by label or badge and line style, not only colour? (B06, high)
 - [ ] Can each detection be confirmed or rejected with undo before publishing and is the unreviewed count visible? (B09, high)
 - [ ] Are numbers rounded to the precision the decision needs, the same way everywhere, with no -0.00 or scientific notation? (B02, medium)
