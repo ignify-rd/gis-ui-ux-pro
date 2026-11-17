@@ -339,6 +339,10 @@
   {"query": "back keeps list position", "domain": "rule", "expected_id": "B07"},
   {"query": "toast message names subject", "domain": "rule", "expected_id": "B08"},
   {"query": "review detections before publish", "domain": "rule", "expected_id": "B09"},
+  {"query": "daily values calendar seasonality", "domain": "widget", "expected_id": "calendar-heatmap"},
+  {"query": "detection chip confirm reject", "domain": "widget", "expected_id": "detection-inspector"},
+  {"query": "marker shows value number", "domain": "widget", "expected_id": "value-marker"},
+  {"query": "aoi thumbnail area summary", "domain": "widget", "expected_id": "aoi-summary-card"},
   {
     "query": "citizen complaints map for residents",
     "domain": "problem",
