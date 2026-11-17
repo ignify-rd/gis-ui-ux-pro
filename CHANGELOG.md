@@ -1,3 +1,9 @@
+## 0.2.2 - 2026-11-17
+
+### Added
+
+- `scripts/layout_check.py` (optional, needs Playwright): opens a running map screen at several widths, optionally clicks to open panels, and reports attribution or map controls covered or off screen (C01, C02, L11, C04), overlapping floating panels (L11), text below `--min-font`, cut-off text (D10), sideways page scroll and the map's share of the viewport. Text or JSON output, optional screenshots. The review workflow in SKILL.md runs it when the app is running locally.
+
 ## 0.2.1 - 2026-11-16
 
 ### Added

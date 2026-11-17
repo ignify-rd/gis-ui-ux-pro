@@ -60,8 +60,8 @@ class TestPackaging(unittest.TestCase):
         market = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
         self.assertEqual(plugin["name"], "gis-ui-ux-pro")
         self.assertEqual(market["plugins"][0]["name"], plugin["name"])
-        self.assertEqual(plugin["version"], "0.2.1")
-        self.assertEqual(market["plugins"][0]["version"], "0.2.1")
+        self.assertEqual(plugin["version"], "0.2.2")
+        self.assertEqual(market["plugins"][0]["version"], "0.2.2")
 
     def test_all_example_commands_run(self):
         blocks = re.findall(r"```[a-z]*\n(.*?)```", skill_text(), re.S)

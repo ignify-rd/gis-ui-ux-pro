@@ -4,7 +4,7 @@ A Claude Code skill for designing, building and reviewing the UI/UX of web maps,
 
 It covers what generic UI skills don't: the map surface, cartography and color ramps, layers and legends, temporal comparison, EO specifics and map accessibility. Generic styling (fonts, brand colors, buttons) is left to `ui-ux-pro-max` / `impeccable`.
 
-No dependencies beyond Python 3. Works on Windows (Git Bash, PowerShell) and POSIX.
+No dependencies beyond Python 3. Works on Windows (Git Bash, PowerShell) and POSIX. The optional layout checker needs Playwright.
 
 ## Install
 
@@ -51,6 +51,17 @@ search.py "<problem description>" --blueprint [--intensity subtle|balanced|bold]
 - `--intensity` and `--direction` work only with `--blueprint` (otherwise exit 2); an unknown direction id exits 2 and lists the ids.
 - `--persist` writes `gis-design/<slug>/BLUEPRINT.md` and never overwrites without `--force`.
 - If `python` is not found, use `python3` or `py -3`.
+
+### Layout check (optional)
+
+Measures a running map screen in a headless browser at several widths and reports attribution or controls that are covered or off screen, floating panels that overlap, text below a minimum size, text cut off, sideways page scroll, and how much of the viewport the map keeps.
+
+```bash
+python -m pip install playwright && python -m playwright install chromium
+python skills/gis-ui-ux-pro/scripts/layout_check.py http://localhost:5173/ --click "#open-chat" --screenshot ./shots
+```
+
+Options: `--sizes 1280x800,1440x900,1920x1080`, `--click SELECTOR` (repeatable, runs before measuring), `--wait MS`, `--wait-for SELECTOR`, `--min-font PX` (default 12), `--screenshot DIR`, `--json`. Exit codes: `0` no high/medium findings, `1` findings, `2` bad arguments, `3` Playwright missing, `4` the page or a selector failed. It reads the DOM only, so labels drawn in the map canvas need a look at the screenshot.
 
 ## Data
 

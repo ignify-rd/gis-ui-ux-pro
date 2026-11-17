@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<style>
+  body { margin: 0; font: 14px sans-serif; }
+  .maplibregl-map { position: absolute; inset: 0 400px 0 0; background: #ccd; }
+  .maplibregl-ctrl-bottom-right { position: absolute; right: 0; bottom: 0; }
+  .maplibregl-ctrl-top-right { position: absolute; right: 0; top: 0; }
+  .maplibregl-ctrl { width: 30px; height: 30px; background: #fff; }
+  .maplibregl-ctrl-attrib { width: 160px; height: 20px; font-size: 12px; }
+  #chat { position: absolute; right: 0; top: 0; bottom: 0; width: 440px; background: #eee; }
+  #alert { position: absolute; left: 600px; bottom: 0; width: 360px; height: 60px; background: #fdd; }
+  #layers { position: absolute; left: 10px; top: 10px; width: 300px; height: 300px; background: #fff; }
+  #legend { position: absolute; left: 200px; top: 200px; width: 200px; height: 100px; background: #ffe; }
+  .tiny { font-size: 9px; }
+  .cut { width: 60px; overflow: hidden; white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="maplibregl-map">
+    <div class="maplibregl-ctrl-top-right"><div class="maplibregl-ctrl">+</div></div>
+    <div class="maplibregl-ctrl-bottom-right"><div class="maplibregl-ctrl maplibregl-ctrl-attrib">© OpenStreetMap</div></div>
+  </div>
+  <div id="alert">Alert covering the attribution</div>
+  <div id="layers"><span class="tiny">tiny label</span><div class="cut">a very long layer name that is cut</div></div>
+  <div id="legend">Legend</div>
+  <div id="chat">Chat</div>
+</body>
+</html>
