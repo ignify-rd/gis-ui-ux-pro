@@ -7,7 +7,7 @@ COLUMNS = {
                 "layers_default_off", "symbology", "widgets", "temporal", "interactions",
                 "alerts", "pitfalls", "data_sources", "examples", "layout_id",
                 "palette_ids", "rule_ids", "evidence", "source_url", "direction_ids",
-                "intensity_default"],
+                "intensity_default", "glance_question", "glance_answer", "trust", "flow"],
     "direction": ["id", "name", "mood", "intensity_default", "intensity_range",
                   "fits_problems", "basemap_recipe", "reference_basemaps", "surface_recipe",
                   "type_pair", "accent_strategy", "motion_recipe", "marker_grammar",
@@ -53,7 +53,8 @@ ENUMS = {
 
 # Cells holding ';'-separated lists.
 LIST_COLUMNS = {"rule_ids", "palette_ids", "stops_hex", "dark_basemap_stops_hex",
-                "required_states", "direction_ids", "intensity_range", "fits_problems"}
+                "required_states", "direction_ids", "intensity_range", "fits_problems",
+                "trust", "flow"}
 
 INTENSITY_ORDER = ("subtle", "balanced", "bold")
 
