@@ -105,8 +105,8 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Can each detection be confirmed or rejected with undo before publishing and is the unreviewed count visible? (B09, high)
 - [ ] Are numbers rounded to the precision the decision needs, the same way everywhere, with no -0.00 or scientific notation? (B02, medium)
 - [ ] Are time-axis ticks thinned to a calendar unit with horizontal labels (or the series aggregated or shown as a calendar heatmap)? (B03, medium)
-- [ ] Does closing a detail restore the list scroll position; filters and map view? (B07, medium)
-- [ ] Does each toast name what it refers to and the next step; and do errors say what failed and how to retry? (B08, medium)
+- [ ] Does closing a detail restore the list scroll position, filters and map view? (B07, medium)
+- [ ] Does each toast name what it refers to and the next step, and do errors say what failed and how to retry? (B08, medium)
 
 ## Layout
 
