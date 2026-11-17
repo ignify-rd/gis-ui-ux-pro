@@ -12,6 +12,7 @@
 
 - D09 applies to any list; I04 covers tooltips.
 - Keyword fixes: VHR ship detection matches object-detection, drinking-water lakes match surface-water-drought. The relevance test supports `top1` and `min_margin`.
+- Review workflow: cite a B rule only when the screen visibly shows the defect; B05-B08 state when they apply. S05 covers binning a continuous index into named classes (very low to very high) without stating method and breaks.
 - Plugin and marketplace version 0.3.0.
 
 ## 0.2.3 - 2026-11-17
