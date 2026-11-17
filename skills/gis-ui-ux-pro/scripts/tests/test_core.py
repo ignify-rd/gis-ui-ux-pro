@@ -56,6 +56,34 @@ class TestCore(unittest.TestCase):
         self.assertEqual(r["domain"], "stack")
         self.assertEqual(r["hits"][0]["id"], "MB-01")
 
+    def test_widget_refs(self):
+        self.assertEqual(core.widget_refs("[kpi-tile] a + [legend] b"), ["kpi-tile", "legend"])
+
+    def test_paren_tokens(self):
+        self.assertEqual(core.paren_tokens("as-of (D02, B04)"), ["D02", "B04"])
+
+    def test_contract_none_when_empty(self):
+        self.assertIsNone(core.contract({}))
+        self.assertIsNone(core.contract({"glance_question": "", "trust": " "}))
+        c = core.contract({"glance_question": "Q?", "trust": "a;b"})
+        self.assertEqual(c["trust"], ["a", "b"])
+        self.assertEqual(c["flow"], [])
+
+    def test_bracket_ids_not_indexed(self):
+        import shutil
+        import tempfile
+        before = core.search("layer toggle", "problem", 3, FIX)["hits"]
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "data"
+            shutil.copytree(FIX, d)
+            p = d / "problems.csv"
+            p.write_text(p.read_text(encoding="utf-8-sig").replace(
+                "[W-01] gauge levels", "[layer-toggle] [W-01] gauge levels", 1),
+                encoding="utf-8", newline="")
+            after = core.search("layer toggle", "problem", 3, d)["hits"]
+        self.assertEqual([(h["id"], h["_score"]) for h in before],
+                         [(h["id"], h["_score"]) for h in after])
+
     def test_get_by_id(self):
         self.assertEqual(core.get_by_id("rule", "A-01", FIX)["severity"], "critical")
         self.assertIsNone(core.get_by_id("rule", "nope", FIX))

@@ -33,7 +33,7 @@ STACKS = ("mapbox-maplibre", "leaflet", "openlayers", "deckgl", "cesium", "ogc")
 SEARCH_FIELDS = {
     "rule": ["name", "keywords", "do", "dont", "why", "category"],
     "problem": ["name", "keywords", "user_questions", "layers_default_on", "symbology",
-                "widgets", "pitfalls", "examples"],
+                "widgets", "pitfalls", "examples", "glance_question", "glance_answer"],
     "palette": ["name", "keywords", "use_for", "type"],
     "widget": ["name", "keywords", "purpose", "use_when"],
     "layout": ["name", "keywords", "use_when", "regions"],

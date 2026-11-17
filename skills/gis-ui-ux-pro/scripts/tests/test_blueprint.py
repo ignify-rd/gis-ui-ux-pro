@@ -13,7 +13,7 @@ FIX = HERE / "fixtures" / "data"
 SEARCH = str(HERE.parent / "search.py")
 
 SECTIONS = ["# Dashboard Blueprint: ", "## Matched problem", "## Key user questions",
-            "## Layout", "## Layers", "## Palettes", "## Widgets", "## Screen spec", "## Temporal",
+            "## Dashboard contract", "## Layout", "## Layers", "## Palettes", "## Widgets", "## Screen spec", "## Temporal",
             "## Interactions", "## Alerts & severity", "## Pitfalls", "## Rules to apply",
             "## Signature", "## Pre-delivery checklist"]
 
@@ -42,6 +42,35 @@ class TestBlueprint(unittest.TestCase):
         self.assertEqual(pos, sorted(pos))
         self.assertIn("[side|map]", md)
         self.assertIn("- [ ] Is every color-coded status", md)
+
+    def test_contract_in_json(self):
+        bp = blueprint.build_blueprint("flood river gauge", FIX)
+        self.assertEqual(len(bp["contract"]["trust"]), 3)
+        md = blueprint.render_markdown(bp)
+        self.assertIn("## Dashboard contract (synth default)\nGlance: Where is water rising now?", md)
+        self.assertIn("\nFlow:\n1. open map", md)
+
+    def test_render_without_contract(self):
+        import csv
+        import shutil
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "data"
+            shutil.copytree(FIX, d)
+            p = d / "problems.csv"
+            with open(p, encoding="utf-8-sig", newline="") as f:
+                rd = csv.DictReader(f)
+                names, rows = rd.fieldnames, list(rd)
+            for r in rows:
+                for c in ("glance_question", "glance_answer", "trust", "flow"):
+                    r[c] = ""
+            with open(p, "w", encoding="utf-8", newline="") as f:
+                w = csv.DictWriter(f, names)
+                w.writeheader()
+                w.writerows(rows)
+            bp = blueprint.build_blueprint("flood river gauge", d)
+            self.assertIsNone(bp["contract"])
+            md = blueprint.render_markdown(bp)
+        self.assertIn("## Dashboard contract (synth default)\n- (none)", md)
 
     def test_no_match_returns_none(self):
         self.assertIsNone(blueprint.build_blueprint("zzzz", FIX))

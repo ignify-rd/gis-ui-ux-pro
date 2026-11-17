@@ -6,7 +6,8 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from core import DATA_DIR, get_by_id, load_rows, parse_kv, search, split_list  # noqa: E402
+from core import (DATA_DIR, contract, get_by_id, load_rows, parse_kv, resolve_widget,  # noqa: E402
+                  search, split_list)  # noqa: E402
 from schema import INTENSITY_ORDER, MAP_CORNERS  # noqa: E402
 
 SEV_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -197,10 +198,7 @@ def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id
                             for i in split_list(problem["palette_ids"])) if p]
     widgets = []
     for item in split_list(problem["widgets"]):
-        exact = get_by_id("widget", item, data_dir)  # an item may name a widget id directly
-        h = [exact] if exact else search(item, "widget", 1, data_dir)["hits"]
-        widgets.append({"item": item,
-                        "widget": {k: v for k, v in h[0].items() if k != "_score"} if h else None})
+        widgets.append({"item": item, "widget": resolve_widget(item, data_dir)})
     signature = build_signature(problem, data_dir, intensity, direction_id)
     all_rules = load_rows("rule", data_dir)
     by_id = {r["id"]: r for r in all_rules}
@@ -217,7 +215,7 @@ def build_blueprint(description, data_dir=DATA_DIR, intensity=None, direction_id
             "runner_up_score": round(hits[1]["_score"], 2) if len(hits) > 1 else None,
             "layout": layout, "palettes": palettes, "widgets": widgets,
             "rules": rules, "checklist": checklist, "signature": signature,
-            "screen": build_screen(layout, widgets)}
+            "screen": build_screen(layout, widgets), "contract": contract(problem)}
 
 
 def _slot_table(rows):
@@ -283,6 +281,16 @@ def _bullets(cell):
     return [f"- {x}" for x in split_list(cell)] or ["- (none)"]
 
 
+def _render_contract(c):
+    out = ["## Dashboard contract (synth default)"]
+    if not c:
+        return out + ["- (none)"]
+    out += [f"Glance: {c['glance_question']}", f"- Answered by: {c['glance_answer']}", "Trust:",
+            *[f"- {x}" for x in c["trust"]], "Flow:",
+            *[f"{i}. {x}" for i, x in enumerate(c["flow"], 1)]]
+    return out
+
+
 def _syn(row):
     return " (synth)" if row.get("evidence") == "synth" else ""
 
@@ -295,7 +303,8 @@ def render_markdown(bp, project=None):
     out += ["", "## Matched problem", f"- **{p['name']}** [{p['id']}]{_syn(p)} (score {bp['score']})",
             "- Runner-up: " + (f"{bp['runner_up']} (score {bp['runner_up_score']})"
                               if bp["runner_up"] else "none"),
-            "", "## Key user questions", *_bullets(p["user_questions"]), "", "## Layout"]
+            "", "## Key user questions", *_bullets(p["user_questions"]),
+            "", *_render_contract(bp.get("contract")), "", "## Layout"]
     if lay:
         out += [f"**{lay['name']}** [{lay['id']}]", f"- Regions: {lay['regions']}",
                 f"- Mobile: {lay['mobile_variant'] or 'n/a'}", "", "```", lay["ascii_sketch"], "```"]

@@ -5,10 +5,12 @@ import re
 import sys
 from pathlib import Path
 
-from core import DATA_DIR, load_rows, parse_kv, split_list
+from core import (DATA_DIR, load_rows, paren_tokens, parse_kv, resolve_widget, split_list,
+                  widget_refs)
 from schema import COLUMNS, ENUMS, FILES, INTENSITY_ORDER, SLOTS, STACKS
 
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
+RULE_LIKE = re.compile(r"^[A-Z]+-?\d+$")
 
 
 def _check_enum(errs, fname, rid, col, row, enum):
@@ -115,6 +117,42 @@ def validate(data_dir=DATA_DIR):
         errs.append(f"directions.csv [{did}] fits_problems: missing {pid!r} (linked by problem direction_ids)")
     for pid, did in sorted(fits - linked):
         errs.append(f"directions.csv [{did}] fits_problems: {pid!r} does not link {did!r} in direction_ids")
+    rule_ids, widget_ids = ids.get("rule", set()), ids.get("widget", set())
+    for pr in rows_by.get("problem", []):
+        pid = pr["id"]
+
+        def bad(col, msg, pid=pid):
+            errs.append(f"problems.csv [{pid}] {col}: {msg}")
+        q = pr["glance_question"].strip()
+        if not q:
+            bad("glance_question", "required")
+        elif not q.endswith("?") or q[:-1].count("?") or ";" in q:
+            bad("glance_question", "must end with one '?' and contain no ';'")
+        ans = pr["glance_answer"].strip()
+        if not ans:
+            bad("glance_answer", "required")
+        resolved = {w["id"] for w in (resolve_widget(i, data_dir) for i in split_list(pr["widgets"]))
+                    if w}
+        for w in widget_refs(ans):
+            if w not in widget_ids:
+                bad("glance_answer", f"unknown widget id {w!r}")
+            elif w not in resolved:
+                bad("glance_answer", f"widget {w!r} is not in the widgets cell")
+        linked_rules = set(split_list(pr["rule_ids"]))
+        for col, least in (("trust", 3), ("flow", 4)):
+            items = split_list(pr[col])
+            if len(items) < least:
+                bad(col, f"needs at least {least} ';' items, has {len(items)}")
+            if col == "flow":
+                for n, s in enumerate(items, 1):
+                    if "\u2192" not in s:
+                        bad(col, f"step {n} has no '\u2192'")
+            for tok in dict.fromkeys(paren_tokens(pr[col])):
+                if tok in rule_ids:
+                    if tok not in linked_rules:
+                        bad(col, f"cites {tok} which is not in rule_ids")
+                elif RULE_LIKE.match(tok):
+                    bad(col, f"unknown rule id {tok!r}")
     for w in rows_by.get("widget", []):
         for s in split_list(w["slot"]):
             if s not in SLOTS:

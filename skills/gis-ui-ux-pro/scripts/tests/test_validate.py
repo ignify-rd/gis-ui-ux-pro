@@ -30,6 +30,38 @@ class TestValidate(unittest.TestCase):
     def test_fixtures_valid(self):
         self.assertEqual(validate_data.validate(FIX), [])
 
+    def test_glance_question_needs_question_mark(self):
+        d = self.mutated("problems.csv", "Where is water rising now?", "Where is water rising now")
+        self.one_error(d, "problems.csv [flood-monitoring] glance_question")
+
+    def test_glance_unknown_widget(self):
+        d = self.mutated("problems.csv", "[W-01] gauge levels", "[W-99] gauge levels")
+        self.one_error(d, "problems.csv [flood-monitoring] glance_answer")
+
+    def test_glance_widget_not_in_widgets(self):
+        d = self.mutated("problems.csv", "[W-01] gauge levels", "[W-02] gauge levels")
+        self.one_error(d, "problems.csv [flood-monitoring] glance_answer")
+
+    def test_trust_needs_three_items(self):
+        d = self.mutated("problems.csv", ";as-of per gauge;unit m", ";as-of per gauge")
+        self.one_error(d, "problems.csv [flood-monitoring] trust")
+
+    def test_flow_needs_four_steps(self):
+        d = self.mutated("problems.csv", ";export → file named", "")
+        self.one_error(d, "problems.csv [flood-monitoring] flow")
+
+    def test_flow_step_needs_arrow(self):
+        d = self.mutated("problems.csv", "export → file named", "export file named")
+        self.one_error(d, "problems.csv [flood-monitoring] flow")
+
+    def test_contract_unknown_rule(self):
+        d = self.mutated("problems.csv", "gauge source (L-01)", "gauge source (Z-99)")
+        self.one_error(d, "problems.csv [flood-monitoring] trust")
+
+    def test_contract_rule_not_linked(self):
+        d = self.mutated("problems.csv", "L-01;Y-01", "Y-01")
+        self.one_error(d, "problems.csv [flood-monitoring] trust")
+
     def test_missing_column(self):
         d = self.mutated("palettes.csv", ",cvd_safe,", ",cvd,")
         errs = validate_data.validate(d)

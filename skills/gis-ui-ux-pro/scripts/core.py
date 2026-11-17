@@ -36,6 +36,17 @@ def normalize(text):
     return [SYNONYMS.get(t, t) for t in toks]
 
 
+WIDGET_REF = re.compile(r"\[([A-Za-z0-9-]+)\]")  # fixture ids are upper-case
+
+
+def widget_refs(text):
+    return WIDGET_REF.findall(text)
+
+
+def paren_tokens(text):
+    return [t for g in re.findall(r"\(([^)]*)\)", text) for t in re.split(r"[,;\s]+", g) if t]
+
+
 def split_list(cell):
     return [p.strip() for p in cell.split(";") if p.strip()]
 
@@ -137,8 +148,10 @@ def search(query, domain=None, n=3, data_dir=DATA_DIR, stack=None):
     toks = [t for t in toks if t not in noise]
     hits = []
     if toks and rows:
-        docs = [[t for t in normalize(" ".join(r.get(c, "") for c in SEARCH_FIELDS[domain]))
-                 if t not in noise] for r in rows]
+        def text(r):
+            s = " ".join(r.get(c, "") for c in SEARCH_FIELDS[domain])
+            return WIDGET_REF.sub("", s) if domain == "problem" else s  # ids are noise tokens
+        docs = [[t for t in normalize(text(r)) if t not in noise] for r in rows]
         ranked = sorted(zip(BM25(docs).scores(toks), range(len(rows))), key=lambda x: (-x[0], x[1]))
         hits = [dict(rows[i], _score=s) for s, i in ranked[:n] if s >= MIN_SCORE]
     return {"domain": domain, "auto_detected": auto, "runner_up": runner, "hits": hits,
@@ -150,3 +163,18 @@ def get_by_id(domain, id_, data_dir=DATA_DIR):
         if r["id"] == id_:
             return r
     return None
+
+
+def resolve_widget(item, data_dir=DATA_DIR):
+    """Widget row for a problem's `widgets` item: exact id, else top search hit, else None."""
+    exact = get_by_id("widget", item, data_dir)
+    if exact:
+        return exact
+    h = search(item, "widget", 1, data_dir)["hits"]
+    return {k: v for k, v in h[0].items() if k != "_score"} if h else None
+
+
+def contract(problem):
+    c = {k: (problem.get(k) or "").strip() for k in ("glance_question", "glance_answer")}
+    c.update({k: split_list(problem.get(k) or "") for k in ("trust", "flow")})
+    return c if any(c.values()) else None
