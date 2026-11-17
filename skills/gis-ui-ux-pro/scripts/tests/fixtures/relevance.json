@@ -347,5 +347,10 @@
     "query": "citizen complaints map for residents",
     "domain": "problem",
     "expected_id": "service-requests"
-  }
+  },
+  {"query": "ship detection very high resolution port", "domain": "problem", "expected_id": "object-detection", "top1": true},
+  {"query": "landslide screening new bare ground near susceptibility zones", "domain": "problem", "expected_id": "hazard-site-screening", "top1": true},
+  {"query": "drinking water supply lakes monitoring", "domain": "problem", "expected_id": "surface-water-drought", "top1": true, "min_margin": 1.0},
+  {"query": "weather temperature precipitation agriculture monitoring", "domain": "problem", "expected_id": "weather-monitoring", "top1": true},
+  {"query": "vegetation index time series aoi list", "domain": "problem", "expected_id": "vegetation-cover-admin", "top1": true}
 ]

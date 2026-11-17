@@ -20,6 +20,20 @@ class TestRelevance(unittest.TestCase):
                 ids = [h["id"] for h in res["hits"]]
                 self.assertIn(c["expected_id"], ids, f"{c['query']!r} -> {ids}")
 
+    def test_top1_cases(self):
+        for c in CASES:
+            if not c.get("top1"):
+                continue
+            with self.subTest(query=c["query"]):
+                res = core.search(c["query"], domain=c["domain"], n=3,
+                                  data_dir=core.DATA_DIR, stack=c.get("stack"))
+                hits = res["hits"]
+                self.assertEqual(hits[0]["id"], c["expected_id"],
+                                 f"{c['query']!r} -> {[h['id'] for h in hits]}")
+                if "min_margin" in c:
+                    margin = hits[0]["_score"] - hits[1]["_score"]
+                    self.assertGreaterEqual(margin, c["min_margin"], f"margin {margin:.2f}")
+
 
 if __name__ == "__main__":
     unittest.main()
