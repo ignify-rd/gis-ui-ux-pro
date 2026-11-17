@@ -45,6 +45,14 @@ class TestLayoutCheck(unittest.TestCase):
     def test_map_internals_not_reported_as_panels(self):
         self.assertFalse(any("maplibregl" in e for r, m, e in self.msgs if m.startswith("Overlaps")), self.msgs)
 
+    def test_small_parts_and_library_text_ignored(self):
+        self.assertFalse(any("thumb" in m + e for r, m, e in self.msgs), self.msgs)
+        self.assertFalse(any("5 km" in m for r, m, e in self.msgs), self.msgs)
+
+    def test_repeated_message_counted_once(self):
+        tiny = [f for f in self.rep["findings"] if "tiny label" in f["message"]]
+        self.assertEqual([f["count"] for f in tiny], [2])
+
 
 if __name__ == "__main__":
     unittest.main()

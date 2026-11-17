@@ -61,7 +61,7 @@ python -m pip install playwright && python -m playwright install chromium
 python skills/gis-ui-ux-pro/scripts/layout_check.py http://localhost:5173/ --click "#open-chat" --screenshot ./shots
 ```
 
-Options: `--sizes 1280x800,1440x900,1920x1080`, `--click SELECTOR` (repeatable, runs before measuring), `--wait MS`, `--wait-for SELECTOR`, `--min-font PX` (default 12), `--screenshot DIR`, `--json`. Exit codes: `0` no high/medium findings, `1` findings, `2` bad arguments, `3` Playwright missing, `4` the page or a selector failed. It reads the DOM only, so labels drawn in the map canvas need a look at the screenshot.
+Options: `--sizes 1280x800,1440x900,1920x1080`, `--click SELECTOR` (repeatable, runs before measuring), `--settle MS` (wait up to this long for the network to go idle, default 15000), `--wait MS` (extra wait after that), `--wait-for SELECTOR`, `--min-font PX` (default 12), `--screenshot DIR`, `--json`. Exit codes: `0` no high/medium findings, `1` findings, `2` bad arguments, `3` Playwright missing, `4` the page or a selector failed. It reads the DOM only, so labels drawn in the map canvas need a look at the screenshot.
 
 ## Data
 

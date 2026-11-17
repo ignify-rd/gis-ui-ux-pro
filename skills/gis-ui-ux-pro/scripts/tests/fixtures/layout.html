@@ -12,6 +12,8 @@
   #alert { position: absolute; left: 600px; bottom: 0; width: 360px; height: 60px; background: #fdd; }
   #layers { position: absolute; left: 10px; top: 10px; width: 300px; height: 300px; background: #fff; }
   #legend { position: absolute; left: 200px; top: 200px; width: 200px; height: 100px; background: #ffe; }
+  .thumb { position: absolute; left: 500px; top: 500px; width: 20px; height: 20px; background: #888; }
+  .maplibregl-ctrl-scale { font-size: 10px; }
   .tiny { font-size: 9px; }
   .cut { width: 60px; overflow: hidden; white-space: nowrap; }
 </style>
@@ -20,9 +22,11 @@
   <div class="maplibregl-map">
     <div class="maplibregl-ctrl-top-right"><div class="maplibregl-ctrl">+</div></div>
     <div class="maplibregl-ctrl-bottom-right"><div class="maplibregl-ctrl maplibregl-ctrl-attrib">© OpenStreetMap</div></div>
+    <div class="maplibregl-ctrl-bottom-left"><div class="maplibregl-ctrl maplibregl-ctrl-scale">5 km</div></div>
   </div>
+  <div class="thumb"></div><div class="thumb" style="left: 510px"></div>
   <div id="alert">Alert covering the attribution</div>
-  <div id="layers"><span class="tiny">tiny label</span><div class="cut">a very long layer name that is cut</div></div>
+  <div id="layers"><span class="tiny">tiny label</span><p class="tiny">tiny label</p><div class="cut">a very long layer name that is cut</div></div>
   <div id="legend">Legend</div>
   <div id="chat">Chat</div>
 </body>

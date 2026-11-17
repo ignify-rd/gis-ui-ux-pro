@@ -1,3 +1,9 @@
+## 0.2.3 - 2026-11-17
+
+### Changed
+
+- `layout_check.py` is quieter on real apps: it waits for the network to go idle before measuring (`--settle MS`, default 15000, `0` skips), so labels are measured after the map has placed them; only floating boxes of at least 48x48 px count as panels for overlap (slider thumbs and badges no longer report); text inside the map library's own controls (scale bar) is not flagged for size; a message repeated on many elements is one finding with a count (`count` in JSON, `(xN)` in text).
+
 ## 0.2.2 - 2026-11-17
 
 ### Added

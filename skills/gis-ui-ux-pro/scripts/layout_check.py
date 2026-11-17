@@ -38,7 +38,12 @@ PROBE = r"""
   const path = el => { const p = []; for (let e = el; e && e !== document.body && p.length < 3; e = e.parentElement) p.unshift(name(e)); return p.join(' > '); };
   const vendor = el => { for (let e = el; e; e = e.parentElement) if ([...e.classList].some(c => VENDOR.test(c))) return true; return false; };
   const out = { viewport: [W, H], map: null, findings: [] };
-  const add = (rule, severity, message, el) => out.findings.push({ rule, severity, message, element: el ? path(el) : '' });
+  // The same message on many elements (a badge repeated in a list) is one finding with a count.
+  const add = (rule, severity, message, el) => {
+    const f = out.findings.find(x => x.rule === rule && x.message === message);
+    if (f) f.count++;
+    else out.findings.push({ rule, severity, message, element: el ? path(el) : '', count: 1 });
+  };
 
   const map = [...document.querySelectorAll(MAP)].find(vis);
   if (map) {
@@ -74,12 +79,13 @@ PROBE = r"""
     }
   }
 
-  // Outermost app-owned floating boxes (absolute/fixed, not map internals).
+  // Outermost app-owned floating panels (absolute/fixed, at least 48x48, not map internals).
+  // Smaller boxes are a component's own parts (slider thumbs, badges), stacked on purpose.
   const floats = [...document.body.querySelectorAll('*')].filter(el => {
     const p = getComputedStyle(el).position;
     if (p !== 'absolute' && p !== 'fixed') return false;
     const r = el.getBoundingClientRect();
-    return r.width >= 24 && r.height >= 24 && inView(r) && vis(el) && !vendor(el);
+    return r.width >= 48 && r.height >= 48 && inView(r) && vis(el) && !vendor(el);
   }).filter((el, _, all) => !all.some(o => o !== el && o.contains(el)));
   for (let i = 0; i < floats.length; i++) for (let j = i + 1; j < floats.length; j++) {
     const a = floats[i].getBoundingClientRect(), b = floats[j].getBoundingClientRect();
@@ -96,7 +102,7 @@ PROBE = r"""
     const el = n.parentElement;
     if (!el || !n.textContent.trim() || !vis(el) || !inView(el.getBoundingClientRect())) continue;
     const s = getComputedStyle(el), fs = parseFloat(s.fontSize);
-    if (fs < opts.minFont && !small.has(el)) small.set(el, fs);
+    if (fs < opts.minFont && !small.has(el) && !vendor(el)) small.set(el, fs); // the library's scale bar etc. are its own
     for (let e = el; e && e !== document.body; e = e.parentElement) {
       const o = getComputedStyle(e);
       if (o.overflowX !== 'visible' && o.whiteSpace === 'nowrap' && e.scrollWidth > e.clientWidth + 1) { clipped.add(e); break; }
@@ -121,8 +127,17 @@ def parse_size(s):
         raise argparse.ArgumentTypeError(f"size must be WIDTHxHEIGHT, got {s!r}")
 
 
-def check(url, sizes, clicks, wait, wait_for, min_font, shots):
-    from playwright.sync_api import sync_playwright
+def check(url, sizes, clicks, wait, wait_for, min_font, shots, settle):
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout, sync_playwright
+
+    def calm(page):
+        # Maps keep loading tiles and data after "load"; measuring early catches half-placed labels.
+        if settle:
+            try:
+                page.wait_for_load_state("networkidle", timeout=settle)
+            except PlaywrightTimeout:
+                pass  # a live feed never goes idle: measure anyway after --wait
+        page.wait_for_timeout(wait)
 
     reports = []
     with sync_playwright() as pw:
@@ -132,10 +147,10 @@ def check(url, sizes, clicks, wait, wait_for, min_font, shots):
             page.goto(url, wait_until="load")
             if wait_for:
                 page.wait_for_selector(wait_for)
-            page.wait_for_timeout(wait)
+            calm(page)
             for sel in clicks:
                 page.click(sel)
-                page.wait_for_timeout(wait)
+                calm(page)
             rep = page.evaluate(PROBE, {"minFont": min_font})
             rep["findings"].sort(key=lambda f: SEVERITY.index(f["severity"]))
             if shots:
@@ -156,7 +171,8 @@ def render(reports):
         head = f"{w}x{h}  " + (f"map {m['width']}x{m['height']} ({m['share']}% of viewport)" if m else "no map")
         lines.append(head)
         for f in rep["findings"]:
-            lines.append(f"  {f['severity']:<6} {f['rule']:<5} {f['message']}" + (f"  [{f['element']}]" if f["element"] else ""))
+            n = f" (x{f['count']})" if f["count"] > 1 else ""
+            lines.append(f"  {f['severity']:<6} {f['rule']:<5} {f['message']}{n}" + (f"  [{f['element']}]" if f["element"] else ""))
         if not rep["findings"]:
             lines.append("  no findings")
         if rep.get("screenshot"):
@@ -171,7 +187,9 @@ def main(argv=None):
                     type=lambda s: [parse_size(v) for v in s.split(",")], help="Comma-separated WIDTHxHEIGHT list")
     ap.add_argument("--click", action="append", default=[], metavar="SELECTOR",
                     help="Click before measuring, e.g. to open a panel or chat (repeatable, in order)")
-    ap.add_argument("--wait", type=int, default=1500, help="Milliseconds to wait after load and after each click")
+    ap.add_argument("--wait", type=int, default=1500, help="Extra milliseconds to wait after the page settles and after each click")
+    ap.add_argument("--settle", type=int, default=15000,
+                    help="Wait up to this many ms for the network to go idle before measuring (0 skips)")
     ap.add_argument("--wait-for", metavar="SELECTOR", help="Wait until this selector exists before measuring")
     ap.add_argument("--min-font", type=float, default=12, help="Smallest acceptable text size in px (default 12)")
     ap.add_argument("--screenshot", metavar="DIR", help="Save one screenshot per size into DIR")
@@ -188,7 +206,7 @@ def main(argv=None):
         return 3
     from playwright.sync_api import Error as PlaywrightError
     try:
-        reports = check(args.url, args.sizes, args.click, args.wait, args.wait_for, args.min_font, args.screenshot)
+        reports = check(args.url, args.sizes, args.click, args.wait, args.wait_for, args.min_font, args.screenshot, args.settle)
     except PlaywrightError as e:
         print(f"Could not load or measure the page: {str(e).splitlines()[0]}", file=sys.stderr)
         return 4
