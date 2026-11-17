@@ -70,9 +70,9 @@ All files live in `skills/gis-ui-ux-pro/data/`. Rule-like rows carry `evidence`:
 | File | Domain / flag | Rows |
 |---|---|---|
 | `rules.csv` | `-d rule` | 131 (accessibility 14, controls 11, symbology 20, layers 9, interaction 15, temporal 10, eo 10, widgets 12, dashboard 9, layout 12, performance 9) |
-| `problems.csv` | `-d problem`, `--blueprint` | 28 |
+| `problems.csv` | `-d problem`, `--blueprint` | 30 (each with a dashboard contract) |
 | `palettes.csv` | `-d palette` | 33 |
-| `widgets.csv` | `-d widget` | 30 |
+| `widgets.csv` | `-d widget` | 34 |
 | `layouts.csv` | `-d layout` | 9 |
 | `directions.csv` | `-d direction`, blueprint Signature | 12 |
 | `stacks/mapbox-maplibre.csv` | `-s mapbox-maplibre` | 20 |
@@ -82,11 +82,15 @@ All files live in `skills/gis-ui-ux-pro/data/`. Rule-like rows carry `evidence`:
 | `stacks/cesium.csv` | `-s cesium` | 9 |
 | `stacks/ogc.csv` | `-s ogc` (WMS/WFS/WMTS clients) | 8 |
 
-Problem ids: object-detection, maritime-awareness, land-change, surface-water-drought, flood, ground-deformation, wildfire, deforestation, oil-spill, crop-health, urban-planning, infrastructure-network, disaster-response, air-quality-heat, fleet-tracking, site-suitability, demographic-choropleth, real-estate, public-health, mining, coastal-erosion, crime-mapping, service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin.
+Problem ids: object-detection, maritime-awareness, land-change, surface-water-drought, flood, ground-deformation, wildfire, deforestation, oil-spill, crop-health, urban-planning, infrastructure-network, disaster-response, air-quality-heat, fleet-tracking, site-suitability, demographic-choropleth, real-estate, public-health, mining, coastal-erosion, crime-mapping, service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin, hazard-site-screening, weather-monitoring.
 
 Direction ids: civic-paper, field-atlas, night-ops, signal-track, orbital-lightbox, newsroom-story, canvas-studio, analytic-glow, living-atmosphere, conservation-signal, urban-twin, heritage-atlas.
 
 `references/quick-reference.md` (all rules) and `references/checklist.md` (audit checklist) are generated from `rules.csv`.
+
+## Dashboard contract
+
+Each problem carries a short contract: the question the screen answers at a glance (`glance_question`, `glance_answer`), what makes the numbers trustworthy (`trust`) and how users move through it (`flow`). The blueprint prints it as `## Dashboard contract (synth default)` after the key user questions (JSON: `contract`), and the validator checks that its widget references resolve and its rule ids exist. The `dashboard` rules B01-B09 back it: one primary question per screen, precision, readable time axes, one unit, numbers that reconcile, measured vs estimated vs forecast, back keeps place, feedback names its subject, review before publish. The review workflow compares a screen's actual glance, trust and flow with the contract before walking the checklist. New widgets: calendar-heatmap, detection-inspector, value-marker, aoi-summary-card; availability-date-picker shows per-date counts and a compare date.
 
 ## Map signature
 

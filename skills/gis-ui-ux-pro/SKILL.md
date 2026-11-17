@@ -5,7 +5,7 @@ description: GIS and remote-sensing UI/UX design intelligence for map screens - 
 
 # GIS UI/UX Pro
 
-Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 131 rules, 28 problem playbooks, 33 palettes, 30 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
+Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 131 rules, 30 problem playbooks (each with a dashboard contract), 33 palettes, 34 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
 
 ## When to apply
 
@@ -38,8 +38,9 @@ When rules compete or time is short, satisfy categories in this order. Every `cr
 | 6 | `temporal` - Temporal | Compare modes, A/B date labels, time slider, UTC date filters | T.. |
 | 7 | `eo` - EO specifics | Composite naming, fixed index ranges, SAR in dB, scene cards, detection confidence | E.. |
 | 8 | `widgets` - Widgets | KPIs, freshness, uncertainty, alert lists, status workflows | D.. |
-| 9 | `layout` - Layout | Map-first vs data-first, shell and action bar, mobile bottom sheet, z-order | L.. |
-| 10 | `performance` - Performance | Vector tiles, slim GeoJSON, clustering, loading and error states | P.. |
+| 9 | `dashboard` - Dashboard (glance, trust, flow) | One primary question per screen, precision, readable time axes, one unit, numbers that reconcile, measured vs forecast, back keeps place, review before publish | B.. |
+| 10 | `layout` - Layout | Map-first vs data-first, shell and action bar, mobile bottom sheet, z-order | L.. |
+| 11 | `performance` - Performance | Vector tiles, slim GeoJSON, clustering, loading and error states | P.. |
 
 Full rule list: [references/quick-reference.md](references/quick-reference.md). Audit checklist: [references/checklist.md](references/checklist.md).
 
@@ -109,7 +110,7 @@ Map-specific constraints the directions already respect: the basemap recedes; da
 
 If the user wants speed, skip the questions and state your assumptions in the summary.
 
-**2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). For 3D, pre-sales or story pitches pass `--intensity bold` and a fitting `--direction` (e.g. `urban-twin`, `newsroom-story`), since no playbook defaults to bold. The blueprint gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
+**2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). For 3D, pre-sales or story pitches pass `--intensity bold` and a fitting `--direction` (e.g. `urban-twin`, `newsroom-story`), since no playbook defaults to bold. The blueprint opens with the **Dashboard contract** (synth default): the one question the screen answers at a glance, the answer shape, what builds trust (units, time, source, measured vs forecast) and the flow (drill-down, back, review). Present it first and adapt it to the user's audience (B01-B09). It then gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
 
 - **Screen spec:** a region table (region, position, size, which widgets it holds) for desktop and phone, the map-control corners and legend placement, and five whole-screen states (first load, no results, layer error, stale/offline, feature selected). Widgets marked "(fallback)" had no preferred region in this layout: decide where they go. Hand this table to developers as the screen description.
 - **Signature:** intensity with its reason, primary and alternative directions, a safe `subtle` baseline that differs from both directions (a third linked direction, else Civic Paper, else "<Primary> with signature removed (locked conventions, default markers, no hero)"), locked conventions plus the primary direction's must-keeps, a token table for the primary (basemap, surface, motion, marker, type pair, accent), the hero element with one variation per axis, and a test plan (5-second, preference baseline vs primary, first-click, squint). A note appears when fewer than two directions fit the intensity or a forced direction is outside its range.
@@ -164,12 +165,13 @@ Then: directions with sketches, the screen spec (regions, sizes, states), layers
 
 1. Read the code (map init, layer definitions, legend, controls, popups) or the screenshot.
    If the app runs locally, measure it too: `python "${CLAUDE_SKILL_DIR}/scripts/layout_check.py" http://localhost:5173/ --click "<selector that opens a panel>" --screenshot <scratch dir>`. It reports, per size (default 1280, 1440, 1920), attribution or controls covered or off screen (C01, C02, L11, C04), floating panels overlapping (L11), text below `--min-font` (default 12px), text cut off (D10), sideways page scroll, and the map's share of the viewport. It needs Playwright; if it exits 3, tell the user the install command it prints and continue by reading code. Treat overlaps as candidates: a menu over a panel can be intended. If labels look half-placed on the screenshot, raise `--wait`. It only sees the DOM, so check canvas labels on the screenshot.
-2. If the problem type is clear, run `--blueprint` for it so you know the expected layers, pitfalls and checklist.
-3. Walk [references/checklist.md](references/checklist.md) group by group. Mark each item pass / fail / not applicable.
-4. For each failure, look up the rule with `-d rule` (or `-s <stack>` for the fix in that library) to get do/don't and why.
-5. If the user asks about the look, compare against the blueprint's directions and check the signature list above (a recoloured ramp or moved control is a finding, not a style choice).
-6. Report findings ordered by severity (critical, high, medium, low). Each finding has: rule id, what you observed (file:line or screen region), why it matters, and the concrete fix.
-7. Findings are defects in what the code or screen does. Accessibility (keyboard, text alternative, contrast, colour-only meaning), privacy, attribution and security gaps always stay in the severity-ordered findings, even when the feature is absent. Only optional features it never attempts (search, legend extras, table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
+2. If the problem type is clear, run `--blueprint` for it so you know the expected layers, pitfalls, checklist and dashboard contract.
+3. Before the checklist, write the screen's actual glance question, trust cues and flow, and compare them with the contract. Each difference is a finding citing the B rule it breaks (B01-B09).
+4. Walk [references/checklist.md](references/checklist.md) group by group. Mark each item pass / fail / not applicable.
+5. For each failure, look up the rule with `-d rule` (or `-s <stack>` for the fix in that library) to get do/don't and why.
+6. If the user asks about the look, compare against the blueprint's directions and check the signature list above (a recoloured ramp or moved control is a finding, not a style choice).
+7. Report findings ordered by severity (critical, high, medium, low). Each finding has: rule id, what you observed (file:line or screen region), why it matters, and the concrete fix.
+8. Findings are defects in what the code or screen does. Accessibility (keyboard, text alternative, contrast, colour-only meaning), privacy, attribution and security gaps always stay in the severity-ordered findings, even when the feature is absent. Only optional features it never attempts (search, legend extras, table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
 
 Review checklist for yourself:
 
@@ -186,7 +188,7 @@ Review checklist for yourself:
 - **If the retry fails**, say no match was found and label your advice as general guidance, not from the knowledge base. Do not cycle through unrelated keywords.
 - **Do not persist** a blueprint whose matched problem does not fit the user's problem.
 
-Problem ids for `--blueprint` and `-d problem`: object-detection, maritime-awareness, land-change, surface-water-drought, flood, ground-deformation, wildfire, deforestation, oil-spill, crop-health, urban-planning, infrastructure-network, disaster-response, air-quality-heat, fleet-tracking, site-suitability, demographic-choropleth, real-estate, public-health, mining, coastal-erosion, crime-mapping, service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin.
+Problem ids for `--blueprint` and `-d problem`: object-detection, maritime-awareness, land-change, surface-water-drought, flood, ground-deformation, wildfire, deforestation, oil-spill, crop-health, urban-planning, infrastructure-network, disaster-response, air-quality-heat, fleet-tracking, site-suitability, demographic-choropleth, real-estate, public-health, mining, coastal-erosion, crime-mapping, service-requests, asset-survey, parcel-registry, enforcement-casework, data-catalog, vegetation-cover-admin, hazard-site-screening, weather-monitoring.
 
 Direction ids for `--direction` and `-d direction`: civic-paper, field-atlas, night-ops, signal-track, orbital-lightbox, newsroom-story, canvas-studio, analytic-glow, living-atmosphere, conservation-signal, urban-twin, heritage-atlas.
 

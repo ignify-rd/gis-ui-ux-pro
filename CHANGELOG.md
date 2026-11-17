@@ -1,3 +1,19 @@
+## 0.3.0 - 2026-11-17
+
+### Added
+
+- Dashboard contract: `problems.csv` columns `glance_question`, `glance_answer`, `trust`, `flow`, filled for all 30 problems (synth). The blueprint renders `## Dashboard contract (synth default)` after Key user questions; JSON blueprints gain a `contract` object. The validator checks the contract (widget references resolve, cited rule ids exist and link back, formats).
+- Rule category `dashboard` with B01-B09: one primary question per screen, precision, readable time axes, one unit across the screen, numbers that reconcile, measured vs estimated vs forecast, back keeps place, feedback names its subject, review before publish. The T08 checklist is filled.
+- Widgets (34 total): calendar-heatmap, detection-inspector, value-marker, aoi-summary-card. `availability-date-picker` shows per-date counts and a compare date.
+- Problems (30 total): hazard-site-screening, weather-monitoring.
+- SKILL.md: rule priority row 9 `dashboard`; design workflow step 2 presents the contract first; the review workflow compares the screen's actual glance, trust and flow with the contract before the checklist.
+
+### Changed
+
+- D09 applies to any list; I04 covers tooltips.
+- Keyword fixes: VHR ship detection matches object-detection, drinking-water lakes match surface-water-drought. The relevance test supports `top1` and `min_margin`.
+- Plugin and marketplace version 0.3.0.
+
 ## 0.2.3 - 2026-11-17
 
 ### Changed
