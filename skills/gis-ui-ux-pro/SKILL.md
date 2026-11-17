@@ -5,7 +5,7 @@ description: GIS and remote-sensing UI/UX design intelligence for map screens - 
 
 # GIS UI/UX Pro
 
-Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 122 rules, 28 problem playbooks, 33 palettes, 30 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
+Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 131 rules, 28 problem playbooks, 33 palettes, 30 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
 
 ## When to apply
 

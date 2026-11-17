@@ -55,7 +55,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 ## Interaction
 
 - [ ] Does hover only highlight (feature-state, cursor) while click opens the details? (I02, high)
-- [ ] Do popups show a curated, formatted set of fields with the title first? (I04, high)
+- [ ] Do popups and tooltips show a curated, formatted set of fields (no raw field names), title first? (I04, high)
 - [ ] Do map, chart and table share one selection state and highlight color? (I05, high)
 - [ ] Are active filters shown as chips with an 'N of M features' count? (I09, high)
 - [ ] Are popup and identify values inserted as text (setText or DOM), never as raw HTML from data? (I10, high)
@@ -73,6 +73,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does the UI say cloud % is per scene (or compute it per AOI)? (T07, high)
 - [ ] Are cloudy observations flagged or removed from time series? (T09, high)
 - [ ] Are times stored and queried in UTC, shown with a zone label, and are date-range bounds converted to UTC? (T10, high)
+- [ ] Does the date picker mark acquisition dates and grey out dates with no data? (T08, medium)
 
 ## EO
 
@@ -90,10 +91,22 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Are statistics pre-aggregated and only needed fields loaded? (D03, high)
 - [ ] Do map and charts share one categorical palette? (D06, high)
 - [ ] Is uncertainty encoded (VSUP or a confidence channel)? (D08, high)
-- [ ] Does the alert list sort by severity/time and sync with map selection both ways? (D09, high)
+- [ ] Does every list row locate its feature and every map feature open the same detail as its row (alerts sorted by severity/time)? (D09, high)
 - [ ] Does every export include title, legend, scale, source/date, active filter or extent, and text attribution? (D11, high)
 - [ ] Does every layer show its source and acquisition date without hover? (D10, medium)
 - [ ] Are only valid transitions offered, with who/when/from-to/remark recorded? (D12, medium)
+
+## Dashboard
+
+- [ ] Can a new user state the one question this screen answers and find the answer within about 5 seconds? (B01, high)
+- [ ] Does each quantity use one unit in every widget on the screen (KPI; axis; table; popup) with the unit printed? (B04, high)
+- [ ] Do KPI totals equal the table and chart sums under the same filters with the filter scope stated beside the total? (B05, high)
+- [ ] Are measured, estimated and forecast values marked by label or badge and line style, not only colour? (B06, high)
+- [ ] Can each detection be confirmed or rejected with undo before publishing and is the unreviewed count visible? (B09, high)
+- [ ] Are numbers rounded to the precision the decision needs, the same way everywhere, with no -0.00 or scientific notation? (B02, medium)
+- [ ] Are time-axis ticks thinned to a calendar unit with horizontal labels (or the series aggregated or shown as a calendar heatmap)? (B03, medium)
+- [ ] Does closing a detail restore the list scroll position; filters and map view? (B07, medium)
+- [ ] Does each toast name what it refers to and the next step; and do errors say what failed and how to retry? (B08, medium)
 
 ## Layout
 

@@ -6,7 +6,7 @@ from pathlib import Path
 from core import DATA_DIR, SKILL_DIR, load_rows
 
 ORDER = ["accessibility", "controls", "symbology", "layers", "interaction",
-         "temporal", "eo", "widgets", "layout", "performance"]
+         "temporal", "eo", "widgets", "dashboard", "layout", "performance"]
 SEV = ["critical", "high", "medium", "low"]
 TITLES = {"eo": "EO"}
 

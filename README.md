@@ -69,7 +69,7 @@ All files live in `skills/gis-ui-ux-pro/data/`. Rule-like rows carry `evidence`:
 
 | File | Domain / flag | Rows |
 |---|---|---|
-| `rules.csv` | `-d rule` | 122 (accessibility 14, controls 11, symbology 20, layers 9, interaction 15, temporal 10, eo 10, widgets 12, layout 12, performance 9) |
+| `rules.csv` | `-d rule` | 131 (accessibility 14, controls 11, symbology 20, layers 9, interaction 15, temporal 10, eo 10, widgets 12, dashboard 9, layout 12, performance 9) |
 | `problems.csv` | `-d problem`, `--blueprint` | 28 |
 | `palettes.csv` | `-d palette` | 33 |
 | `widgets.csv` | `-d widget` | 30 |

@@ -330,6 +330,15 @@
     "domain": "direction",
     "expected_id": "signal-track"
   },
+  {"query": "one primary question per screen", "domain": "rule", "expected_id": "B01"},
+  {"query": "decimal precision scientific notation", "domain": "rule", "expected_id": "B02"},
+  {"query": "time axis tick labels rotated", "domain": "rule", "expected_id": "B03"},
+  {"query": "same unit across widgets", "domain": "rule", "expected_id": "B04"},
+  {"query": "totals reconcile table chart", "domain": "rule", "expected_id": "B05"},
+  {"query": "measured estimated forecast", "domain": "rule", "expected_id": "B06"},
+  {"query": "back keeps list position", "domain": "rule", "expected_id": "B07"},
+  {"query": "toast message names subject", "domain": "rule", "expected_id": "B08"},
+  {"query": "review detections before publish", "domain": "rule", "expected_id": "B09"},
   {
     "query": "citizen complaints map for residents",
     "domain": "problem",

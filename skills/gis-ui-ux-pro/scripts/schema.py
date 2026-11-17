@@ -46,7 +46,8 @@ ENUMS = {
     "evidence": {"sourced", "synth"},
     "palette_type": {"sequential", "diverging", "qualitative", "standard"},
     "category": {"layout", "controls", "layers", "symbology", "interaction", "temporal",
-                 "widgets", "eo", "performance", "accessibility"},
+                 "widgets", "eo", "performance", "accessibility",
+                 "dashboard"},
     "intensity": {"subtle", "balanced", "bold"},
 }
 
