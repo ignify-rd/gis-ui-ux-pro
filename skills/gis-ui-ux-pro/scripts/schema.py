@@ -22,11 +22,12 @@ COLUMNS = {
                "mobile_variant", "rule_ids", "keywords", "slots", "mobile_slots"],
     "stack": ["id", "category", "guideline", "keywords", "do", "dont", "code_good",
               "code_bad", "severity", "docs_url"],
+    "smell": ["id", "smell", "instead", "rule_ids", "keywords"],
 }
 
 FILES = {"rule": "rules.csv", "problem": "problems.csv", "palette": "palettes.csv",
          "widget": "widgets.csv", "layout": "layouts.csv",
-         "direction": "directions.csv"}
+         "direction": "directions.csv", "smell": "smells.csv"}
 
 STACKS = ("mapbox-maplibre", "leaflet", "openlayers", "deckgl", "cesium", "ogc")
 
@@ -38,6 +39,7 @@ SEARCH_FIELDS = {
     "widget": ["name", "keywords", "purpose", "use_when"],
     "layout": ["name", "keywords", "use_when", "regions"],
     "direction": ["name", "mood", "keywords", "fits_problems", "hero_element", "examples"],
+    "smell": ["smell", "instead", "keywords"],
     "stack": ["guideline", "keywords", "do", "dont", "category"],
 }
 

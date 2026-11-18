@@ -34,6 +34,12 @@ class TestBuildReference(unittest.TestCase):
         for r in core.load_rows("rule", FIX):
             self.assertEqual(r["id"] + "," in text, bool(r["checklist"].strip()), r["id"])
 
+    def test_checklist_has_smell_table(self):
+        _, c = build_reference.build(FIX, self.ref)
+        text = c.read_text(encoding="utf-8")
+        self.assertIn("## Smells", text)
+        self.assertIn("| Status shown by hue alone | Add a shape or label to the colour | A-01 |", text)
+
     def test_check_mode_detects_drift(self):
         args = ["--data-dir", str(FIX), "--ref-dir", str(self.ref)]
         out, err = io.StringIO(), io.StringIO()

@@ -27,6 +27,10 @@ class TestCore(unittest.TestCase):
         self.assertEqual(s.index(max(s)), 2)
         self.assertEqual(bm.scores(["unknown"]), [0.0, 0.0, 0.0])
 
+    def test_smell_domain_search(self):
+        res = core.search("panels cover the map", "smell", 1, FIX)
+        self.assertEqual([h["id"] for h in res["hits"]], ["M-02"])
+
     def test_search_returns_expected_fixture_id(self):
         r = core.search("zebrafish", "rule", data_dir=FIX)
         self.assertEqual(r["hits"][0]["id"], "Y-01")

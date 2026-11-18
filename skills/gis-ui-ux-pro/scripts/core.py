@@ -26,6 +26,7 @@ DOMAIN_HINTS = {
     "layout": ["layout", "sidebar", "mobile", "wall", "responsive"],
     "direction": ["signature", "look and feel", "visual identity", "visual direction",
                   "art direction"],
+    "smell": ["smell", "smells", "anti pattern", "antipattern"],
 }
 
 

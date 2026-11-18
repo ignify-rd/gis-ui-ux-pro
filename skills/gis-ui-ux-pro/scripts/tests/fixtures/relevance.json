@@ -365,5 +365,8 @@
   {"query": "gauge dial bullet graph", "domain": "rule", "expected_id": "D13", "top1": true},
   {"query": "measure against target", "domain": "widget", "expected_id": "bullet-graph", "top1": true},
   {"query": "share of total by class", "domain": "widget", "expected_id": "segmented-share-bar", "top1": true},
-  {"query": "word sized trend line", "domain": "widget", "expected_id": "sparkline", "top1": true}
+  {"query": "word sized trend line", "domain": "widget", "expected_id": "sparkline", "top1": true},
+  {"query": "heatmap darkest on safe ground", "domain": "smell", "expected_id": "M05", "top1": true},
+  {"query": "donut chart main view", "domain": "smell", "expected_id": "M14", "top1": true},
+  {"query": "kpi count differs from map", "domain": "smell", "expected_id": "M01", "top1": true}
 ]

@@ -1,9 +1,9 @@
-"""Generate references/quick-reference.md and checklist.md from rules.csv."""
+"""Generate references/quick-reference.md and checklist.md from rules.csv and smells.csv."""
 import argparse
 import sys
 from pathlib import Path
 
-from core import DATA_DIR, SKILL_DIR, load_rows
+from core import DATA_DIR, SKILL_DIR, load_rows, split_list
 
 ORDER = ["accessibility", "controls", "symbology", "layers", "interaction",
          "temporal", "eo", "widgets", "dashboard", "layout", "performance"]
@@ -45,16 +45,33 @@ def _quick(rows):
     return "\n".join(out) + "\n"
 
 
-def _checklist(rows):
+def _cell(s):
+    return _one(s).replace("|", "\\|")
+
+
+def _checklist(rows, smells=()):
     out = ["# GIS UI/UX Audit Checklist", "",
-           "Generated from `data/rules.csv`. Tick each item while auditing a screen; "
+           "Generated from `data/rules.csv` and `data/smells.csv`. Tick each item while auditing a screen; "
            "critical items come first in each group.", ""]
     for c, rs in _grouped([r for r in rows if r["checklist"].strip()]):
         rs = sorted(rs, key=lambda r: SEV.index(r["severity"]) if r["severity"] in SEV else len(SEV))
         out += [f"## {_t(c)}", ""]
         out += [f"- [ ] {_one(r['checklist'])} ({r['id']}, {r['severity']})" for r in rs]
         out.append("")
+    if smells:
+        out += ["## Smells", "", "Spot the smell on the screen, then apply the fix; the rules hold the reason.", "",
+                "| Smell | Instead | Rules |", "|---|---|---|"]
+        out += [f"| {_cell(s['smell'])} | {_cell(s['instead'])} | {'; '.join(split_list(s['rule_ids']))} |"
+                for s in smells]
+        out.append("")
     return "\n".join(out).rstrip("\n") + "\n"
+
+
+def _smells(data_dir):
+    try:
+        return load_rows("smell", data_dir)
+    except FileNotFoundError:
+        return []
 
 
 def build(data_dir=DATA_DIR, ref_dir=SKILL_DIR / "references"):
@@ -62,7 +79,7 @@ def build(data_dir=DATA_DIR, ref_dir=SKILL_DIR / "references"):
     ref_dir = Path(ref_dir)
     ref_dir.mkdir(parents=True, exist_ok=True)
     q, c = ref_dir / "quick-reference.md", ref_dir / "checklist.md"
-    for p, text in ((q, _quick(rows)), (c, _checklist(rows))):
+    for p, text in ((q, _quick(rows)), (c, _checklist(rows, _smells(data_dir)))):
         p.write_text(text, encoding="utf-8", newline="\n")
     return q, c
 
@@ -82,7 +99,7 @@ def main(argv=None):
             print(f"wrote {p}")
         return 0
     rows = load_rows("rule", a.data_dir)
-    want = {"quick-reference.md": _quick(rows), "checklist.md": _checklist(rows)}
+    want = {"quick-reference.md": _quick(rows), "checklist.md": _checklist(rows, _smells(a.data_dir))}
     stale = [n for n, t in want.items() if _norm(a.ref_dir / n) != t.encode("utf-8")]
     for n in stale:
         print(f"stale: {n} (run build_reference.py)", file=sys.stderr)

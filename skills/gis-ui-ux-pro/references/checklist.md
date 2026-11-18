@@ -1,6 +1,6 @@
 # GIS UI/UX Audit Checklist
 
-Generated from `data/rules.csv`. Tick each item while auditing a screen; critical items come first in each group.
+Generated from `data/rules.csv` and `data/smells.csv`. Tick each item while auditing a screen; critical items come first in each group.
 
 ## Accessibility
 
@@ -137,3 +137,34 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does each layer show its own error state with retry, leaving others working? (P06, high)
 - [ ] Is the map captured on idle/rendercomplete without preserveDrawingBuffer and without moving the live view? (P08, medium)
 - [ ] Are tile URLs stable, changing only when the data version changes? (P09, medium)
+
+## Smells
+
+Spot the smell on the screen, then apply the fix; the rules hold the reason.
+
+| Smell | Instead | Rules |
+|---|---|---|
+| The KPI count differs from the features drawn on the map | Feed KPI, map and list from one selection and test each against a fixed fixture | B05; B10 |
+| A popup or caption repeats a KPI number | Drop the copy; say a number once and link to it | B05; B12 |
+| A sentence under every KPI or a paragraph in the popup | Value with a one- or two-word baseline; the explanation in a tooltip or 'more details' | B12 |
+| A row of insight sentences beside the map | Flag the problem on the feature or row and put its action beside the flag | B12; I17 |
+| The heatmap is darkest on the safest ground or palest where it is worst | Classed tiers whose intensity grows toward the problem with a warm tier past the threshold | S21 |
+| Every class drawn in saturated colour: a wall of colour | Pale to medium for healthy classes; saturation only for the problem | S21; B11 |
+| Labels for every feature at every zoom | Overview at low zoom; labels and outlines from the feature tier only | Y10; Y02 |
+| A zoom band where the map is empty | Overlap the tiers with opacity ramps so one tier fades in as the other fades out | Y10 |
+| A red -100% for a drop from 1 to 0 | Grey 'was 1' on bases under about 5 | B13 |
+| A falling cost or count of problems coloured red | Colour the delta by meaning: lower-is-better metrics turn green when they fall | B13 |
+| An unfinished week or quarter drawn as a drop | Dashed partial bar and a neutral comparison until the period closes | B13; B06 |
+| Missing data shown as 0 or 0% | An em dash for no data and a no-data style on the map | B13; A07 |
+| A radial gauge or progress ring for a value against a target | Bullet graph: bar; target line; grey ranges | D13 |
+| A 2-3 slice donut as the main view | Segmented share bar or a ranked list with share bars | D13; B11 |
+| Glass or blurred panels over imagery | Solid panels; blur only over calm areas with a reduce-transparency path | A14 |
+| The accent colour reuses a hue of a data ramp | Pick an accent outside every ramp on the screen | S19 |
+| No alerts shown for an area that has no imagery or data yet | A waiting or setup state with the date of the next pass; no data is not good news | D02; B13 |
+| The same error text on every card | One page-level note that says what failed and offers a retry | B08; P06 |
+| Two names for one thing (case and site and spot) | One term per concept on map; legend; panel; popup and export | B15 |
+| A status pill dates an image whose capture date is unknown | Say the date is unknown, or show the date that is known and what it is | D10; B06 |
+| A sparkline under a KPI that tracks a different quantity | Put the sparkline under its own number over the same window as the chart | B05; B13 |
+| Round axis ticks that stop below the largest value | Ticks that cover the data range; bars never cross the top gridline | B03; B02 |
+| The headline numbers or the flagged area need scrolling at 1440x900 | Fit the KPIs and the map region with the problems in one screen | B14 |
+| The action for a flagged item sits in a menu or another page | The flagged row and popup carry the next step (confirm, assign, notify) | I17; B09 |

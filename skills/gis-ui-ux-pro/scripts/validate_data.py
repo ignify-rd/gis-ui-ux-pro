@@ -94,7 +94,8 @@ def validate(data_dir=DATA_DIR):
                               ("problem", "layout_id", "layout"), ("widget", "rule_ids", "rule"),
                               ("layout", "rule_ids", "rule"),
                               ("problem", "direction_ids", "direction"),
-                              ("direction", "fits_problems", "problem")]:
+                              ("direction", "fits_problems", "problem"),
+                              ("smell", "rule_ids", "rule")]:
         for r in rows_by.get(kind, []):
             ref(kind, r, col, target)
     dirs = {d["id"]: d for d in rows_by.get("direction", [])}

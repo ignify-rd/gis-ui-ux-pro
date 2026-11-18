@@ -29,7 +29,7 @@ def render(res, query, full):
         out.append("Try: " + ", ".join(res["suggestions"][:8]))
         return "\n".join(out)
     for i, h in enumerate(res["hits"], 1):
-        title = h.get("name") or h.get("guideline") or ""
+        title = h.get("name") or h.get("guideline") or h.get("smell") or ""
         out += [f"### Result {i}: {title} [{h.get('id', '')}]"]
         out += [f"- **{k}:** {_fmt(v, full)}" for k, v in h.items()
                 if k != "_score" and v]
@@ -42,7 +42,7 @@ def main(argv=None):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     p = argparse.ArgumentParser(description="Search the GIS UI/UX knowledge base")
     p.add_argument("query")
-    p.add_argument("-d", "--domain", choices=["rule", "problem", "palette", "widget", "layout", "direction"])
+    p.add_argument("-d", "--domain", choices=["rule", "problem", "palette", "widget", "layout", "direction", "smell"])
     p.add_argument("-s", "--stack", choices=STACKS)
     p.add_argument("-n", type=int, default=3, choices=range(1, 21), metavar="1..20")
     p.add_argument("--json", action="store_true")

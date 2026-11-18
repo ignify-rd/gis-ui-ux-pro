@@ -1,0 +1,25 @@
+id,smell,instead,rule_ids,keywords
+M01,The KPI count differs from the features drawn on the map,"Feed KPI, map and list from one selection and test each against a fixed fixture",B05;B10,kpi count map features mismatch differ total
+M02,A popup or caption repeats a KPI number,Drop the copy; say a number once and link to it,B05;B12,popup repeats kpi number duplicate caption
+M03,A sentence under every KPI or a paragraph in the popup,Value with a one- or two-word baseline; the explanation in a tooltip or 'more details',B12,sentence under kpi paragraph popup text heavy
+M04,A row of insight sentences beside the map,Flag the problem on the feature or row and put its action beside the flag,B12;I17,insight sentences row attention banner text
+M05,The heatmap is darkest on the safest ground or palest where it is worst,Classed tiers whose intensity grows toward the problem with a warm tier past the threshold,S21,heatmap darkest safest palest worst inverted ramp
+M06,Every class drawn in saturated colour: a wall of colour,Pale to medium for healthy classes; saturation only for the problem,S21;B11,wall of colour saturated every class bright
+M07,Labels for every feature at every zoom,Overview at low zoom; labels and outlines from the feature tier only,Y10;Y02,labels every zoom clutter outlines all zooms
+M08,A zoom band where the map is empty,Overlap the tiers with opacity ramps so one tier fades in as the other fades out,Y10,empty map zoom band gap tiers fade
+M09,A red -100% for a drop from 1 to 0,"Grey 'was 1' on bases under about 5",B13,red minus 100 percent small base was
+M10,A falling cost or count of problems coloured red,Colour the delta by meaning: lower-is-better metrics turn green when they fall,B13,falling cost red delta colour lower is better
+M11,An unfinished week or quarter drawn as a drop,Dashed partial bar and a neutral comparison until the period closes,B13;B06,partial period unfinished week quarter drop dashed
+M12,Missing data shown as 0 or 0%,An em dash for no data and a no-data style on the map,B13;A07,missing data zero dash no data
+M13,A radial gauge or progress ring for a value against a target,Bullet graph: bar; target line; grey ranges,D13,radial gauge dial progress ring target
+M14,A 2-3 slice donut as the main view,Segmented share bar or a ranked list with share bars,D13;B11,donut pie slices share main view
+M15,Glass or blurred panels over imagery,Solid panels; blur only over calm areas with a reduce-transparency path,A14,glass blur translucent panel imagery
+M16,The accent colour reuses a hue of a data ramp,Pick an accent outside every ramp on the screen,S19,accent colour data ramp hue brand
+M17,No alerts shown for an area that has no imagery or data yet,A waiting or setup state with the date of the next pass; no data is not good news,D02;B13,no alerts empty area no imagery all clear setup
+M18,The same error text on every card,One page-level note that says what failed and offers a retry,B08;P06,same error every card repeated error message
+M19,Two names for one thing (case and site and spot),One term per concept on map; legend; panel; popup and export,B15,two names one thing terminology synonyms
+M20,A status pill dates an image whose capture date is unknown,"Say the date is unknown, or show the date that is known and what it is",D10;B06,status date image unknown capture date provenance
+M21,A sparkline under a KPI that tracks a different quantity,Put the sparkline under its own number over the same window as the chart,B05;B13,sparkline wrong kpi different quantity window
+M22,Round axis ticks that stop below the largest value,Ticks that cover the data range; bars never cross the top gridline,B03;B02,axis ticks stop below max bars overflow gridline
+M23,The headline numbers or the flagged area need scrolling at 1440x900,Fit the KPIs and the map region with the problems in one screen,B14,scrolling headline above the fold one screen
+M24,The action for a flagged item sits in a menu or another page,"The flagged row and popup carry the next step (confirm, assign, notify)",I17;B09,action menu another page flagged item next step

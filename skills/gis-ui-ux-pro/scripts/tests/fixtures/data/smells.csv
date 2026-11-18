@@ -1,0 +1,3 @@
+id,smell,instead,rule_ids,keywords
+M-01,Status shown by hue alone,Add a shape or label to the colour,A-01,colour only status hue
+M-02,Panels cover most of the map,Keep panels under a third of the viewport,L-01,panels cover map viewport

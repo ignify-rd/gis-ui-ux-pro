@@ -156,6 +156,10 @@ class TestValidate(unittest.TestCase):
         d = self.mutated("widgets.csv", "timeline;panel", "timeline;nowhere")
         self.one_error(d, "unknown slot 'nowhere'")
 
+    def test_smell_unknown_rule(self):
+        d = self.mutated("smells.csv", "the colour,A-01", "the colour,A-99")
+        self.one_error(d, "smells.csv [M-01] rule_ids")
+
     def test_unknown_layout_slot(self):
         d = self.mutated("layouts.csv", "panel: left, 320px", "pannel: left, 320px")
         self.one_error(d, "unknown slot 'pannel'")
