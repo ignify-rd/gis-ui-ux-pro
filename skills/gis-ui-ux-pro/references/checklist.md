@@ -40,6 +40,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does the legend list only visible, in-scale layers, follow the active filter, and have an entry for every class or state drawn? (S14, high)
 - [ ] Are dense point layers clustered at low zoom, with clusterMaxZoom set? (S16, high)
 - [ ] Does the legend have a class for no data that is separate from normal and from zero? (S18, high)
+- [ ] Does colour intensity grow toward the problem (healthy palest, a warm tier past the threshold with a non-colour cue, reversed when low is bad)? (S21, high)
 - [ ] Does the visual signature leave data ramps and control positions untouched? (S19, medium)
 - [ ] Do labels on the dark basemap stay readable, with halos matched to the land colour? (S20, medium)
 
@@ -51,6 +52,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Are rasters under vectors and reference labels on top? (Y05, high)
 - [ ] Does import check required shapefile parts, warn on missing .prj/.cpg, and preview the count? (Y08, high)
 - [ ] Are WMS legends fetched with SCALE and only queryable layers sent to GetFeatureInfo? (Y09, medium)
+- [ ] Do zoom tiers go overview, then zones, then features, with overlapping fades and the flagged items visible at every zoom? (Y10, medium)
 
 ## Interaction
 
@@ -64,6 +66,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does the query builder use plain-word predicates and show a count before apply? (I13, medium)
 - [ ] Does changing a parent unit clear child selections, zoom to the unit, and update the breadcrumb? (I14, medium)
 - [ ] Is a visible search box kept even when a command bar exists? (I16, medium)
+- [ ] Does each flagged feature and row carry its next action, with the flag changing state after it? (I17, medium)
 
 ## Temporal
 
@@ -95,6 +98,7 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] Does every export include title, legend, scale, source/date, active filter or extent, and text attribution? (D11, high)
 - [ ] Does every layer show its source and acquisition date without hover? (D10, medium)
 - [ ] Are only valid transitions offered, with who/when/from-to/remark recorded? (D12, medium)
+- [ ] Are values against a target shown as bullet graphs rather than gauges, dials or rings? (D13, low)
 
 ## Dashboard
 
@@ -103,10 +107,16 @@ Generated from `data/rules.csv`. Tick each item while auditing a screen; critica
 - [ ] If a total sits next to the table or chart it sums: does it equal the table and chart sums under the same filters, with the scope stated beside the total (not a unit or precision issue)? (B05, high)
 - [ ] Are measured, estimated and forecast values marked by label or badge and line style, not only colour? (B06, high)
 - [ ] Can each detection be confirmed or rejected with undo before publishing and is the unreviewed count visible? (B09, high)
+- [ ] Is there a fixed dataset with expected answers, and does each widget (KPI, map features, list, chart, popup) match them in a test? (B10, high)
+- [ ] On a blurred screenshot, does the eye land first on the answer or the flagged features rather than basemap, branding or healthy numbers? (B11, high)
+- [ ] Does each delta have one baseline, read 'was N' on small bases, flip colours for lower-is-better metrics, mark partial periods and show no data as a dash? (B13, high)
 - [ ] Are numbers rounded to the precision the decision needs, the same way everywhere, with no -0.00 or scientific notation? (B02, medium)
 - [ ] Are time-axis ticks thinned to a calendar unit with horizontal labels (or the series aggregated or shown as a calendar heatmap)? (B03, medium)
 - [ ] Does closing a detail restore the list scroll position, filters and map view? (B07, medium)
 - [ ] Does each toast name what it refers to and the next step, and do errors say what failed and how to retry? (B08, medium)
+- [ ] Outside tooltips, empty and error states, is the screen free of sentences (KPI sub-lines, popup paragraphs, insight rows)? (B12, medium)
+- [ ] At 1440x900, are the KPIs and the map area with the flagged features visible without scrolling? (B14, medium)
+- [ ] Is each concept named with one term everywhere (map, legend, panel, popup, export)? (B15, low)
 
 ## Layout
 

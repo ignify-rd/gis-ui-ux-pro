@@ -352,5 +352,15 @@
   {"query": "landslide screening new bare ground near susceptibility zones", "domain": "problem", "expected_id": "hazard-site-screening", "top1": true},
   {"query": "drinking water supply lakes monitoring", "domain": "problem", "expected_id": "surface-water-drought", "top1": true, "min_margin": 1.0},
   {"query": "weather temperature precipitation agriculture monitoring", "domain": "problem", "expected_id": "weather-monitoring", "top1": true},
-  {"query": "vegetation index time series aoi list", "domain": "problem", "expected_id": "vegetation-cover-admin", "top1": true}
+  {"query": "vegetation index time series aoi list", "domain": "problem", "expected_id": "vegetation-cover-admin", "top1": true},
+  {"query": "known totals fixture per widget", "domain": "rule", "expected_id": "B10", "top1": true},
+  {"query": "blur screenshot eye lands", "domain": "rule", "expected_id": "B11", "top1": true},
+  {"query": "sentences in panels popup", "domain": "rule", "expected_id": "B12", "top1": true},
+  {"query": "delta small base was", "domain": "rule", "expected_id": "B13", "top1": true},
+  {"query": "fits one screen above fold", "domain": "rule", "expected_id": "B14", "top1": true},
+  {"query": "one term per concept", "domain": "rule", "expected_id": "B15", "top1": true},
+  {"query": "worst value palest ramp", "domain": "rule", "expected_id": "S21", "top1": true},
+  {"query": "action beside flagged feature", "domain": "rule", "expected_id": "I17", "top1": true},
+  {"query": "zoom tiers heatmap zones features", "domain": "rule", "expected_id": "Y10", "top1": true},
+  {"query": "gauge dial bullet graph", "domain": "rule", "expected_id": "D13", "top1": true}
 ]
