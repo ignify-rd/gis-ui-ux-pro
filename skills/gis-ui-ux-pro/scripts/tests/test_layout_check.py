@@ -8,6 +8,39 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SCRIPT = str(HERE.parent / "layout_check.py")
 PAGE = (HERE / "fixtures" / "layout.html").as_uri()
+sys.path.insert(0, str(HERE.parent))
+import layout_check  # noqa: E402
+
+
+class TestLayoutCheckArgs(unittest.TestCase):
+    """Argument parsing only: no browser."""
+
+    def test_parse_expect(self):
+        self.assertEqual(layout_check.parse_expect("#kpi .value=12"), ("#kpi .value", "12"))
+        self.assertEqual(layout_check.parse_expect("[data-k=a] b=x=y"), ("[data-k=a] b", "x=y"))
+
+    def test_parse_expect_needs_selector(self):
+        with self.assertRaises(Exception):
+            layout_check.parse_expect("=12")
+
+    def test_preset_monitor(self):
+        a = layout_check.parse_args([PAGE, "--preset", "monitor"])
+        self.assertEqual(a.sizes, [(3440, 1440), (1440, 900), (375, 812)])
+
+    def test_default_sizes_unchanged(self):
+        a = layout_check.parse_args([PAGE])
+        self.assertEqual(a.sizes, [(1280, 800), (1440, 900), (1920, 1080)])
+        self.assertEqual((a.expect, a.blur, a.cvd), ([], False, []))
+
+    def test_unknown_cvd_exits_2(self):
+        r = subprocess.run([sys.executable, SCRIPT, PAGE, "--screenshot", "x", "--cvd", "greenish"],
+                           capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("deuteranopia", r.stderr)
+
+    def test_blur_needs_screenshot(self):
+        r = subprocess.run([sys.executable, SCRIPT, PAGE, "--blur"], capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(r.returncode, 2)
 
 
 @unittest.skipUnless(importlib.util.find_spec("playwright"), "playwright not installed")
