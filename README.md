@@ -69,10 +69,11 @@ All files live in `skills/gis-ui-ux-pro/data/`. Rule-like rows carry `evidence`:
 
 | File | Domain / flag | Rows |
 |---|---|---|
-| `rules.csv` | `-d rule` | 131 (accessibility 14, controls 11, symbology 20, layers 9, interaction 15, temporal 10, eo 10, widgets 12, dashboard 9, layout 12, performance 9) |
+| `rules.csv` | `-d rule` | 141 (accessibility 14, controls 11, symbology 21, layers 10, interaction 16, temporal 10, eo 10, widgets 13, dashboard 15, layout 12, performance 9) |
+| `smells.csv` | `-d smell` | 24 (visible anti-pattern, the fix, rule ids) |
 | `problems.csv` | `-d problem`, `--blueprint` | 30 (each with a dashboard contract) |
 | `palettes.csv` | `-d palette` | 33 |
-| `widgets.csv` | `-d widget` | 34 |
+| `widgets.csv` | `-d widget` | 37 |
 | `layouts.csv` | `-d layout` | 9 |
 | `directions.csv` | `-d direction`, blueprint Signature | 12 |
 | `stacks/mapbox-maplibre.csv` | `-s mapbox-maplibre` | 20 |
@@ -86,11 +87,15 @@ Problem ids: object-detection, maritime-awareness, land-change, surface-water-dr
 
 Direction ids: civic-paper, field-atlas, night-ops, signal-track, orbital-lightbox, newsroom-story, canvas-studio, analytic-glow, living-atmosphere, conservation-signal, urban-twin, heritage-atlas.
 
-`references/quick-reference.md` (all rules) and `references/checklist.md` (audit checklist) are generated from `rules.csv`.
+`references/quick-reference.md` (all rules) and `references/checklist.md` (audit checklist plus the smell table) are generated from `rules.csv` and `smells.csv`.
 
 ## Dashboard contract
 
 Each problem carries a short contract: the question the screen answers at a glance (`glance_question`, `glance_answer`), what makes the numbers trustworthy (`trust`) and how users move through it (`flow`). The blueprint prints it as `## Dashboard contract (synth default)` after the key user questions (JSON: `contract`), and the validator checks that its widget references resolve and its rule ids exist. The `dashboard` rules B01-B09 back it: one primary question per screen, precision, readable time axes, one unit, numbers that reconcile, measured vs estimated vs forecast, back keeps place, feedback names its subject, review before publish. The review workflow compares a screen's actual glance, trust and flow with the contract before walking the checklist. New widgets: calendar-heatmap, detection-inspector, value-marker, aoi-summary-card; availability-date-picker shows per-date counts and a compare date.
+
+## Honesty and salience QA
+
+0.4 checks what a dashboard says, not only how the map is built. B10-B15 add known totals checked per widget against a fixed dataset, the blurred-screenshot salience test, wordless panels, honest deltas (one baseline, "was N" on small bases, colours by meaning, dashed partial periods), a monitoring view that fits one screen and one word per concept. S21 makes colour intensity grow toward the problem, I17 puts the action beside the flag, Y10 maps the monitoring sequence to zoom tiers (overview, zones, features) and D13 replaces gauges with bullet graphs. Widgets bullet-graph, segmented-share-bar and sparkline go with them, and `-d smell` finds a visible anti-pattern with its fix. `layout_check.py --preset monitor --screenshot DIR --blur --cvd deuteranopia,achromatopsia --expect "#kpi=3"` shoots 3440, 1440 and 375 wide, saves blurred and colour-vision copies, and flags expected numbers that are missing (B10).
 
 ## Map signature
 

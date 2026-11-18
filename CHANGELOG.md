@@ -1,3 +1,20 @@
+## 0.4.0 - 2026-11-18
+
+### Added
+
+- Rules (141 total): B10 known totals checked per widget, B11 the eye lands on the problem, B12 wordless panels, B13 honest deltas, B14 the monitoring view fits one screen, B15 one word per concept, S21 intensity grows toward the problem, I17 action beside the flag, Y10 zoom tiers follow the monitoring sequence, D13 bullet graph instead of a gauge.
+- Widgets (37 total): bullet-graph, segmented-share-bar, sparkline.
+- Smell domain: `data/smells.csv` (24 rows: smell, fix, rule ids), `-d smell`, auto-detected on "smell" or "anti pattern", validated rule ids, and a Smells table at the end of `references/checklist.md`.
+- `layout_check.py`: `--preset monitor` (3440x1440, 1440x900, 375x812), `--blur` and `--cvd` extra screenshots, `--expect SELECTOR=TEXT` (high B10 finding when missing). Defaults unchanged.
+- SKILL.md: the design workflow makes the contract concrete (numbers, numeric problem rules, actions, a fixture with expected answers, zoom tiers); a pre-delivery QA step (known totals, words audit, salience, monitor shots, smells); reviews open with a verdict and what works, and order findings within a severity by honesty, then salience, hierarchy, words, smells, polish.
+
+### Changed
+
+- D01 points to B13, B05 to B10; kpi-tile cites B12/B13, calendar-heatmap S21.
+- Plugin and marketplace version 0.4.0.
+
+Ideas for the honesty and salience checks come from the MIT-licensed dashboard-design skill; the rules here are written for map screens in our own words and cite primary sources where they state the rule.
+
 ## 0.3.0 - 2026-11-17
 
 ### Added

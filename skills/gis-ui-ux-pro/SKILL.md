@@ -5,7 +5,7 @@ description: GIS and remote-sensing UI/UX design intelligence for map screens - 
 
 # GIS UI/UX Pro
 
-Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 131 rules, 30 problem playbooks (each with a dashboard contract), 33 palettes, 34 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
+Work like a UI/UX designer for map products: ask what matters, ground every choice in the knowledge base, offer distinct directions with a safe fallback, and critique your own work before delivering. The knowledge base holds 141 rules, 24 smells, 30 problem playbooks (each with a dashboard contract), 33 palettes, 37 widgets, 9 layouts, 12 signature directions and 6 stack guides. The search script is the entry point; the two reference files are generated from the same data.
 
 ## When to apply
 
@@ -38,11 +38,11 @@ When rules compete or time is short, satisfy categories in this order. Every `cr
 | 6 | `temporal` - Temporal | Compare modes, A/B date labels, time slider, UTC date filters | T.. |
 | 7 | `eo` - EO specifics | Composite naming, fixed index ranges, SAR in dB, scene cards, detection confidence | E.. |
 | 8 | `widgets` - Widgets | KPIs, freshness, uncertainty, alert lists, status workflows | D.. |
-| 9 | `dashboard` - Dashboard (glance, trust, flow) | One primary question per screen, precision, readable time axes, one unit, numbers that reconcile, measured vs forecast, back keeps place, review before publish | B.. |
+| 9 | `dashboard` - Dashboard (glance, trust, flow) | One primary question per screen, precision, readable time axes, one unit, numbers that reconcile and are checked per widget, measured vs forecast, honest deltas, salience, wordless panels, one screen, one word per concept, back keeps place, review before publish | B.. |
 | 10 | `layout` - Layout | Map-first vs data-first, shell and action bar, mobile bottom sheet, z-order | L.. |
 | 11 | `performance` - Performance | Vector tiles, slim GeoJSON, clustering, loading and error states | P.. |
 
-Full rule list: [references/quick-reference.md](references/quick-reference.md). Audit checklist: [references/checklist.md](references/checklist.md).
+Full rule list: [references/quick-reference.md](references/quick-reference.md). Audit checklist, ending with the smell table (smell, fix, rule ids): [references/checklist.md](references/checklist.md).
 
 ## Running the script
 
@@ -54,11 +54,12 @@ python "${CLAUDE_SKILL_DIR}/scripts/search.py" "citizen service requests by ward
 python "${CLAUDE_SKILL_DIR}/scripts/search.py" "time slider" -d rule
 python "${CLAUDE_SKILL_DIR}/scripts/search.py" "tracking replay scrubber" -d direction -n 2
 python "${CLAUDE_SKILL_DIR}/scripts/search.py" "attribution control" -s leaflet -n 2
+python "${CLAUDE_SKILL_DIR}/scripts/search.py" "heatmap darkest on safe ground" -d smell -n 1
 ```
 
 | Flag | Meaning |
 |---|---|
-| `-d rule\|problem\|palette\|widget\|layout\|direction` | Search one domain. Omit to auto-detect (falls back to `rule`). |
+| `-d rule\|problem\|palette\|widget\|layout\|direction\|smell` | Search one domain (`smell`: a visible anti-pattern, its fix and rule ids). Omit to auto-detect (falls back to `rule`). |
 | `-s mapbox-maplibre\|leaflet\|openlayers\|deckgl\|cesium\|ogc` | Search one library's or service's stack guide instead of a domain. |
 | `-n 1..20` | Number of results (default 3). |
 | `--full` | Show full values (default output truncates long fields). |
@@ -110,7 +111,7 @@ Map-specific constraints the directions already respect: the basemap recedes; da
 
 If the user wants speed, skip the questions and state your assumptions in the summary.
 
-**2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). For 3D, pre-sales or story pitches pass `--intensity bold` and a fitting `--direction` (e.g. `urban-twin`, `newsroom-story`), since no playbook defaults to bold. The blueprint opens with the **Dashboard contract** (synth default): the one question the screen answers at a glance, the answer shape, what builds trust (units, time, source, measured vs forecast) and the flow (drill-down, back, review). Present it first and adapt it to the user's audience (B01-B09). It then gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
+**2. Blueprint.** Run `--blueprint` with a one-line description in the user's words (sensor + target + purpose + audience). Check the matched problem and the runner-up; if the runner-up fits better, re-run with its terms. Add `--intensity` when discovery contradicts the problem's default (a public flood map is `subtle`; a pitch demo of the same data is `bold`). For 3D, pre-sales or story pitches pass `--intensity bold` and a fitting `--direction` (e.g. `urban-twin`, `newsroom-story`), since no playbook defaults to bold. The blueprint opens with the **Dashboard contract** (synth default): the one question the screen answers at a glance, the answer shape, what builds trust (units, time, source, measured vs forecast) and the flow (drill-down, back, review). Present it first and adapt it to the user's audience (B01-B15). Make it concrete before any UI: the 3-6 numbers that answer the question, each problem as a numeric rule ("score >= 6 inside a zone"), the action beside each problem (I17), and a small fixed dataset with its expected answers (B10). Map the monitoring sequence to zoom (Y10): overview (heat or density) at low zoom, zones needing attention at mid zoom, features with their actions up close. It then gives the layout with ASCII and mobile sketches, layers, palettes, widgets with states, temporal UI, interactions, alerts, pitfalls, then:
 
 - **Screen spec:** a region table (region, position, size, which widgets it holds) for desktop and phone, the map-control corners and legend placement, and five whole-screen states (first load, no results, layer error, stale/offline, feature selected). Widgets marked "(fallback)" had no preferred region in this layout: decide where they go. Hand this table to developers as the screen description.
 - **Signature:** intensity with its reason, primary and alternative directions, a safe `subtle` baseline that differs from both directions (a third linked direction, else Civic Paper, else "<Primary> with signature removed (locked conventions, default markers, no hero)"), locked conventions plus the primary direction's must-keeps, a token table for the primary (basemap, surface, motion, marker, type pair, accent), the hero element with one variation per axis, and a test plan (5-second, preference baseline vs primary, first-click, squint). A note appears when fewer than two directions fit the intensity or a forced direction is outside its range.
@@ -145,6 +146,14 @@ A  Civic Paper (subtle)          B  Canvas Studio (subtle)        Baseline: Civi
 - [ ] Contrast checked on the chosen basemap: text 4.5:1, graphics 3:1, halos visible.
 - [ ] Signature removable: the safe baseline still works with the same layout and data.
 
+**7. Pre-delivery QA (once anything renders).** Look at every screenshot; reading code is not seeing the screen.
+
+1. Known totals (B10): each widget (KPI text, features on the map, list rows, chart sum, popup numbers) matches the fixture's expected answers, checked on its own.
+2. Words audit (B12): count the sentences outside tooltips, empty and error states; aim for zero.
+3. Salience (B11, S21): on the blurred shot the eye lands first on the answer or the flagged features.
+4. Shots: `python "${CLAUDE_SKILL_DIR}/scripts/layout_check.py" <url> --preset monitor --screenshot <dir> --blur --cvd deuteranopia,achromatopsia --expect "<kpi selector>=<expected>"`, then look at the normal, blurred and colour-vision copies at 3440, 1440 and 375 (B14: KPIs and the problem area fit at 1440x900).
+5. Run `-d smell` for anything that looks off; the smell table in the checklist lists the usual ones.
+
 Use `--persist` only when the user wants the blueprint saved in their project.
 
 ### Output style
@@ -164,13 +173,13 @@ Then: directions with sketches, the screen spec (regions, sizes, states), layers
 ## Workflow: reviewing an existing screen
 
 1. Read the code (map init, layer definitions, legend, controls, popups) or the screenshot.
-   If the app runs locally, measure it too: `python "${CLAUDE_SKILL_DIR}/scripts/layout_check.py" http://localhost:5173/ --click "<selector that opens a panel>" --screenshot <scratch dir>`. It reports, per size (default 1280, 1440, 1920), attribution or controls covered or off screen (C01, C02, L11, C04), floating panels overlapping (L11), text below `--min-font` (default 12px), text cut off (D10), sideways page scroll, and the map's share of the viewport. It needs Playwright; if it exits 3, tell the user the install command it prints and continue by reading code. Treat overlaps as candidates: a menu over a panel can be intended. If labels look half-placed on the screenshot, raise `--wait`. It only sees the DOM, so check canvas labels on the screenshot.
+   If the app runs locally, measure it too: `python "${CLAUDE_SKILL_DIR}/scripts/layout_check.py" http://localhost:5173/ --click "<selector that opens a panel>" --screenshot <scratch dir>`. It reports, per size (default 1280, 1440, 1920; `--preset monitor` for 3440, 1440, 375), attribution or controls covered or off screen (C01, C02, L11, C04), floating panels overlapping (L11), text below `--min-font` (default 12px), text cut off (D10), sideways page scroll, the map's share of the viewport, and `--expect SELECTOR=TEXT` mismatches (B10); `--blur` and `--cvd` save copies for the salience and colour-vision checks. It needs Playwright; if it exits 3, tell the user the install command it prints and continue by reading code. Treat overlaps as candidates: a menu over a panel can be intended. If labels look half-placed on the screenshot, raise `--wait`. It only sees the DOM, so check canvas labels on the screenshot.
 2. If the problem type is clear, run `--blueprint` for it so you know the expected layers, pitfalls, checklist and dashboard contract.
-3. Before the checklist, write the screen's actual glance question, trust cues and flow, and compare them with the contract. Each difference is a finding citing the rule id the contract item names (B01-B09 for glance and flow). Cite a B rule only when the screen (code or screenshot) visibly shows the defect it names; do not list B rules as pass / n-a or as optional extras. B07 and B08 need visible navigation (a detail that closes, a back action) or feedback UI (a toast/message) on the screen being reviewed; B06 needs a forecast, modelled or estimated value on screen.
+3. Before the checklist, write the screen's actual glance question, trust cues and flow, and compare them with the contract. Each difference is a finding citing the rule id the contract item names (B01-B15 for glance, trust and flow). Cite a B rule only when the screen (code or screenshot) visibly shows the defect it names; do not list B rules as pass / n-a or as optional extras. B07 and B08 need visible navigation (a detail that closes, a back action) or feedback UI (a toast/message) on the screen being reviewed; B06 needs a forecast, modelled or estimated value on screen.
 4. Walk [references/checklist.md](references/checklist.md) group by group. Mark each item pass / fail / not applicable.
 5. For each failure, look up the rule with `-d rule` (or `-s <stack>` for the fix in that library) to get do/don't and why.
 6. If the user asks about the look, compare against the blueprint's directions and check the signature list above (a recoloured ramp or moved control is a finding, not a style choice).
-7. Report findings ordered by severity (critical, high, medium, low). Each finding has: rule id, what you observed (file:line or screen region), why it matters, and the concrete fix.
+7. Open with a one-line verdict ("Better, not good yet") and 2-4 things that work, then report findings ordered by severity (critical, high, medium, low). Within one severity, order by harm: honesty (numbers that disagree or mislead: B05, B10, B13, B06) before salience (B11, S21), then hierarchy, words (B12), smells (`-d smell`) and polish. Each finding has: rule id, what you observed (file:line or screen region), why it matters, and the concrete fix.
 8. Findings are defects in what the code or screen does. Accessibility (keyboard, text alternative, contrast, colour-only meaning), privacy, attribution and security gaps always stay in the severity-ordered findings, even when the feature is absent. Only optional features it never attempts (search, legend extras, table view) go last in an "Also consider (low, optional)" list, unless the user asked for a full audit.
 
 Review checklist for yourself:
